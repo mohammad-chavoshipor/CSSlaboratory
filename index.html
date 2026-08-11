@@ -1,0 +1,1561 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>آزمایشگاه CSS — آموزش تعاملی</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230b0e14'/><text x='32' y='42' font-size='28' text-anchor='middle' fill='%23ffb454' font-family='monospace'>{}</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════ توکن‌های طراحی ═══════════ */
+:root{
+  --bg:#0b0e14; --bg2:#0f131c; --panel:#121722; --panel2:#0d1119;
+  --line:#222b3d; --line2:#313d57;
+  --fg:#c9d1de; --dim:#8b96a9; --faint:#5c6779;
+  --amber:#ffb454; --gold:#ffd580; --cyan:#59c2ff; --green:#aad94c;
+  --purple:#d2a6ff; --red:#f07178; --teal:#95e6cb;
+  --fd:'Lalezar',Vazirmatn,serif; --fb:'Vazirmatn',system-ui,sans-serif; --fm:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:100%}
+body{
+  height:100dvh; display:grid; grid-template-rows:auto 1fr auto; overflow:hidden;
+  background:var(--bg); color:var(--fg); font-family:var(--fb);
+  background-image:radial-gradient(rgba(255,180,84,.05) 1px,transparent 1px);
+  background-size:26px 26px;
+}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:5;
+  background:radial-gradient(120% 90% at 50% 0%,transparent 60%,rgba(0,0,0,.35));}
+.noise{position:fixed;inset:-50%;z-index:6;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 9s steps(6) infinite;}
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-2%,3%)}50%{transform:translate(3%,-2%)}75%{transform:translate(-3%,-3%)}100%{transform:translate(2%,2%)}}
+::selection{background:var(--amber);color:#14100a}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:8px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:var(--amber)}
+input[type=range],input[type=checkbox]{accent-color:var(--amber)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:4px}
+button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img{display:block;max-width:100%}
+
+/* ═══════════ نوار بالا ═══════════ */
+.topbar{display:flex;align-items:center;gap:14px;padding:10px clamp(14px,3vw,28px);
+  border-bottom:1px solid var(--line);background:rgba(11,14,20,.9);position:relative;z-index:20}
+.logo{width:36px;height:36px;border:1px solid var(--amber);border-radius:9px;display:grid;place-items:center;
+  font-family:var(--fm);color:var(--amber);font-size:15px;background:rgba(255,180,84,.06)}
+.brand{font-family:var(--fd);font-size:22px;color:#fff;letter-spacing:.5px}
+.brand small{font-family:var(--fb);font-size:11px;color:var(--dim);display:block;margin-top:-6px;font-weight:400}
+.topbar .sp{flex:1}
+.counter{font-family:var(--fm);font-size:13px;color:var(--dim);border:1px solid var(--line);
+  padding:6px 12px;border-radius:8px;background:var(--panel2)}
+.counter b{color:var(--amber);font-weight:600}
+.tbtn{border:1px solid var(--line);background:var(--panel);padding:8px 14px;border-radius:9px;font-size:13px;
+  display:flex;gap:7px;align-items:center;transition:.2s}
+.tbtn:hover{border-color:var(--amber);color:var(--gold)}
+.prog{position:absolute;bottom:-1px;inset-inline-start:0;height:2px;background:var(--amber);width:0;
+  transition:width .5s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 12px rgba(255,180,84,.7)}
+
+/* ═══════════ عرشهٔ اسلایدها ═══════════ */
+.deck{position:relative;overflow:hidden;z-index:1}
+.slide{position:absolute;inset:0;display:none;opacity:0;transform:translateX(var(--en,0));
+  transition:opacity .5s ease,transform .55s cubic-bezier(.22,.8,.24,1)}
+.slide.on{display:block}
+.slide.active{opacity:1;transform:none}
+.slide.leave{opacity:0;transform:translateX(var(--ex,5%));pointer-events:none}
+.slide::after{content:attr(data-num);position:absolute;bottom:-8vh;inset-inline-end:-1vw;z-index:0;
+  font-family:var(--fd);font-size:min(40vh,28vw);line-height:1;color:rgba(89,194,255,.045);pointer-events:none}
+.sb{position:relative;z-index:1;height:100%;overflow-y:auto;overflow-x:hidden;
+  padding:clamp(18px,3.5vh,42px) clamp(18px,4.5vw,64px) 70px}
+.slide.active .fx{animation:rise .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--d,0)*90ms)}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.kick{font-family:var(--fm);font-size:12.5px;color:var(--amber);display:inline-flex;gap:10px;align-items:center;
+  border:1px dashed rgba(255,180,84,.4);padding:5px 12px;border-radius:99px;background:rgba(255,180,84,.05)}
+.kick::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px var(--amber)}
+.stitle{font-family:var(--fd);font-weight:400;font-size:clamp(30px,4.8vw,58px);color:#fff;line-height:1.25;margin:14px 0 6px}
+.slead{color:var(--dim);font-size:clamp(14px,1.35vw,17px);line-height:2;max-width:62ch}
+.cols{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:clamp(22px,4vw,60px);align-items:start;margin-top:clamp(14px,3vh,30px)}
+.cols.one{grid-template-columns:1fr}
+h3.sub{font-family:var(--fd);color:var(--gold);font-size:21px;margin:18px 0 10px;font-weight:400}
+.note{border-inline-start:3px solid var(--amber);background:rgba(255,180,84,.06);padding:12px 16px;border-radius:0 12px 12px 0;
+  font-size:13.5px;line-height:1.9;color:var(--fg);margin-top:18px}
+.note b{color:var(--gold)}
+.note .ic{margin-inline-end:6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{border:1px solid var(--line2);border-radius:99px;padding:6px 13px;font-size:12.5px;color:var(--dim);background:var(--panel)}
+.chip b{color:var(--teal);font-weight:600}
+
+/* ═══════════ ادیتور کد ═══════════ */
+.editor{border:1px solid var(--line2);border-radius:13px;background:var(--panel2);overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.ed-top{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line);background:#0e121b}
+.dots{display:flex;gap:6px}
+.dots i{width:10px;height:10px;border-radius:50%}
+.dots i:nth-child(1){background:var(--red)}.dots i:nth-child(2){background:var(--gold)}.dots i:nth-child(3){background:var(--green)}
+.ed-name{font-family:var(--fm);font-size:11.5px;color:var(--faint);direction:ltr}
+.editor pre{padding:15px 18px;overflow:auto;direction:ltr;text-align:left;max-height:46vh}
+.editor code,code.out{font-family:var(--fm);font-size:13.5px;line-height:1.85;color:#e6e1cf;white-space:pre;display:block}
+code.inline{font-family:var(--fm);font-size:.9em;color:var(--teal);background:rgba(149,230,203,.08);
+  border:1px solid rgba(149,230,203,.15);padding:1px 7px;border-radius:6px;direction:ltr;unicode-bidi:isolate}
+.tk-sel{color:var(--gold)} .tk-p{color:var(--cyan)} .tk-n{color:var(--amber)} .tk-hex{color:var(--amber)}
+.tk-str{color:var(--green)} .tk-com{color:var(--faint);font-style:italic} .tk-at{color:var(--purple)}
+.tk-t{color:var(--cyan)} .tk-a{color:var(--amber)} .tk-s{color:var(--green)}
+
+/* ═══════════ اجزای آزمایشگاه ═══════════ */
+.lab{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:16px 18px}
+.lab-row{display:grid;grid-template-columns:110px 1fr 52px;gap:12px;align-items:center;margin:10px 0;font-size:13px;color:var(--dim)}
+.lab-row b{font-family:var(--fm);color:var(--teal);font-size:12px;text-align:left;direction:ltr}
+input[type=range]{width:100%;height:22px}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--panel2);flex-wrap:wrap}
+.seg button{padding:7px 13px;font-size:12.5px;color:var(--dim);border-inline-end:1px solid var(--line);transition:.15s;font-family:var(--fm)}
+.seg button:last-child{border-inline-end:0}
+.seg button.on{background:var(--amber);color:#14100a;font-weight:600}
+.seg button:not(.on):hover{color:var(--gold);background:rgba(255,180,84,.07)}
+.stage{border:1px dashed var(--line2);border-radius:13px;background:
+  repeating-linear-gradient(45deg,rgba(255,255,255,.015) 0 12px,transparent 12px 24px),var(--panel2);
+  min-height:190px;padding:14px;position:relative}
+.code-out{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);padding:12px 14px;direction:ltr;text-align:left;overflow:auto}
+
+/* ═══════════ نوار پایین ═══════════ */
+.deckbar{display:flex;align-items:center;gap:14px;padding:10px clamp(14px,3vw,28px);
+  border-top:1px solid var(--line);background:rgba(11,14,20,.9);z-index:20;position:relative}
+.nbtn{display:flex;align-items:center;gap:9px;border:1px solid var(--line2);background:var(--panel);
+  padding:9px 20px;border-radius:10px;font-size:14px;font-weight:600;transition:.2s}
+.nbtn:hover{border-color:var(--amber);color:var(--gold);transform:translateY(-1px)}
+.nbtn.primary{background:var(--amber);color:#14100a;border-color:var(--amber)}
+.nbtn.primary:hover{box-shadow:0 8px 24px rgba(255,180,84,.35);color:#14100a}
+.nbtn span{font-size:17px;line-height:1}
+.dotsnav{flex:1;display:flex;justify-content:center;gap:7px;flex-wrap:wrap}
+.dotsnav button{width:20px;height:7px;border-radius:99px;background:var(--line2);transition:.25s;position:relative}
+.dotsnav button:hover{background:var(--faint)}
+.dotsnav button.seen{background:rgba(255,180,84,.4)}
+.dotsnav button.cur{background:var(--amber);width:34px;box-shadow:0 0 10px rgba(255,180,84,.6)}
+.kbd-hint{font-family:var(--fm);font-size:11px;color:var(--faint);direction:ltr}
+@media(max-width:900px){.kbd-hint,.dotsnav{display:none}.deckbar{justify-content:space-between}}
+
+/* ═══════════ فهرست کشویی ═══════════ */
+.scrim{position:fixed;inset:0;background:rgba(4,6,10,.6);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:.3s;z-index:39}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;bottom:0;inset-inline-start:0;width:min(330px,88vw);background:var(--bg2);
+  border-inline-end:1px solid var(--line2);z-index:40;transform:translateX(105%);transition:transform .4s cubic-bezier(.2,.8,.2,1);
+  display:flex;flex-direction:column;box-shadow:30px 0 80px rgba(0,0,0,.5)}
+.drawer.open{transform:none}
+.drawer header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
+.drawer header h4{font-family:var(--fd);font-weight:400;font-size:20px;color:var(--gold)}
+.drawer nav{overflow:auto;padding:10px;flex:1}
+.toc-i{display:flex;gap:12px;align-items:center;width:100%;text-align:start;padding:10px 12px;border-radius:10px;transition:.15s}
+.toc-i:hover{background:var(--panel)}
+.toc-i.cur{background:rgba(255,180,84,.1);border:1px solid rgba(255,180,84,.3)}
+.toc-i .n{font-family:var(--fm);font-size:11px;color:var(--amber);border:1px solid rgba(255,180,84,.35);
+  border-radius:7px;padding:3px 7px;min-width:34px;text-align:center}
+.toc-i .t{font-size:13.5px;color:var(--fg)}
+.toc-i .g{margin-inline-start:auto;font-size:10px;color:var(--faint);border:1px solid var(--line);padding:2px 8px;border-radius:99px}
+
+/* ═══════════ اسلاید ۱: جلد ═══════════ */
+.cover{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(24px,4vw,60px);align-items:center;min-height:100%}
+.cover .big{font-family:var(--fd);font-weight:400;font-size:clamp(44px,7.5vw,92px);line-height:1.1;color:#fff}
+.cover .big em{font-style:normal;color:var(--amber);position:relative}
+.cover .big em::after{content:"";position:absolute;inset-inline:0;bottom:6px;height:10px;background:rgba(255,180,84,.18);z-index:-1;transform:skewX(-12deg)}
+.hero-lab{position:relative;padding-bottom:96px}
+.hero-demo-wrap{position:absolute;bottom:0;inset-inline-start:8%;z-index:2}
+#heroDemo{width:180px;height:150px;border-radius:10px;background:var(--panel);border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  transition:all .8s cubic-bezier(.2,.9,.25,1.15)}
+#heroDemo .c{font-family:var(--fd);font-size:52px;color:var(--amber);line-height:1}
+#heroDemo .l{font-size:11px;color:var(--dim)}
+.hcaret{display:inline-block;width:8px;height:16px;background:var(--amber);vertical-align:-3px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--panel);
+  padding:10px 22px;border-radius:10px;font-size:14px;font-weight:600;transition:.2s}
+.btn:hover{border-color:var(--amber);color:var(--gold);transform:translateY(-1px)}
+.btn.primary{background:var(--amber);border-color:var(--amber);color:#14100a}
+.btn.primary:hover{box-shadow:0 10px 28px rgba(255,180,84,.35);color:#14100a}
+
+/* ═══════════ اسلاید ۲: کالبد ═══════════ */
+.anatomy{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;direction:ltr;font-family:var(--fm);
+  border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:26px 20px 18px;margin-top:8px}
+.an{display:flex;flex-direction:column;align-items:center;gap:10px}
+.an .tk{font-size:clamp(20px,2.6vw,30px)}
+.an em{font-style:normal;font-family:var(--fb);font-size:11px;color:var(--dim);border-top:2px dashed var(--line2);
+  padding:6px 8px 0;white-space:nowrap;direction:rtl}
+.an.sel .tk{color:var(--gold)} .an.sel em{border-color:var(--gold)}
+.an.prp .tk{color:var(--cyan)} .an.prp em{border-color:var(--cyan)}
+.an.val .tk{color:var(--amber)} .an.val em{border-color:var(--amber)}
+.an.br .tk,.an.sc .tk{color:var(--faint)}
+.ways{display:grid;gap:10px;margin-top:10px}
+.way{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:var(--panel);
+  border-radius:11px;padding:11px 14px;font-size:13px}
+.way code{font-family:var(--fm);font-size:12px;color:var(--teal);direction:ltr;unicode-bidi:isolate}
+.way .tag{margin-inline-start:auto;font-size:10.5px;color:var(--red);border:1px solid rgba(240,113,120,.4);padding:2px 9px;border-radius:99px}
+.way .tag.ok{color:var(--green);border-color:rgba(170,217,76,.4)}
+
+/* ═══════════ اسلاید ۳: انتخابگرها ═══════════ */
+.sel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:11px;margin-top:14px}
+.sel-card{border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:12px 14px;transition:.2s;position:relative;overflow:hidden}
+.sel-card::before{content:"";position:absolute;top:0;inset-inline-start:0;width:3px;height:0;background:var(--amber);transition:.3s}
+.sel-card:hover{border-color:var(--line2);transform:translateY(-3px)}
+.sel-card:hover::before{height:100%}
+.sel-card code{font-family:var(--fm);font-size:13px;color:var(--gold);direction:ltr;display:block;unicode-bidi:isolate}
+.sel-card .nm{font-size:13px;color:var(--fg);margin-top:6px;font-weight:600}
+.sel-card .ds{font-size:11.5px;color:var(--dim);line-height:1.8;margin-top:3px}
+.sel-card .sp{position:absolute;top:10px;inset-inline-end:10px;font-family:var(--fm);font-size:9.5px;color:var(--faint);
+  border:1px solid var(--line);padding:1px 7px;border-radius:99px;direction:ltr}
+.sel-demo{list-style:none;display:grid;gap:7px;margin-top:10px}
+.sel-demo li{border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:9px 14px;font-size:13px;
+  color:var(--dim);transition:.25s}
+.sel-demo li::before{content:"◂ ";color:var(--faint);transition:.25s}
+.sel-demo li:nth-child(odd){background:rgba(255,180,84,.05);border-color:rgba(255,180,84,.2)}
+.sel-demo li:hover{border-color:var(--cyan);color:var(--fg);transform:translateX(-6px)}
+.sel-demo li:hover::before{color:var(--cyan)}
+
+/* ═══════════ اسلاید ۴: واحدها/رنگ ═══════════ */
+.u-table{display:grid;grid-template-columns:auto 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.u-table>div{padding:8px 14px;border-bottom:1px solid var(--line);font-size:12.5px;display:flex;align-items:center}
+.u-table>div:nth-last-child(-n+2){border-bottom:0}
+.u-table .u{font-family:var(--fm);color:var(--teal);direction:ltr;font-size:12px;background:var(--panel2)}
+.u-table .d{color:var(--dim);background:var(--panel)}
+.swatch{height:110px;border-radius:13px;border:1px solid var(--line2);transition:background .2s;margin-bottom:10px;position:relative}
+.swatch::after{content:"پیش‌نمایش";position:absolute;bottom:8px;inset-inline-end:12px;font-size:10px;color:rgba(0,0,0,.45)}
+.val-out{font-family:var(--fm);direction:ltr;text-align:left;font-size:13px;color:var(--gold);
+  background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px 13px;margin-top:6px;display:flex;justify-content:space-between;gap:8px}
+.val-out .hx{color:var(--cyan)}
+
+/* ═══════════ اسلاید ۵: مدل جعبه ═══════════ */
+.bm-zone{border-radius:10px;position:relative;transition:padding .2s,width .2s}
+.bm-m{background:rgba(210,166,255,.09);border:1px dashed rgba(210,166,255,.5);padding:24px}
+.bm-b{background:rgba(240,113,120,.14);border:12px solid rgba(240,113,120,.55);transition:border-width .2s}
+.bm-p{background:rgba(170,217,76,.14);padding:24px}
+.bm-c{background:rgba(89,194,255,.2);border:1px solid rgba(89,194,255,.6);min-height:70px;display:grid;place-items:center;
+  color:var(--cyan);font-size:13px;font-weight:600}
+.bm-leg{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:11.5px;color:var(--dim)}
+.bm-leg i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-inline-end:5px;vertical-align:-1px}
+.bm-out{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.bm-out div{border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:7px 12px;font-size:12px;color:var(--dim)}
+.bm-out b{font-family:var(--fm);color:var(--amber);direction:ltr;unicode-bidi:isolate}
+
+/* ═══════════ اسلاید ۶: تایپوگرافی ═══════════ */
+.typo-sample{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:22px;min-height:130px;transition:.2s}
+.tp-row{display:grid;grid-template-columns:100px 1fr 56px;gap:12px;align-items:center;font-size:13px;color:var(--dim);margin:9px 0}
+.tp-row b{font-family:var(--fm);color:var(--teal);font-size:12px;direction:ltr;text-align:left}
+
+/* ═══════════ اسلاید ۷/۸: فلکس و گرید ═══════════ */
+.flex-stage{display:flex;min-height:230px;gap:12px}
+.fitem{background:var(--panel);border:1px solid var(--line2);border-radius:10px;display:grid;place-items:center;
+  font-family:var(--fd);font-size:26px;color:var(--amber);min-width:56px;min-height:56px;padding:8px 14px;transition:.25s}
+.fitem:nth-child(2){color:var(--cyan)}.fitem:nth-child(3){color:var(--green)}
+.fitem:nth-child(4){color:var(--purple)}.fitem:nth-child(5){color:var(--red)}
+.grid-stage{display:grid;min-height:230px;gap:12px}
+.gitem{background:rgba(89,194,255,.08);border:1px solid rgba(89,194,255,.35);border-radius:9px;display:grid;place-items:center;
+  font-family:var(--fm);color:var(--cyan);font-size:13px;min-height:48px}
+.ctl-group{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.ctl-group>label{font-size:12px;color:var(--dim)}
+
+/* ═══════════ اسلاید ۹: جای‌گذاری ═══════════ */
+.pos-stage{position:relative;height:270px;overflow:hidden}
+.pos-box{width:110px;height:78px;border-radius:11px;background:rgba(255,180,84,.16);border:1.5px solid var(--amber);
+  display:grid;place-items:center;font-family:var(--fm);font-size:12px;color:var(--gold);transition:.4s cubic-bezier(.2,.8,.2,1)}
+.pos-ghost{position:absolute;inset-inline-start:14px;top:14px;width:110px;height:78px;border:1.5px dashed var(--line2);border-radius:11px;opacity:.6}
+.pos-sib{width:110px;height:78px;border-radius:11px;background:var(--panel);border:1px solid var(--line2);
+  display:grid;place-items:center;font-family:var(--fm);font-size:12px;color:var(--faint)}
+.pos-stage .col{display:flex;flex-direction:column;gap:12px;padding:14px}
+.pos-stage[data-mode="relative"] .pos-box{position:relative;top:34px;inset-inline-start:70px}
+.pos-stage[data-mode="absolute"] .pos-box{position:absolute;bottom:22px;inset-inline-end:26px}
+.pos-stage[data-mode="fixed"] .pos-box{position:absolute;top:20px;inset-inline-start:20px;box-shadow:0 14px 34px rgba(0,0,0,.5)}
+.pos-scroll{height:270px;overflow:auto;border:1px dashed var(--line2);border-radius:13px;background:var(--panel2);display:none}
+.pos-scroll .st{position:sticky;top:0;background:rgba(255,180,84,.92);color:#14100a;font-weight:700;font-size:13px;
+  padding:9px 16px;z-index:2}
+.pos-scroll p{padding:14px 18px;font-size:13px;color:var(--dim);line-height:2.2}
+
+/* ═══════════ اسلاید ۱۰: تبدیل ═══════════ */
+.tf-stage{display:grid;place-items:center;min-height:250px;overflow:hidden}
+#tfBox{width:120px;height:120px;border-radius:16px;background:linear-gradient(145deg,rgba(255,180,84,.25),rgba(89,194,255,.18));
+  border:1.5px solid var(--amber);display:grid;place-items:center;font-family:var(--fd);font-size:34px;color:var(--gold)}
+.easing-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.easing-chips button{font-family:var(--fm);font-size:11px;border:1px solid var(--line2);border-radius:99px;padding:5px 12px;color:var(--dim);transition:.15s;direction:ltr}
+.easing-chips button.on{background:var(--cyan);color:#04121f;border-color:var(--cyan);font-weight:600}
+
+/* ═══════════ اسلاید ۱۱: انیمیشن ═══════════ */
+.anim-stage{display:grid;place-items:center;min-height:230px}
+#animBox{width:86px;height:86px;border-radius:20px;background:var(--amber);display:grid;place-items:center;
+  color:#14100a;font-family:var(--fd);font-size:24px;box-shadow:0 14px 40px rgba(255,180,84,.35)}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-52px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-20px) rotate(3deg)}}
+
+/* ═══════════ اسلاید ۱۲: پاسخگو ═══════════ */
+.rwrap{border:1px solid var(--line2);border-radius:13px;background:var(--panel2);padding:14px;overflow:auto}
+.rframe{container-type:inline-size;margin-inline:auto;transition:width .15s;min-width:260px;
+  border:1px dashed var(--line2);border-radius:10px;padding:12px;background:var(--panel)}
+.mini-hero{display:flex;flex-direction:column;gap:10px;background:rgba(255,180,84,.1);border:1px solid rgba(255,180,84,.3);
+  border-radius:9px;padding:12px;margin-bottom:10px}
+.mini-hero b{color:var(--gold);font-size:14px}
+.mini-hero span{font-size:11px;color:var(--dim)}
+.mini-cards{display:grid;grid-template-columns:1fr;gap:8px}
+.mini-cards i{height:52px;border-radius:8px;background:rgba(89,194,255,.12);border:1px solid rgba(89,194,255,.3);font-style:normal;
+  display:grid;place-items:center;font-size:11px;color:var(--cyan)}
+@container (min-width:460px){.mini-cards{grid-template-columns:1fr 1fr}}
+@container (min-width:640px){.mini-hero{flex-direction:row;align-items:center;justify-content:space-between}.mini-cards{grid-template-columns:repeat(3,1fr)}}
+.bp{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.bp div{border:1px solid var(--line);border-radius:10px;padding:9px 14px;background:var(--panel);font-size:12px;color:var(--dim)}
+.bp b{font-family:var(--fm);color:var(--teal);display:block;direction:ltr;font-size:12px}
+
+/* ═══════════ اسلاید ۱۳: متغیرها ═══════════ */
+.theme-btns{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}
+.theme-btns button{width:46px;height:46px;border-radius:12px;border:2px solid transparent;transition:.2s;position:relative}
+.theme-btns button:hover{transform:translateY(-3px)}
+.theme-btns button.on{border-color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+#vScope{--a:#ffb454;--a2:rgba(255,180,84,.14)}
+#vScope .v-demo{border:1px solid var(--line);border-radius:13px;padding:18px;background:var(--panel2);display:grid;gap:14px}
+#vScope .v-btn{background:var(--a);color:#14100a;border-radius:10px;padding:10px 20px;font-weight:700;width:fit-content;transition:.3s}
+#vScope .v-link{color:var(--a);text-decoration:none;border-bottom:1px dashed var(--a);width:fit-content;transition:.3s}
+#vScope .v-badge{border:1px solid var(--a);color:var(--a);border-radius:99px;padding:4px 14px;font-size:12px;width:fit-content;background:var(--a2);transition:.3s}
+#vScope .v-card{border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 10px 30px -18px var(--a);transition:.3s}
+#vScope .v-card b{color:var(--a)}
+.fn-list{display:grid;gap:9px;margin-top:10px}
+.fn-list div{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:9px 14px;flex-wrap:wrap}
+.fn-list code{font-family:var(--fm);font-size:12.5px;color:var(--purple);direction:ltr;unicode-bidi:isolate}
+.fn-list span{font-size:12px;color:var(--dim)}
+
+/* ═══════════ اسلاید ۱۴: مرجع ═══════════ */
+.ref-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+.ref-bar input{flex:1;min-width:200px;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;
+  padding:10px 16px;color:var(--fg);font-family:var(--fm);font-size:13px;direction:ltr}
+.ref-bar input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,180,84,.15)}
+.ref-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.ref-chips button{border:1px solid var(--line2);border-radius:99px;padding:5px 13px;font-size:12px;color:var(--dim);transition:.15s}
+.ref-chips button.on{background:var(--amber);color:#14100a;border-color:var(--amber);font-weight:700}
+.ref-chips button:not(.on):hover{border-color:var(--amber);color:var(--gold)}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:9px}
+.prop{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px 13px;transition:.2s}
+.prop:hover{border-color:var(--amber);transform:translateY(-2px)}
+.prop b{font-family:var(--fm);font-size:12.5px;color:var(--cyan);direction:ltr;display:block;unicode-bidi:isolate;font-weight:600}
+.prop span{font-size:11.5px;color:var(--dim);line-height:1.8;display:block;margin-top:3px}
+.ref-count{font-size:12px;color:var(--faint);margin-inline-start:auto;font-family:var(--fm)}
+
+/* ═══════════ اسلاید ۱۵: قالب‌ها ═══════════ */
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;margin-top:16px}
+.tpl{border:1px solid var(--line2);border-radius:15px;background:var(--panel);overflow:hidden;transition:.25s}
+.tpl:hover{border-color:var(--amber);box-shadow:0 18px 44px rgba(0,0,0,.35);transform:translateY(-3px)}
+.tpl-head{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.tpl-head h4{font-size:14.5px;color:#fff}
+.tpl-head small{font-size:11px;color:var(--faint);display:block;font-weight:400;margin-top:2px}
+.tpl-head .no{font-family:var(--fm);font-size:11px;color:var(--amber);border:1px solid rgba(255,180,84,.35);border-radius:7px;padding:3px 8px}
+.tpl-prev{padding:20px;min-height:150px;display:grid;place-items:center;background:
+  repeating-conic-gradient(rgba(255,255,255,.02) 0 25%,transparent 0 50%) 0 0/22px 22px,var(--panel2)}
+.tpl-foot{padding:10px 14px;border-top:1px solid var(--line);display:flex;gap:9px;align-items:center}
+.tpl-foot .copy{margin-inline-start:auto;font-family:var(--fm);font-size:11.5px;border:1px solid var(--line2);border-radius:8px;
+  padding:7px 13px;color:var(--teal);transition:.2s}
+.tpl-foot .copy:hover{border-color:var(--green);background:rgba(170,217,76,.08)}
+.tpl details{border-top:1px solid var(--line)}
+.tpl summary{list-style:none;cursor:pointer;padding:10px 16px;font-size:12px;color:var(--dim);transition:.15s}
+.tpl summary:hover{color:var(--gold)}
+.tpl summary::before{content:"▸ ";color:var(--amber)}
+.tpl details[open] summary::before{content:"▾ "}
+.tpl details pre{max-height:280px;overflow:auto;padding:14px 16px;background:var(--panel2);direction:ltr;text-align:left;border-top:1px solid var(--line)}
+/* استایل خود قالب‌ها */
+.b1{display:inline-flex;align-items:center;height:44px;padding:0 22px;border-radius:10px;font-weight:700;font-size:14px;
+  background:var(--amber);color:#14100a;border:1px solid transparent;transition:.2s;box-shadow:0 8px 24px rgba(255,180,84,.3);cursor:pointer}
+.b1:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,180,84,.45)}
+.b2{display:inline-flex;align-items:center;height:44px;padding:0 22px;border-radius:10px;font-weight:600;font-size:14px;
+  border:1px solid var(--amber);color:var(--amber);background:transparent;transition:.2s;cursor:pointer}
+.b2:hover{background:rgba(255,180,84,.1)}
+.b3{display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:10px;font-size:14px;color:var(--fg);
+  background:#1a2130;border:1px solid var(--line);transition:.2s;cursor:pointer}
+.b3:hover{background:#232c40}
+.pcard{width:min(260px,100%);border-radius:16px;overflow:hidden;background:#131926;border:1px solid #26304a;transition:.3s}
+.pcard:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,.45)}
+.pcard img{width:100%;height:150px;object-fit:cover}
+.pcard .bd{padding:15px}
+.pcard .tg{font-size:11px;color:var(--amber)}
+.pcard h5{font-size:16px;color:#fff;margin:5px 0 11px;font-weight:700}
+.pcard .ft{display:flex;justify-content:space-between;align-items:center}
+.pcard .pr{font-weight:800;color:var(--teal);font-size:15px}
+.pcard .bt{border:0;background:var(--amber);color:#14100a;padding:8px 15px;border-radius:9px;font-weight:700;cursor:pointer}
+.tnav{display:flex;align-items:center;gap:20px;width:100%;padding:11px 18px;background:rgba(15,19,28,.9);
+  border:1px solid var(--line);border-radius:12px}
+.tnav .lg{font-weight:800;color:var(--amber)}
+.tnav .lks{display:flex;gap:16px;margin-inline-start:auto}
+.tnav a{color:var(--dim);text-decoration:none;font-size:13px;padding:4px 2px;position:relative;transition:.2s}
+.tnav a::after{content:"";position:absolute;inset-inline:0;bottom:0;height:2px;background:var(--amber);transform:scaleX(0);transition:.25s}
+.tnav a:hover{color:#fff}.tnav a:hover::after{transform:scaleX(1)}
+.tfield{display:grid;gap:6px;width:min(280px,100%)}
+.tfield label{font-size:12px;color:var(--dim)}
+.tfield input{padding:10px 14px;border-radius:10px;border:1px solid #2b3550;background:#101522;color:#e8ecf3;font-family:inherit;transition:.2s}
+.tfield input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,180,84,.18)}
+.tspin{width:34px;height:34px;border-radius:50%;border:3px solid #26304a;border-top-color:var(--amber);animation:tspin .8s linear infinite}
+@keyframes tspin{to{transform:rotate(360deg)}}
+.tskel{display:grid;gap:9px;width:min(260px,100%)}
+.tskel i{height:13px;border-radius:6px;background:#1a2130;position:relative;overflow:hidden}
+.tskel i:nth-child(2){width:75%}
+.tskel i::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:tsh 1.4s infinite}
+@keyframes tsh{to{transform:translateX(100%)}}
+
+/* ═══════════ اسلاید ۱۶: نکات ═══════════ */
+.tips{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:11px;margin-top:16px}
+.tip{display:flex;gap:13px;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:13px 15px;transition:.2s}
+.tip:hover{border-color:var(--amber);transform:translateY(-2px)}
+.tip .n{font-family:var(--fd);font-size:26px;color:var(--amber);line-height:1;min-width:30px}
+.tip p{font-size:12.5px;color:var(--dim);line-height:1.95}
+.tip p b{color:var(--fg)}
+.finale{margin-top:26px;border:1px solid rgba(255,180,84,.35);background:linear-gradient(160deg,rgba(255,180,84,.09),rgba(89,194,255,.05));
+  border-radius:18px;padding:clamp(22px,4vw,44px);text-align:center;position:relative;overflow:hidden}
+.finale::before{content:"{ }";position:absolute;font-family:var(--fd);font-size:200px;color:rgba(255,180,84,.05);top:-60px;inset-inline-end:20px}
+.finale h3{font-family:var(--fd);font-weight:400;font-size:clamp(26px,3.6vw,42px);color:#fff}
+.finale p{color:var(--dim);margin:8px auto 18px;max-width:52ch;line-height:2;font-size:14px}
+
+/* ═══════════ ریسپانسیو ═══════════ */
+@media(max-width:960px){
+  .cols,.cover{grid-template-columns:1fr}
+  .hero-lab{padding-bottom:0}
+  .hero-demo-wrap{position:static;margin-top:16px}
+  .slide::after{font-size:34vw;opacity:.7}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+  .noise{display:none}
+}
+</style>
+</head>
+<body>
+<div class="noise" aria-hidden="true"></div>
+<style id="heroStyle"></style>
+
+<!-- ═══════ نوار بالا ═══════ -->
+<header class="topbar">
+  <div class="logo" aria-hidden="true">{}</div>
+  <div class="brand">آزمایشگاه CSS<small>آموزش تعاملی، اسلاید به اسلاید</small></div>
+  <div class="sp"></div>
+  <div class="counter" aria-live="polite">اسلاید <b id="cNum">۰۱</b> / <span id="cTot">۱۶</span></div>
+  <button class="tbtn" id="btnToc" aria-label="فهرست اسلایدها">☰ فهرست</button>
+  <div class="prog" id="prog"></div>
+</header>
+
+<!-- ═══════ عرشه ═══════ -->
+<main class="deck" id="deck">
+
+<!-- ░░ ۰۱ جلد ░░ -->
+<section class="slide" data-num="۰۱" data-title="آزمایشگاه CSS" data-tag="آغاز">
+  <div class="sb"><div class="cover">
+    <div>
+      <span class="kick fx" style="--d:0">درس تعاملی • ویرایش ۲۰۲۶</span>
+      <h1 class="big fx stitle" style="--d:1">آزمایشگاه <em>CSS</em></h1>
+      <p class="slead fx" style="--d:2">اینجا CSS را «می‌خوانید» و هم‌زمان «اتفاق افتادنش» را می‌بینید. هر اسلاید یک مفهوم، هر مفهوم یک آزمایش زنده — از انتخابگر و مدل جعبه تا گرید، انیمیشن و طراحی پاسخگو.</p>
+      <div class="chips fx" style="--d:3">
+        <span class="chip"><b>۱۶</b> اسلاید</span>
+        <span class="chip"><b>۷</b> آزمایش تعاملی</span>
+        <span class="chip"><b>+۱۶۵</b> خاصیت و تابع</span>
+        <span class="chip"><b>۶</b> قالب آماده</span>
+      </div>
+      <div class="fx" style="--d:4;margin-top:22px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn primary" onclick="go(1)">شروع درس <span>←</span></button>
+        <button class="btn" onclick="go(13)">پرش به مرجع خواص</button>
+      </div>
+    </div>
+    <div class="hero-lab fx" style="--d:2">
+      <div class="editor"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">live-lab.css — در حال تایپ زنده</span></div>
+        <pre><code id="heroCode"></code><span class="hcaret"></span></pre>
+      </div>
+      <div class="hero-demo-wrap"><div id="heroDemo"><span class="c">C</span><span class="l">نمونهٔ زنده</span></div></div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ░░ ۰۲ کالبد قانون ░░ -->
+<section class="slide" data-num="۰۲" data-title="کالبد یک قانون CSS" data-tag="درس">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۰۲ • درس</span>
+    <h2 class="stitle fx" style="--d:1">کالبد یک قانون CSS</h2>
+    <p class="slead fx" style="--d:2">هر قانون CSS دو بخش دارد: <b>انتخابگر</b> (چه چیزی؟) و <b>بدنهٔ اعلان</b> (چگونه؟). هر اعلان یک «خاصیت: مقدار» است و با نقطه‌ویرگول تمام می‌شود.</p>
+    <div class="cols">
+      <div>
+        <div class="anatomy fx" style="--d:3">
+          <div class="an sel"><span class="tk">.card</span><em>انتخابگر</em></div>
+          <div class="an br"><span class="tk">{</span><em>آغاز بدنه</em></div>
+          <div class="an prp"><span class="tk">color</span><em>خاصیت</em></div>
+          <div class="an br"><span class="tk">:</span><em></em></div>
+          <div class="an val"><span class="tk">#ffd580</span><em>مقدار</em></div>
+          <div class="an sc"><span class="tk">;</span><em>پایان اعلان</em></div>
+          <div class="an br"><span class="tk">}</span><em>پایان بدنه</em></div>
+        </div>
+        <div class="note fx" style="--d:5"><span class="ic">💡</span><b>نکته‌ها:</b> کامنت <code class="inline">/* … */</code> را مرورگر نادیده می‌گیرد. فراموشی <code class="inline">;</code> رایج‌ترین باگ مبتدی‌هاست. CSS «آبشاری» است: قانون بعدی، قانون قبلیِ هم‌ارزش را بازنویسی می‌کند.</div>
+      </div>
+      <div>
+        <h3 class="sub fx" style="--d:3">سه راه اتصال CSS به HTML</h3>
+        <div class="ways fx" style="--d:4">
+          <div class="way"><span>درون‌خطی</span><code>&lt;div style="color:red"&gt;</code><span class="tag">پرهیز کنید</span></div>
+          <div class="way"><span>داخلی</span><code>&lt;style&gt; در &lt;head&gt;</code><span class="tag">فقط آزمایش</span></div>
+          <div class="way"><span>فایل بیرونی</span><code>&lt;link rel="stylesheet" href="styles.css"&gt;</code><span class="tag ok">پیشنهاد ما ✓</span></div>
+        </div>
+        <div class="editor fx" style="--d:5;margin-top:16px"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">styles.css</span></div>
+          <pre><code class="hl">/* اولین قانون شما */
+.card {
+  color: #ffd580;
+  padding: 16px;
+  border-radius: 12px;
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۳ انتخابگرها ░░ -->
+<section class="slide" data-num="۰۳" data-title="انتخابگرها" data-tag="درس">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۰۳ • درس</span>
+    <h2 class="stitle fx" style="--d:1">انتخابگرها؛ گرفتن عناصر از یقه!</h2>
+    <p class="slead fx" style="--d:2">عدد گوشهٔ هر کارت «وزن» آن است (شناسه، کلاس، عنصر). در تساوی، قانون <b>بعدی</b> برنده است و <code class="inline">!important</code> همه را له می‌کند — پس فقط در اضطرار استفاده کنید.</p>
+    <div class="sel-grid fx" style="--d:3">
+      <div class="sel-card"><span class="sp">0,0,0</span><code>*</code><div class="nm">جهانی</div><div class="ds">همهٔ عناصر صفحه</div></div>
+      <div class="sel-card"><span class="sp">0,0,1</span><code>p</code><div class="nm">نوع عنصر</div><div class="ds">همهٔ تگ‌های مشخص‌شده</div></div>
+      <div class="sel-card"><span class="sp">0,1,0</span><code>.card</code><div class="nm">کلاس</div><div class="ds">پرکاربردترین انتخابگر</div></div>
+      <div class="sel-card"><span class="sp">1,0,0</span><code>#hero</code><div class="nm">شناسه</div><div class="ds">سنگین‌ترین وزن؛ کم استفاده کنید</div></div>
+      <div class="sel-card"><span class="sp">0,1,0</span><code>[type="email"]</code><div class="nm">صفت</div><div class="ds">بر اساس attribute عنصر</div></div>
+      <div class="sel-card"><span class="sp">0,1,1</span><code>a:hover</code><div class="nm">شبه‌کلاس</div><div class="ds">حالت‌ها: hover ،focus ،nth-child()</div></div>
+      <div class="sel-card"><span class="sp">0,0,1</span><code>::before</code><div class="nm">شبه‌عنصر</div><div class="ds">ساخت محتوای مجازی ::after</div></div>
+      <div class="sel-card"><span class="sp">0,0,2</span><code>div p</code><div class="nm">نوه</div><div class="ds">هر p داخل div، هر عمقی</div></div>
+      <div class="sel-card"><span class="sp">0,0,2</span><code>div &gt; p</code><div class="nm">فرزند مستقیم</div><div class="ds">فقط یک سطح پایین‌تر</div></div>
+      <div class="sel-card"><span class="sp">0,0,2</span><code>h2 + p</code><div class="nm">همسایهٔ چسبیده</div><div class="ds">اولین p بلافاصله بعد از h2</div></div>
+      <div class="sel-card"><span class="sp">0,0,2</span><code>h2 ~ p</code><div class="nm">همسایهٔ عمومی</div><div class="ds">همهٔ pهای بعد از h2</div></div>
+      <div class="sel-card"><span class="sp">0,1,1</span><code>li:nth-child(odd)</code><div class="nm">الگو</div><div class="ds">فرد/زوج/3n+1 …</div></div>
+    </div>
+    <div class="cols">
+      <div class="note fx" style="--d:4"><span class="ic">🧪</span>فهرست روبه‌رو زنده است: با <code class="inline">:nth-child(odd)</code> و <code class="inline">::before</code> و <code class="inline">:hover</code> استایل شده — روی آیتم‌ها بروید.</div>
+      <ul class="sel-demo fx" style="--d:5">
+        <li>آیتم یک — فرد است، پس زمینه گرفت</li>
+        <li>آیتم دو — زوج است</li>
+        <li>آیتم سه — هاورش را ببینید</li>
+        <li>آیتم چهار — همه با یک قانون!</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۴ واحدها و رنگ‌ها ░░ -->
+<section class="slide" data-num="۰۴" data-title="واحدها و رنگ‌ها" data-tag="درس + آزمایش">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۰۴ • درس و آزمایش</span>
+    <h2 class="stitle fx" style="--d:1">واحدها و رنگ‌ها</h2>
+    <p class="slead fx" style="--d:2">قانون طلایی: فونت و فاصله با <b>rem</b>، قاب‌های نازک با <b>px</b>، عرض‌های سیال با <b>%</b> و ویوپورت. واحد <code class="inline">em</code> نسبت به فونت والد است و وقتی تودرتو می‌شود، غیرقابل پیش‌بینی.</p>
+    <div class="cols">
+      <div class="u-table fx" style="--d:3">
+        <div class="u">px</div><div class="d">ثابت و مطلق — برای خطوط ۱px</div>
+        <div class="u">rem</div><div class="d">نسبت به فونت ریشه (html) — بهترین برای متن</div>
+        <div class="u">em</div><div class="d">نسبت به فونت والد</div>
+        <div class="u">%</div><div class="d">درصدی از اندازهٔ والد</div>
+        <div class="u">vw / vh</div><div class="d">درصدی از عرض/ارتفاع پنجره</div>
+        <div class="u">vmin / vmax</div><div class="d">کوچک‌ترین/بزرگ‌ترین بُعد پنجره</div>
+        <div class="u">ch</div><div class="d">عرض کاراکتر «0» — عالی برای طول خط</div>
+        <div class="u">fr</div><div class="d">سهم از فضای آزاد در Grid</div>
+        <div class="u">deg</div><div class="d">زاویه برای rotate و گرادیان</div>
+        <div class="u">s / ms</div><div class="d">زمان برای transition و animation</div>
+      </div>
+      <div>
+        <div class="editor fx" style="--d:3"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">colors.css</span></div>
+          <pre><code class="hl">.hex  { color: #ffb454; }          /* هگز */
+.rgb  { color: rgb(255 180 84 / 60%); } /* با آلفا */
+.hsl  { color: hsl(35 100% 66%); }      /* خوانا */
+.mod  { color: oklch(82% .14 75); }     /* مدرن */
+.cur  { color: currentColor; }          /* رنگ ارثی */</code></pre>
+        </div>
+        <div class="lab fx" style="--d:4;margin-top:14px">
+          <strong style="font-size:13px;color:var(--gold)">🧪 آزمایشگاه رنگ HSL</strong>
+          <div class="swatch" id="hslSw" style="margin-top:10px"></div>
+          <div class="lab-row"><span>رنگ‌مایه H</span><input type="range" id="hH" min="0" max="360" value="35"><b id="hHv">35°</b></div>
+          <div class="lab-row"><span>اشباع S</span><input type="range" id="hS" min="0" max="100" value="100"><b id="hSv">100%</b></div>
+          <div class="lab-row"><span>روشنایی L</span><input type="range" id="hL" min="0" max="100" value="66"><b id="hLv">66%</b></div>
+          <div class="val-out"><span id="hslTxt">hsl(35 100% 66%)</span><span class="hx" id="hslHex">#ffb454</span></div>
+        </div>
+        <div class="note fx" style="--d:5"><span class="ic">💡</span>HSL برای انسان خواناست: اول رنگ، بعد شدت، بعد روشنایی. برای کنتراست متن و پس‌زمینه، استاندار WCAG (حداقل ۴٫۵:۱) را جدی بگیرید.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۵ مدل جعبه ░░ -->
+<section class="slide" data-num="۰۵" data-title="مدل جعبه‌ای" data-tag="آزمایش">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۰۵ • آزمایش</span>
+    <h2 class="stitle fx" style="--d:1">مدل جعبه‌ای؛ آناتومی هر عنصر</h2>
+    <p class="slead fx" style="--d:2">هر عنصر یک جعبه است: <b>محتوا</b> در مرکز، دورش <b>padding</b>، بعد <b>border</b> و بیرون‌تر <b>margin</b>. لغزنده‌ها را بکشید و لایه‌ها را زنده ببینید.</p>
+    <div class="cols">
+      <div class="lab fx" style="--d:3">
+        <div class="lab-row"><span>padding</span><input type="range" id="bP" min="0" max="56" value="24"><b id="bPv">24px</b></div>
+        <div class="lab-row"><span>border</span><input type="range" id="bB" min="0" max="24" value="12"><b id="bBv">12px</b></div>
+        <div class="lab-row"><span>margin</span><input type="range" id="bM" min="0" max="56" value="24"><b id="bMv">24px</b></div>
+        <div class="ctl-group" style="margin-top:14px"><label>box-sizing:</label>
+          <div class="seg" id="bSz"><button class="on" data-v="border-box">border-box ✓</button><button data-v="content-box">content-box</button></div>
+        </div>
+        <div class="bm-out" id="bOut"></div>
+        <div class="note" style="margin-top:14px"><span class="ic">💡</span>این دو خط را به همهٔ پروژه‌ها اضافه کنید تا عرض‌ها همیشه قابل پیش‌بینی باشند:<br><code class="inline">*, *::before, *::after { box-sizing: border-box; }</code></div>
+      </div>
+      <div class="fx" style="--d:4">
+        <div class="bm-zone bm-m" id="bmM"><div class="bm-zone bm-b" id="bmBw" style="width:280px;margin-inline:auto"><div class="bm-zone bm-p" id="bmP"><div class="bm-zone bm-c" id="bmC">محتوا — عرض ۲۸۰px</div></div></div></div>
+        <div class="bm-leg">
+          <span><i style="background:rgba(210,166,255,.4)"></i>margin — فاصلهٔ بیرونی</span>
+          <span><i style="background:rgba(240,113,120,.55)"></i>border — قاب</span>
+          <span><i style="background:rgba(170,217,76,.45)"></i>padding — فاصلهٔ درونی</span>
+          <span><i style="background:rgba(89,194,255,.5)"></i>content — محتوا</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۶ تایپوگرافی ░░ -->
+<section class="slide" data-num="۰۶" data-title="تایپوگرافی" data-tag="درس + آزمایش">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۰۶ • درس و آزمایش</span>
+    <h2 class="stitle fx" style="--d:1">تایپوگرافی؛ ۹۰٪ طراحی، متن است</h2>
+    <p class="slead fx" style="--d:2">سه قانون فارسی: <b>line-height</b> را بدون واحد و بین ۱٫۷ تا ۲ بگذارید، به‌جای letter-spacing از <b>word-spacing</b> استفاده کنید (حروف فارسی می‌شکنند!) و اندازه را با <b>rem</b> بدهید.</p>
+    <div class="cols">
+      <div>
+        <div class="editor fx" style="--d:3"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">typography.css</span></div>
+          <pre><code class="hl">body {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 1.05rem;   /* نه px */
+  line-height: 1.9;     /* بدون واحد */
+  word-spacing: .12em;  /* نه letter-spacing */
+}
+h1, h2, h3 {
+  font-family: Lalezar, Vazirmatn; /* جفتِ نمایشی */
+  line-height: 1.4;
+}
+.accent-text { text-shadow: 0 2px 12px rgba(255,180,84,.4); }</code></pre>
+        </div>
+        <div class="note fx" style="--d:4"><span class="ic">💡</span>جفت‌سازی فونت: یک فونت نمایشی برای تیترها (اینجا «لاله‌زار») + یک فونت خوانا برای متن («وزیرمتن»). بیشتر از دو خانواده استفاده نکنید.</div>
+      </div>
+      <div class="lab fx" style="--d:4">
+        <strong style="font-size:13px;color:var(--gold)">🧪 متن زنده را تنظیم کنید</strong>
+        <div class="typo-sample" id="typoBox" style="margin-top:10px">طراحی خوب دیده نمی‌شود؛ طراحی خوب «احساس» می‌شود. وقتی تایپوگرافی درست باشد، چشم مخاطب بی‌زحمت روی صفحه سُر می‌خورد و پیام، پیش از آن‌که خوانده شود، فهمیده می‌شود.</div>
+        <div class="tp-row"><span>font-size</span><input type="range" id="tSize" min="13" max="30" value="17"><b id="tSizeV">17px</b></div>
+        <div class="tp-row"><span>line-height</span><input type="range" id="tLh" min="12" max="26" value="19"><b id="tLhV">1.9</b></div>
+        <div class="tp-row"><span>word-spacing</span><input type="range" id="tWs" min="0" max="14" value="2"><b id="tWsV">.12em</b></div>
+        <div class="tp-row"><span>font-weight</span><input type="range" id="tWt" min="300" max="800" step="100" value="400"><b id="tWtV">400</b></div>
+        <div class="code-out"><code class="out" id="typoCode"></code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۷ فلکس‌باکس ░░ -->
+<section class="slide" data-num="۰۷" data-title="آزمایشگاه فلکس‌باکس" data-tag="آزمایش">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۰۷ • آزمایش</span>
+    <h2 class="stitle fx" style="--d:1">آزمایشگاه Flexbox</h2>
+    <p class="slead fx" style="--d:2">فلکس چیدمان <b>یک‌بُعدی</b> است: یا یک سطر، یا یک ستون. <code class="inline">justify-content</code> محور اصلی را می‌چیند و <code class="inline">align-items</code> محور فرعی را. بازی کنید!</p>
+    <div class="lab fx" style="--d:3;margin-top:14px">
+      <div class="ctl-group"><label>direction</label><div class="seg" data-g="dir"><button class="on" data-v="row">row</button><button data-v="column">column</button></div></div>
+      <div class="ctl-group"><label>justify-content</label><div class="seg" data-g="jc">
+        <button class="on" data-v="flex-start">start</button><button data-v="center">center</button><button data-v="flex-end">end</button>
+        <button data-v="space-between">between</button><button data-v="space-around">around</button><button data-v="space-evenly">evenly</button></div></div>
+      <div class="ctl-group"><label>align-items</label><div class="seg" data-g="ai">
+        <button data-v="stretch">stretch</button><button data-v="flex-start">start</button><button class="on" data-v="center">center</button><button data-v="flex-end">end</button></div></div>
+      <div class="ctl-group"><label>gap</label><input type="range" id="fGap" min="0" max="40" value="12" style="max-width:220px"><b id="fGapV" style="font-family:var(--fm);color:var(--teal);font-size:12px;direction:ltr">12px</b>
+        <label style="margin-inline-start:14px">wrap</label><div class="seg" data-g="wrap"><button data-v="nowrap" class="on">nowrap</button><button data-v="wrap">wrap</button></div></div>
+      <div class="stage"><div class="flex-stage" id="flexStage">
+        <div class="fitem">۱</div><div class="fitem">۲</div><div class="fitem">۳</div><div class="fitem">۴</div><div class="fitem">۵</div>
+      </div></div>
+      <div class="code-out"><code class="out" id="flexCode"></code></div>
+    </div>
+    <div class="note fx" style="--d:4"><span class="ic">💡</span>برای وسط‌چین کامل فقط دو خط: <code class="inline">display:flex; justify-content:center; align-items:center</code>. و بین آیتم‌ها همیشه <code class="inline">gap</code> بگذارید، نه margin.</div>
+  </div>
+</section>
+
+<!-- ░░ ۰۸ گرید ░░ -->
+<section class="slide" data-num="۰۸" data-title="آزمایشگاه گرید" data-tag="آزمایش">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۰۸ • آزمایش</span>
+    <h2 class="stitle fx" style="--d:1">آزمایشگاه Grid</h2>
+    <p class="slead fx" style="--d:2">گرید چیدمان <b>دوبُعدی</b> است: سطر و ستون هم‌زمان. جادوی اصلی: <code class="inline">repeat(auto-fill, minmax(150px, 1fr))</code> — گرید پاسخگو بدون حتی یک media query!</p>
+    <div class="lab fx" style="--d:3;margin-top:14px">
+      <div class="ctl-group"><label>الگو</label><div class="seg" id="gMode">
+        <button class="on" data-v="equal">ستون‌های برابر</button><button data-v="holy">۱fr ۲fr ۱fr</button><button data-v="auto">auto-fill ✦</button></div></div>
+      <div class="ctl-group"><label>gap</label><input type="range" id="gGap" min="0" max="36" value="12" style="max-width:220px"><b id="gGapV" style="font-family:var(--fm);color:var(--teal);font-size:12px;direction:ltr">12px</b></div>
+      <div class="stage"><div class="grid-stage" id="gridStage">
+        <div class="gitem">1</div><div class="gitem">2</div><div class="gitem">3</div><div class="gitem">4</div>
+        <div class="gitem">5</div><div class="gitem">6</div><div class="gitem">7</div><div class="gitem">8</div>
+      </div></div>
+      <div class="code-out"><code class="out" id="gridCode"></code></div>
+    </div>
+    <div class="cols">
+      <div class="editor fx" style="--d:4"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">grid-areas.css — چیدمان با نقشهٔ اسمی</span></div>
+        <pre><code class="hl">.layout {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "aside  main"
+    "footer footer";
+  grid-template-columns: 240px 1fr;
+  gap: 16px;
+}
+.header { grid-area: header; }
+.main   { grid-area: main; }</code></pre>
+      </div>
+      <div class="note fx" style="--d:5"><span class="ic">💡</span>کی فلکس، کی گرید؟ چیدمانِ «محتوامحور و یک‌خطی» (منو، دکمه‌ها) → فلکس. چیدمانِ «صفحه‌محور و شبکه‌ای» (لی‌اوت کلی، گالری) → گرید. ترکیب این دو = قدرت واقعی.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۹ جای‌گذاری ░░ -->
+<section class="slide" data-num="۰۹" data-title="جای‌گذاری (position)" data-tag="درس + آزمایش">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۰۹ • درس و آزمایش</span>
+    <h2 class="stitle fx" style="--d:1">Position؛ فرار از جریان عادی</h2>
+    <p class="slead fx" style="--d:2">هر حالت را لمس کنید تا روی صحنه اجرا شود. قانون طلایی: به والدِ عنصرِ <code class="inline">absolute</code> همیشه <code class="inline">position: relative</code> بدهید.</p>
+    <div class="cols">
+      <div>
+        <div class="seg fx" style="--d:3" id="posTabs">
+          <button class="on" data-p="static">static</button><button data-p="relative">relative</button>
+          <button data-p="absolute">absolute</button><button data-p="fixed">fixed</button><button data-p="sticky">sticky</button>
+        </div>
+        <p class="note fx" id="posDesc" style="--d:4;margin-top:14px"></p>
+        <div class="code-out fx" style="--d:5"><code class="out" id="posCode"></code></div>
+        <div class="note fx" style="--d:6"><span class="ic">💡</span><code class="inline">z-index</code> فقط روی عناصر position‌دار (و فلکس/گرید) کار می‌کند. اعداد را بی‌دلیل بزرگ نکنید: ۱، ۲، ۱۰ کافی است.</div>
+      </div>
+      <div class="fx" style="--d:4">
+        <div class="stage pos-stage" id="posStage" data-mode="static">
+          <div class="col">
+            <div class="pos-ghost"></div>
+            <div class="pos-box" id="posBox">.box</div>
+            <div class="pos-sib">عنصر بعدی</div>
+          </div>
+        </div>
+        <div class="pos-scroll" id="posScroll">
+          <div class="st">من sticky هستم 📌</div>
+          <p>اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… دیدید؟ هدر به سقف چسبید و تا پایانِ این ظرف با شما می‌آید. position: sticky یعنی «عادی باش تا به آستانه برسی، بعد بچسب».</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۱۰ تبدیل و گذار ░░ -->
+<section class="slide" data-num="۱۰" data-title="تبدیل و گذار" data-tag="آزمایش">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۱۰ • آزمایش</span>
+    <h2 class="stitle fx" style="--d:1">Transform + Transition</h2>
+    <p class="slead fx" style="--d:2">ترنزفورم عنصر را بدون لمسِ چیدمان جابه‌جا می‌کند (پس سریع است)؛ گذار، تغییرِ خاصیت‌ها را نرم می‌کند. مقادیر را بچینید و دکمهٔ «اجرا» را بزنید.</p>
+    <div class="cols">
+      <div class="lab fx" style="--d:3">
+        <div class="lab-row"><span>rotate</span><input type="range" id="tR" min="-180" max="180" value="-8"><b id="tRv">-8deg</b></div>
+        <div class="lab-row"><span>scale</span><input type="range" id="tS" min="30" max="180" value="110"><b id="tSv">1.1</b></div>
+        <div class="lab-row"><span>translateX</span><input type="range" id="tX" min="-90" max="90" value="0"><b id="tXv">0px</b></div>
+        <div class="lab-row"><span>skew</span><input type="range" id="tK" min="-30" max="30" value="0"><b id="tKv">0deg</b></div>
+        <div class="lab-row"><span>duration</span><input type="range" id="tD" min="1" max="30" value="8"><b id="tDv">0.8s</b></div>
+        <div class="easing-chips" id="tEase">
+          <button data-e="ease" class="on">ease</button><button data-e="linear">linear</button>
+          <button data-e="ease-in-out">ease-in-out</button><button data-e="cubic-bezier(.6,-.4,.3,1.5)">بازگشتی ⤴</button>
+        </div>
+        <div style="margin-top:14px"><button class="btn primary" id="tfGo">▶ اجرا</button></div>
+      </div>
+      <div class="fx" style="--d:4">
+        <div class="stage tf-stage"><div id="tfBox">⚗</div></div>
+        <div class="code-out"><code class="out" id="tfCode"></code></div>
+        <div class="note"><span class="ic">⚡</span>برای انیمیشن فقط <code class="inline">transform</code> و <code class="inline">opacity</code> را تکان بدهید — این دو روی GPU اجرا می‌شوند. انیمیت کردن width ،top ،margin… هر فریم چیدمان را دوباره محاسبه می‌کند و لگ می‌آورد.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۱۱ انیمیشن ░░ -->
+<section class="slide" data-num="۱۱" data-title="انیمیشن keyframes" data-tag="آزمایش">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۱۱ • آزمایش</span>
+    <h2 class="stitle fx" style="--d:1">Animation و @keyframes</h2>
+    <p class="slead fx" style="--d:2">گذار دو حالت دارد؛ انیمیشن بی‌نهایت فریم. صحنهٔ keyframes را تعریف کنید، با shorthand به عنصر بچسبانید و پخش کنید.</p>
+    <div class="cols">
+      <div class="editor fx" style="--d:3"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">keyframes.css</span></div>
+        <pre><code class="hl">@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-52px); }
+}
+.ball {
+  animation: bounce 1s ease-in-out infinite;
+  /* name duration timing iteration */
+}
+.ball.done { animation-fill-mode: forwards; }
+@media (prefers-reduced-motion: reduce) {
+  .ball { animation: none; } /* دسترس‌پذیری! */
+}</code></pre>
+      </div>
+      <div class="lab fx" style="--d:4">
+        <div class="stage anim-stage"><div id="animBox">توپ</div></div>
+        <div class="ctl-group" style="margin-top:12px"><label>حرکت</label><div class="seg" id="aName">
+          <button class="on" data-v="bounce">bounce</button><button data-v="spin">spin</button>
+          <button data-v="pulse">pulse</button><button data-v="floaty">float</button></div></div>
+        <div class="lab-row"><span>duration</span><input type="range" id="aDur" min="3" max="30" value="10"><b id="aDurV">1s</b></div>
+        <div class="ctl-group"><label>timing</label><div class="seg" id="aTm">
+          <button data-v="linear">linear</button><button data-v="ease">ease</button><button class="on" data-v="ease-in-out">ease-in-out</button></div></div>
+        <div class="ctl-group"><label>تکرار</label><div class="seg" id="aIt">
+          <button data-v="1">۱</button><button data-v="3">۳</button><button class="on" data-v="infinite">∞</button></div>
+          <label style="margin-inline-start:10px">جهت</label><div class="seg" id="aDr">
+          <button class="on" data-v="normal">normal</button><button data-v="alternate">alternate</button></div></div>
+        <button class="btn" id="aPlay">⏸ توقف</button>
+        <div class="code-out"><code class="out" id="aCode"></code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۱۲ پاسخگو ░░ -->
+<section class="slide" data-num="۱۲" data-title="طراحی پاسخگو" data-tag="درس + آزمایش">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۱۲ • درس و آزمایش</span>
+    <h2 class="stitle fx" style="--d:1">طراحی پاسخگو</h2>
+    <p class="slead fx" style="--d:2">موبایل‌فرست یعنی استایل پایه برای کوچک‌ترین صفحه باشد و با <code class="inline">min-width</code> بزرگ‌ترش کنید. عرض قاب را بکشید تا چیدمانِ نمونه «زنده» واکنش نشان دهد.</p>
+    <div class="cols">
+      <div>
+        <div class="editor fx" style="--d:3"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">responsive.css</span></div>
+          <pre><code class="hl">/* موبایل‌فرست: پایه برای همه */
+.grid { grid-template-columns: 1fr; }
+
+@media (min-width: 768px) {   /* تبلت */
+  .grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1100px) {  /* دسکتاپ */
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+/* تایپوگرافی سیال بدون media query */
+h1 { font-size: clamp(1.6rem, 4vw, 2.8rem); }</code></pre>
+        </div>
+        <div class="bp fx" style="--d:4">
+          <div><b>&lt; 640px</b>موبایل</div><div><b>640–1024px</b>تبلت</div><div><b>&gt; 1024px</b>دسکتاپ</div>
+        </div>
+        <div class="note fx" style="--d:5"><span class="ic">💡</span>این دمو با <code class="inline">@container</code> کار می‌کند (نسخهٔ مدرن media query که به جای پنجره، به عرضِ «والد» نگاه می‌کند) — خودِ این هم یک درس است!</div>
+      </div>
+      <div class="fx" style="--d:4">
+        <div class="lab-row"><span>عرض قاب</span><input type="range" id="rW" min="260" max="760" value="300"><b id="rWv">300px</b></div>
+        <div class="rwrap"><div class="rframe" id="rFrame">
+          <div class="mini-hero"><b>🏔 کارت پستال کوهستان</b><span>متن کوتاه تبلیغاتی که با بزرگ‌شدن قاب، کنار تصویر می‌نشیند.</span></div>
+          <div class="mini-cards"><i>کارت ۱</i><i>کارت ۲</i><i>کارت ۳</i></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۱۳ متغیرها و توابع ░░ -->
+<section class="slide" data-num="۱۳" data-title="متغیرها و توابع" data-tag="آزمایش">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۱۳ • درس و آزمایش</span>
+    <h2 class="stitle fx" style="--d:1">Custom Properties و توابع</h2>
+    <p class="slead fx" style="--d:2">متغیرها را در <code class="inline">:root</code> تعریف کنید، همه‌جا با <code class="inline">var()</code> بخوانید، و محلی بازنویسی کنید. یک کلیک روی رنگ‌ها = تغییر آنیِ کل دمو.</p>
+    <div class="cols">
+      <div>
+        <div class="editor fx" style="--d:3"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">variables.css</span></div>
+          <pre><code class="hl">:root {
+  --accent: #ffb454;
+  --radius: 14px;
+}
+.btn {
+  background: var(--accent);
+  border-radius: var(--radius);
+  /* مقدار جایگزین: */
+  color: var(--on-accent, #000);
+}</code></pre>
+        </div>
+        <div class="fn-list fx" style="--d:4">
+          <div><code>calc(100% - 40px)</code><span>ریاضی بین واحدهای مختلف</span></div>
+          <div><code>clamp(1rem, 2.5vw, 1.35rem)</code><span>مقدار سیال با کف و سقف</span></div>
+          <div><code>min(320px, 90%)</code><span>کوچک‌ترین مقدار را انتخاب می‌کند</span></div>
+          <div><code>color-mix(in oklab, #ffb454 30%, white)</code><span>مخلوط دو رنگ</span></div>
+        </div>
+      </div>
+      <div id="vScope" class="fx" style="--d:4">
+        <strong style="font-size:13px;color:var(--gold)">🧪 یک کلیک = عوض‌شدن --accent</strong>
+        <div class="theme-btns" id="vBtns">
+          <button class="on" data-c="#ffb454" data-s="rgba(255,180,84,.14)" style="background:#ffb454" aria-label="کهربایی"></button>
+          <button data-c="#95e6cb" data-s="rgba(149,230,203,.14)" style="background:#95e6cb" aria-label="فیروزه‌ای"></button>
+          <button data-c="#59c2ff" data-s="rgba(89,194,255,.14)" style="background:#59c2ff" aria-label="آبی"></button>
+          <button data-c="#d2a6ff" data-s="rgba(210,166,255,.14)" style="background:#d2a6ff" aria-label="بنفش"></button>
+          <button data-c="#f07178" data-s="rgba(240,113,120,.14)" style="background:#f07178" aria-label="قرمز"></button>
+        </div>
+        <div class="v-demo">
+          <span class="v-btn">دکمه با var(--accent)</span>
+          <a class="v-link" href="#">لینک با همان متغیر</a>
+          <span class="v-badge">بج با پس‌زمینهٔ کم‌رنگ متغیر</span>
+          <div class="v-card"><b>کارت نمونه</b><div style="font-size:12px;color:var(--dim);margin-top:4px">سایه‌اش هم از --accent می‌آید.</div></div>
+        </div>
+        <div class="code-out"><code class="out" id="vCode"></code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۱۴ مرجع کامل ░░ -->
+<section class="slide" data-num="۱۴" data-title="مرجع کامل خواص" data-tag="مرجع">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۱۴ • مرجع</span>
+    <h2 class="stitle fx" style="--d:1">مرجع کامل خاصیت‌های CSS</h2>
+    <p class="slead fx" style="--d:2">چکیدهٔ خواص، توابع و قواعد CSS مدرن — جستجو کنید یا با دسته‌ها فیلتر کنید. این همان «تمام attributeها»ست، یک‌جا.</p>
+    <div class="ref-bar fx" style="--d:3">
+      <input type="search" id="refQ" placeholder="جستجو… (مثلاً flex یا shadow)" aria-label="جستجوی خاصیت">
+      <span class="ref-count" id="refCount"></span>
+    </div>
+    <div class="ref-chips fx" id="refChips" style="--d:4"></div>
+    <div class="ref-grid fx" id="refGrid" style="--d:5"></div>
+  </div>
+</section>
+
+<!-- ░░ ۱۵ قالب‌ها ░░ -->
+<section class="slide" data-num="۱۵" data-title="قالب‌های آماده" data-tag="قالب">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۱۵ • قالب آماده</span>
+    <h2 class="stitle fx" style="--d:1">قالب‌های آمادهٔ کپی‌ـ‌چسبانی</h2>
+    <p class="slead fx" style="--d:2">پیش‌نمایش زنده + کد کامل. «نمایش کد» را باز کنید و با یک کلیک کپی کنید. کلاس‌ها را در HTML خودتان بگذارید و CSS را در استایل‌تان.</p>
+    <div class="tpl-grid fx" id="tplGrid" style="--d:3">
+
+      <article class="tpl">
+        <div class="tpl-head"><span class="no">۰۱</span><div><h4>سه‌گانهٔ دکمه</h4><small>.btn / .btn-outline / .btn-ghost</small></div></div>
+        <div class="tpl-prev" style="display:flex;gap:12px;flex-wrap:wrap"><button class="b1">اصلی</button><button class="b2">خطی</button><button class="b3">خام</button></div>
+        <details><summary>نمایش کد</summary><pre><code id="tplc0"></code></pre></details>
+        <div class="tpl-foot"><span style="font-size:11px;color:var(--faint)">hover و active دارد</span><button class="copy" data-i="0">⧉ کپی CSS</button></div>
+      </article>
+
+      <article class="tpl">
+        <div class="tpl-head"><span class="no">۰۲</span><div><h4>کارت محصول</h4><small>.pcard + تصویر + قیمت</small></div></div>
+        <div class="tpl-prev"><div class="pcard"><img src="https://picsum.photos/seed/sneaker-product/400/240" alt="کفش"><div class="bd"><span class="tg">✦ جدید</span><h5>کفش رانِر ۲۷</h5><div class="ft"><span class="pr">۲۴۸۰٬۰۰۰ ت</span><button class="bt">خرید</button></div></div></div></div>
+        <details><summary>نمایش کد</summary><pre><code id="tplc1"></code></pre></details>
+        <div class="tpl-foot"><span style="font-size:11px;color:var(--faint)">افکت شناور در hover</span><button class="copy" data-i="1">⧉ کپی CSS</button></div>
+      </article>
+
+      <article class="tpl">
+        <div class="tpl-head"><span class="no">۰۳</span><div><h4>نوار ناوبری</h4><small>.nav + لینک‌های خط‌دار</small></div></div>
+        <div class="tpl-prev" style="width:100%"><nav class="tnav"><span class="lg">لوگو</span><div class="lks"><a href="#">خانه</a><a href="#">محصولات</a><a href="#">تماس</a></div></nav></div>
+        <details><summary>نمایش کد</summary><pre><code id="tplc2"></code></pre></details>
+        <div class="tpl-foot"><span style="font-size:11px;color:var(--faint)">sticky + شیشه‌ای</span><button class="copy" data-i="2">⧉ کپی CSS</button></div>
+      </article>
+
+      <article class="tpl">
+        <div class="tpl-head"><span class="no">۰۴</span><div><h4>فیلد فرم</h4><small>.field + حلقهٔ focus</small></div></div>
+        <div class="tpl-prev" style="width:100%"><div class="tfield"><label for="demoIn">ایمیل</label><input id="demoIn" type="email" placeholder="you@mail.com"></div></div>
+        <details><summary>نمایش کد</summary><pre><code id="tplc3"></code></pre></details>
+        <div class="tpl-foot"><span style="font-size:11px;color:var(--faint)">focus را امتحان کنید (Tab)</span><button class="copy" data-i="3">⧉ کپی CSS</button></div>
+      </article>
+
+      <article class="tpl">
+        <div class="tpl-head"><span class="no">۰۵</span><div><h4>لودینگ و اسکلتون</h4><small>.spinner / .skeleton</small></div></div>
+        <div class="tpl-prev" style="gap:18px;display:grid;justify-items:center"><div class="tspin"></div><div class="tskel"><i></i><i></i><i></i></div></div>
+        <details><summary>نمایش کد</summary><pre><code id="tplc4"></code></pre></details>
+        <div class="tpl-foot"><span style="font-size:11px;color:var(--faint)">shimmer با ::after</span><button class="copy" data-i="4">⧉ کپی CSS</button></div>
+      </article>
+
+      <article class="tpl">
+        <div class="tpl-head"><span class="no">۰۶</span><div><h4>اسکلت کامل صفحه</h4><small>reset + متغیرها + فونت فارسی</small></div></div>
+        <div class="tpl-prev" style="font-size:12px;color:var(--dim);text-align:center;line-height:2">فایل HTML آماده برای شروع پروژه:<br><code class="inline">lang="fa" dir="rtl"</code> + ریست مدرن<br>+ <code class="inline">prefers-reduced-motion</code></div>
+        <details><summary>نمایش کد</summary><pre><code id="tplc5"></code></pre></details>
+        <div class="tpl-foot"><span style="font-size:11px;color:var(--faint)">نقطهٔ شروع هر پروژه</span><button class="copy" data-i="5">⧉ کپی HTML</button></div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۱۶ نکات طلایی ░░ -->
+<section class="slide" data-num="۱۶" data-title="نکات طلایی و پایان" data-tag="جمع‌بندی">
+  <div class="sb">
+    <span class="kick fx">اسلاید ۱۶ • جمع‌بندی</span>
+    <h2 class="stitle fx" style="--d:1">نکات طلایی که کلاس‌ها را می‌شکافد</h2>
+    <div class="tips fx" style="--d:2">
+      <div class="tip"><span class="n">۰۱</span><p><b>box-sizing سراسری:</b> اولین خط هر پروژه — همه‌چیز را قابل پیش‌بینی می‌کند.</p></div>
+      <div class="tip"><span class="n">۰۲</span><p><b>فونت با rem:</b> با تغییر فونت ریشه، کل مقیاس صفحه عوض می‌شود؛ px این انعطاف را ندارد.</p></div>
+      <div class="tip"><span class="n">۰۳</span><p><b>!important ممنوع:</b> نشانهٔ جنگ با آبشار است؛ به‌جایش وزن انتخابگر را درست کنید.</p></div>
+      <div class="tip"><span class="n">۰۴</span><p><b>فقط transform و opacity:</b> تنها خاصیت‌هایی که انیمیشن‌شان ۶۰fps واقعی می‌ماند.</p></div>
+      <div class="tip"><span class="n">۰۵</span><p><b>:focus-visible را دریابید:</b> outline را هرگز حذف نکنید؛ کاربران کیبورد به آن نیاز دارند.</p></div>
+      <div class="tip"><span class="n">۰۶</span><p><b>prefers-reduced-motion:</b> بعضی کاربران با انیمیشن‌های زیاد سرگیجه می‌گیرند؛ راه گریز بگذارید.</p></div>
+      <div class="tip"><span class="n">۰۷</span><p><b>clamp() برای تایپوگرافی سیال:</b> یک خط به‌جای سه media query.</p></div>
+      <div class="tip"><span class="n">۰۸</span><p><b>نام‌گذاری BEM:</b> <code class="inline">card__title--large</code>؛ هم خواناست هم بی‌تعارض.</p></div>
+      <div class="tip"><span class="n">۰۹</span><p><b>gap به‌جای margin:</b> در فلکس و گرید، فاصلهٔ بین آیتم‌ها کار gap است نه margin.</p></div>
+      <div class="tip"><span class="n">۱۰</span><p><b>موبایل‌فرست:</b> اول صفحهٔ کوچک، بعد min-width؛ کد کمتر و تمیزتر.</p></div>
+      <div class="tip"><span class="n">۱۱</span><p><b>DevTools بهترین معلم:</b> تب Computed مدل جعبهٔ هر عنصر را به شما نشان می‌دهد.</p></div>
+      <div class="tip"><span class="n">۱۲</span><p><b>هر روز یک چیز کوچک بسازید:</b> CSS در «ساختن» یاد گرفته می‌شود، نه در «خواندن».</p></div>
+    </div>
+    <div class="finale fx" style="--d:3">
+      <h3>🎓 پایان آزمایشگاه</h3>
+      <p>همهٔ آنچه در این صفحه دیدید — حرکت‌ها، سایه‌ها، گریدها و ادیتور زنده — فقط با همین خاصیت‌ها ساخته شده. حالا نوبت شماست. منابع برای ادامهٔ راه: <b style="color:var(--gold)">MDN Web Docs</b> ، <b style="color:var(--gold)">web.dev</b> و <b style="color:var(--gold)">CSS-Tricks</b>.</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn primary" onclick="go(0)">↺ تماشا از اول</button>
+        <button class="btn" onclick="go(13)">مرور مرجع خواص</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════ نوار پایین ═══════ -->
+<footer class="deckbar">
+  <button class="nbtn" id="btnPrev"><span>→</span> قبلی</button>
+  <div class="dotsnav" id="dotsNav"></div>
+  <span class="kbd-hint">← next &nbsp;•&nbsp; → prev</span>
+  <button class="nbtn primary" id="btnNext">بعدی <span>←</span></button>
+</footer>
+
+<!-- ═══════ فهرست ═══════ -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="فهرست اسلایدها">
+  <header><h4>فهرست اسلایدها</h4><button class="tbtn" id="btnCloseToc">✕ بستن</button></header>
+  <nav id="tocList"></nav>
+</aside>
+
+<script>
+/* ═════════ ابزارها ═════════ */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fa=n=>Number(n).toLocaleString('fa-IR',{useGrouping:false});
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+/* ═════════ هایلایتر CSS ═════════ */
+function hlCSS(src){
+  const store=[];
+  const prot=(s,re,cls)=>s.replace(re,m=>{store.push(`<span class="tk-${cls}">${m}</span>`);return `\u0000${store.length-1}\u0001`;});
+  const rest=s=>s.replace(/\u0000(\d+)\u0001/g,(m,i)=>store[i]);
+  const hlSel=s=>{s=prot(s,/\/\*[\s\S]*?\*\//g,'com');s=s.replace(/(@[\w-]+)/g,'<span class="tk-at">$1</span>');return `<span class="tk-sel">${rest(s)}</span>`;};
+  const hlDecl=s=>{
+    s=prot(s,/\/\*[\s\S]*?\*\//g,'com');
+    s=prot(s,/"[^"]*"|'[^']*'/g,'str');
+    s=s.replace(/(@[\w-]+)/g,'<span class="tk-at">$1</span>');
+    s=s.replace(/(#[0-9a-fA-F]{3,8})\b/g,'<span class="tk-hex">$1</span>');
+    s=s.replace(/([\w-]+)(?=\s*:)/g,'<span class="tk-p">$1</span>');
+    s=s.replace(/(?<![\u0001\w])(-?(?:\d+\.?\d*|\.\d+))(px|rem|em|vh|vw|vmin|vmax|%|s|ms|deg|fr|ch|svh|dvh)?(?![\u0001\w])/g,'<span class="tk-n">$1$2</span>');
+    return rest(s);
+  };
+  let s=esc(src), out='', i=0;
+  while(i<s.length){
+    const o=s.indexOf('{',i);
+    if(o===-1){out+=hlDecl(s.slice(i));break;}
+    out+=hlSel(s.slice(i,o));
+    let d=1,j=o+1;
+    while(j<s.length&&d){if(s[j]==='{')d++;else if(s[j]==='}')d--;j++;}
+    out+='{'+hlCSS(s.slice(o+1,j-1).replace(/&amp;/g,'&'))+'}';
+    i=j;
+  }
+  return out;
+}
+function hlHTML(src){
+  let s=esc(src);
+  s=s.replace(/(&lt;!--[\s\S]*?--&gt;)/g,'<span class="tk-com">$1</span>');
+  s=s.replace(/(&lt;\/?)([\w-]+)([\s\S]*?)(\/?&gt;)/g,(m,a,tag,rest,z)=>{
+    rest=rest.replace(/([\w-]+)=("[^"]*")/g,'<span class="tk-a">$1</span>=<span class="tk-s">$2</span>');
+    return a+'<span class="tk-t">'+tag+'</span>'+rest+z;
+  });
+  return s;
+}
+$$('code.hl').forEach(c=>c.innerHTML=hlCSS(c.textContent));
+
+/* ═════════ موتور اسلاید ═════════ */
+const slides=$$('.slide'), total=slides.length;
+let cur=-1; const visited=new Set();
+const cNum=$('#cNum'), prog=$('#prog'), dotsNav=$('#dotsNav'), tocList=$('#tocList');
+$('#cTot').textContent=fa(total);
+
+slides.forEach((s,i)=>{
+  const d=document.createElement('button');
+  d.title=(i+1)+'. '+s.dataset.title;
+  d.onclick=()=>go(i);
+  dotsNav.appendChild(d);
+  const t=document.createElement('button');
+  t.className='toc-i';
+  t.innerHTML=`<span class="n">${fa(String(i+1).padStart(2,'0'))}</span><span class="t">${s.dataset.title}</span><span class="g">${s.dataset.tag}</span>`;
+  t.onclick=()=>{go(i);toggleToc(false);};
+  tocList.appendChild(t);
+});
+const dots=$$('#dotsNav button'), tocs=$$('.toc-i');
+
+function updUI(){
+  cNum.textContent=fa(String(cur+1).padStart(2,'0'));
+  prog.style.width=((cur+1)/total*100)+'%';
+  dots.forEach((d,i)=>{d.className=(i===cur?'cur':visited.has(i)?'seen':'');});
+  tocs.forEach((t,i)=>t.classList.toggle('cur',i===cur));
+  /* روی پروتکل file:// مرورگرها history API را مسدود می‌کنند — بی‌صدا رد می‌شویم */
+  try{ if(location.protocol!=='file:') history.replaceState(null,'','#'+(cur+1)); }catch(_){}
+}
+function go(i,dir){
+  i=Math.max(0,Math.min(total-1,i));
+  if(i===cur)return;
+  dir=dir??(cur===-1?1:(i>cur?1:-1));
+  const old=cur>=0?slides[cur]:null, nw=slides[i];
+  if(old){old.classList.add('leave');old.style.setProperty('--ex',(dir*5)+'%');visited.add(cur);}
+  nw.classList.add('on','pre');
+  nw.style.setProperty('--en',(-dir*5)+'%');
+  void nw.offsetWidth;
+  nw.classList.add('active');nw.classList.remove('pre');
+  cur=i;updUI();onEnter(nw);
+  setTimeout(()=>{if(old)old.classList.remove('on','active','leave');},RM?30:580);
+}
+function onEnter(s){
+  const t=s.querySelector('.stitle');
+  if(t&&!t.dataset.done){t.dataset.done=1;if(!RM)scramble(t);}
+  s.querySelector('.sb')?.scrollTo(0,0);
+  if(s.dataset.num==='۰۱')startHero();else stopHero();
+}
+function scramble(el){
+  const txt=el.textContent, g='ابتثجحخدرسشصطعفقکگلمنوهی{}؟٪#';
+  let f=0;const total=Math.max(16,txt.length+8);
+  const tm=setInterval(()=>{
+    f++;const r=Math.floor((f/total)*txt.length);let out='';
+    for(let i=0;i<txt.length;i++){
+      const c=txt[i];
+      out+=(c===' '||c==='\u200c'||i<r)?c:g[(Math.random()*g.length)|0];
+    }
+    el.textContent=out;
+    if(f>=total){el.textContent=txt;clearInterval(tm);}
+  },34);
+}
+
+/* ناوبری */
+$('#btnNext').onclick=()=>go(cur+1);
+$('#btnPrev').onclick=()=>go(cur-1);
+document.addEventListener('keydown',e=>{
+  const a=document.activeElement;
+  if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;
+  if(e.key==='ArrowLeft'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(cur+1);}
+  else if(e.key==='ArrowRight'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+  else if(e.key==='Home')go(0);
+  else if(e.key==='End')go(total-1);
+});
+let tX=0,tY=0;const deck=$('#deck');
+deck.addEventListener('touchstart',e=>{tX=e.touches[0].clientX;tY=e.touches[0].clientY;},{passive:true});
+deck.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tX,dy=e.changedTouches[0].clientY-tY;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){dx<0?go(cur+1):go(cur-1);}
+},{passive:true});
+
+/* فهرست */
+const drawer=$('#drawer'),scrim=$('#scrim');
+function toggleToc(v){drawer.classList.toggle('open',v);scrim.classList.toggle('open',v);}
+$('#btnToc').onclick=()=>toggleToc(true);
+$('#btnCloseToc').onclick=()=>toggleToc(false);
+scrim.onclick=()=>toggleToc(false);
+
+/* ═════════ جلد: تایپ زنده ═════════ */
+const HR=[
+ {t:".demo-card { border-radius: 18px; }\n", d:"border-radius:18px;"},
+ {t:".demo-card { border: 1px solid #313d57; background: #16202e; }\n", d:"border:1px solid #313d57;background:#16202e;"},
+ {t:".demo-card { box-shadow: 0 24px 60px rgba(255,180,84,.22); }\n", d:"box-shadow:0 24px 60px rgba(255,180,84,.22);"},
+ {t:".demo-card { transform: rotate(-4deg) scale(1.06); }\n", d:"transform:rotate(-4deg) scale(1.06);"}
+];
+const heroCode=$('#heroCode'),heroStyle=$('#heroStyle');
+let heroTimer=null,heroTO=null;
+function renderHero(n,typed){
+  heroCode.textContent=typed;
+  const css=HR.slice(0,n).map(r=>r.d).join('');
+  heroStyle.textContent=css?`#heroDemo{${css}}`:'';
+}
+function startHero(){
+  stopHero();
+  if(RM){renderHero(HR.length,HR.map(r=>r.t).join(''));return;}
+  const full=HR.map(r=>r.t).join('');let p=0;
+  heroCode.textContent='';
+  heroTimer=setInterval(()=>{
+    p++;const typed=full.slice(0,p);
+    renderHero((typed.match(/\}/g)||[]).length,typed);
+    if(p>=full.length){clearInterval(heroTimer);heroTimer=null;heroTO=setTimeout(startHero,3600);}
+  },26);
+}
+function stopHero(){if(heroTimer)clearInterval(heroTimer);if(heroTO)clearTimeout(heroTO);heroTimer=heroTO=null;}
+
+/* ═════════ آزمایشگاه رنگ ═════════ */
+(function(){
+  const H=$('#hH'),S=$('#hS'),L=$('#hL');if(!H)return;
+  const toHex=(h,s,l)=>{s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),
+    f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1))),
+    x=v=>Math.round(v*255).toString(16).padStart(2,'0');
+    return '#'+x(f(0))+x(f(8))+x(f(4));};
+  const upd=()=>{
+    const h=+H.value,s=+S.value,l=+L.value;
+    $('#hslSw').style.background=`hsl(${h} ${s}% ${l}%)`;
+    $('#hHv').textContent=h+'°';$('#hSv').textContent=s+'%';$('#hLv').textContent=l+'%';
+    $('#hslTxt').textContent=`hsl(${h} ${s}% ${l}%)`;
+    $('#hslHex').textContent=toHex(h,s,l);
+  };
+  [H,S,L].forEach(el=>el.addEventListener('input',upd));upd();
+})();
+
+/* ═════════ مدل جعبه ═════════ */
+(function(){
+  const P=$('#bP'),B=$('#bB'),M=$('#bM');if(!P)return;
+  let sizing='border-box';
+  const W=280;
+  const upd=()=>{
+    const p=+P.value,b=+B.value,m=+M.value;
+    $('#bPv').textContent=p+'px';$('#bBv').textContent=b+'px';$('#bMv').textContent=m+'px';
+    $('#bmP').style.padding=p+'px';
+    $('#bmBw').style.borderWidth=b+'px';
+    $('#bmM').style.padding=m+'px';
+    const content=sizing==='border-box'?W-2*p-2*b:W;
+    const box=sizing==='border-box'?W:W+2*p+2*b;
+    $('#bmC').textContent=`محتوا — عرض ${fa(Math.max(content,0))}px`;
+    $('#bOut').innerHTML=
+      `<div>عرض محتوا <b>${fa(Math.max(content,0))}px</b></div>`+
+      `<div>عرض جعبه <b>${fa(box)}px</b></div>`+
+      `<div>با margin <b>${fa(box+2*m)}px</b></div>`+
+      `<div>box-sizing <b>${sizing}</b></div>`;
+  };
+  [P,B,M].forEach(el=>el.addEventListener('input',upd));
+  $('#bSz').addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    $$('#bSz button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    sizing=b.dataset.v;upd();
+  });
+  upd();
+})();
+
+/* ═════════ تایپوگرافی ═════════ */
+(function(){
+  const Sz=$('#tSize');if(!Sz)return;
+  const Lh=$('#tLh'),Ws=$('#tWs'),Wt=$('#tWt'),box=$('#typoBox');
+  const upd=()=>{
+    const s=+Sz.value,lh=(+Lh.value/10),ws=(+Ws.value/100),wt=+Wt.value;
+    box.style.fontSize=s+'px';box.style.lineHeight=lh;box.style.wordSpacing=ws+'em';box.style.fontWeight=wt;
+    $('#tSizeV').textContent=s+'px';$('#tLhV').textContent=lh.toFixed(1);$('#tWsV').textContent=ws.toFixed(2)+'em';$('#tWtV').textContent=wt;
+    $('#typoCode').innerHTML=hlCSS(`p {\n  font-size: ${(s/16).toFixed(2)}rem;\n  line-height: ${lh.toFixed(1)};\n  word-spacing: ${ws.toFixed(2)}em;\n  font-weight: ${wt};\n}`);
+  };
+  [Sz,Lh,Ws,Wt].forEach(el=>el.addEventListener('input',upd));upd();
+})();
+
+/* ═════════ فلکس‌باکس ═════════ */
+(function(){
+  const stage=$('#flexStage');if(!stage)return;
+  const st={dir:'row',jc:'flex-start',ai:'center',wrap:'nowrap',gap:12};
+  $$('.seg[data-g]').forEach(g=>g.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    g.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    st[g.dataset.g]=b.dataset.v;upd();
+  }));
+  $('#fGap').addEventListener('input',e=>{st.gap=+e.target.value;upd();});
+  function upd(){
+    Object.assign(stage.style,{flexDirection:st.dir,justifyContent:st.jc,alignItems:st.ai,flexWrap:st.wrap,gap:st.gap+'px'});
+    $('#fGapV').textContent=st.gap+'px';
+    $('#flexCode').innerHTML=hlCSS(`.container {\n  display: flex;\n  flex-direction: ${st.dir};\n  justify-content: ${st.jc};\n  align-items: ${st.ai};\n  flex-wrap: ${st.wrap};\n  gap: ${st.gap}px;\n}`);
+  }
+  upd();
+})();
+
+/* ═════════ گرید ═════════ */
+(function(){
+  const stage=$('#gridStage');if(!stage)return;
+  let mode='equal',gap=12;
+  const TPL={equal:'repeat(4, 1fr)',holy:'1fr 2fr 1fr',auto:'repeat(auto-fill, minmax(90px, 1fr))'};
+  $('#gMode').addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    $$('#gMode button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    mode=b.dataset.v;upd();
+  });
+  $('#gGap').addEventListener('input',e=>{gap=+e.target.value;upd();});
+  function upd(){
+    stage.style.gridTemplateColumns=TPL[mode];stage.style.gap=gap+'px';
+    $('#gGapV').textContent=gap+'px';
+    $('#gridCode').innerHTML=hlCSS(`.grid {\n  display: grid;\n  grid-template-columns: ${TPL[mode]};\n  gap: ${gap}px;\n}`);
+  }
+  upd();
+})();
+
+/* ═════════ جای‌گذاری ═════════ */
+(function(){
+  const tabs=$('#posTabs');if(!tabs)return;
+  const INFO={
+    static:{d:'حالت پیش‌فرض؛ عنصر در جریان عادی صفحه است و top/right/bottom/left روی آن هیچ اثری ندارند.',c:'.box { position: static; }'},
+    relative:{d:'هنوز در جریان عادی است، اما با top/right از جای خودش «جابه‌جا» می‌شود؛ جای خالی‌اش حفظ می‌شود و مرجعِ absolute شدنِ فرزندان است.',c:'.box {\n  position: relative;\n  top: 34px;\n  inset-inline-start: 70px;\n}'},
+    absolute:{d:'کاملاً از جریان خارج می‌شود و نسبت به نزدیک‌ترین والدِ position‌دار (اینجا صحنه که relative است) قرار می‌گیرد.',c:'.parent { position: relative; }\n.box {\n  position: absolute;\n  bottom: 22px;\n  inset-inline-end: 26px;\n}'},
+    fixed:{d:'نسبت به «پنجرهٔ مرورگر» ثابت می‌ماند و با اسکرول تکان نمی‌خورد — مناسب دکمه‌های شناور و هدر چسبان. (اینجا داخل صحنه شبیه‌سازی شده)',c:'.box {\n  position: fixed;\n  top: 20px;\n  inset-inline-start: 20px;\n}'},
+    sticky:{d:'ترکیب هوشمند: عادی اسکرول می‌شود تا به آستانه (top: 0) برسد، بعد می‌چسبد. پنل را اسکرول کنید!',c:'.header {\n  position: sticky;\n  top: 0;\n  z-index: 10;\n}'}
+  };
+  tabs.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    $$('#posTabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    const m=b.dataset.p;
+    $('#posStage').dataset.mode=m;
+    $('#posStage').style.display=m==='sticky'?'none':'block';
+    $('#posScroll').style.display=m==='sticky'?'block':'none';
+    $('#posDesc').innerHTML='<span class="ic">📍</span>'+INFO[m].d;
+    $('#posCode').innerHTML=hlCSS(INFO[m].c);
+  });
+  tabs.querySelector('button').click();
+})();
+
+/* ═════════ تبدیل و گذار ═════════ */
+(function(){
+  const R=$('#tR');if(!R)return;
+  const S=$('#tS'),X=$('#tX'),K=$('#tK'),D=$('#tD'),box=$('#tfBox');
+  let ease='ease',applied=false;
+  const tf=()=>`rotate(${R.value}deg) scale(${+S.value/100}) translateX(${X.value}px) skew(${K.value}deg)`;
+  const upd=()=>{
+    $('#tRv').textContent=R.value+'deg';$('#tSv').textContent=(+S.value/100).toFixed(1);
+    $('#tXv').textContent=X.value+'px';$('#tKv').textContent=K.value+'deg';$('#tDv').textContent=(+D.value/10)+'s';
+    box.style.transition=`transform ${+D.value/10}s ${ease}`;
+    if(applied)box.style.transform=tf();
+    $('#tfCode').innerHTML=hlCSS(`.box {\n  transform: ${tf()};\n  transition: transform ${(+D.value/10).toFixed(1)}s ${ease};\n}`);
+  };
+  [R,S,X,K,D].forEach(el=>el.addEventListener('input',upd));
+  $('#tEase').addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    $$('#tEase button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    ease=b.dataset.e;upd();
+  });
+  $('#tfGo').onclick=e=>{
+    applied=!applied;
+    box.style.transform=applied?tf():'none';
+    e.target.textContent=applied?'↺ برگردان':'▶ اجرا';
+  };
+  upd();
+})();
+
+/* ═════════ انیمیشن ═════════ */
+(function(){
+  const box=$('#animBox');if(!box)return;
+  const st={name:'bounce',dur:1,tm:'ease-in-out',it:'infinite',dr:'normal'};
+  const bind=(id,key)=>$('#'+id).addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    $$('#'+id+' button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    st[key]=b.dataset.v;upd();
+  });
+  bind('aName','name');bind('aTm','tm');bind('aIt','it');bind('aDr','dr');
+  $('#aDur').addEventListener('input',e=>{st.dur=+e.target.value/10;upd();});
+  $('#aPlay').onclick=e=>{
+    const paused=box.style.animationPlayState==='paused';
+    box.style.animationPlayState=paused?'running':'paused';
+    e.target.textContent=paused?'⏸ توقف':'▶ پخش';
+  };
+  function upd(){
+    $('#aDurV').textContent=st.dur+'s';
+    box.style.animationPlayState='running';$('#aPlay').textContent='⏸ توقف';
+    box.style.animation=`${st.name} ${st.dur}s ${st.tm} ${st.it} ${st.dr}`;
+    $('#aCode').innerHTML=hlCSS(`.ball {\n  animation: ${st.name} ${st.dur}s ${st.tm} ${st.it} ${st.dr};\n}`);
+  }
+  upd();
+})();
+
+/* ═════════ پاسخگو ═════════ */
+(function(){
+  const W=$('#rW');if(!W)return;
+  const upd=()=>{$('#rFrame').style.width=W.value+'px';$('#rWv').textContent=W.value+'px';};
+  W.addEventListener('input',upd);upd();
+})();
+
+/* ═════════ متغیرها ═════════ */
+(function(){
+  const wrap=$('#vBtns');if(!wrap)return;
+  const upd=c=>{$('#vCode').innerHTML=hlCSS(`:root {\n  --accent: ${c};\n}\n.btn  { background: var(--accent); }\n.link { color: var(--accent); }`);};
+  wrap.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    $$('#vBtns button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    $('#vScope').style.setProperty('--a',b.dataset.c);
+    $('#vScope').style.setProperty('--a2',b.dataset.s);
+    upd(b.dataset.c);
+  });
+  upd('#ffb454');
+})();
+
+/* ═════════ مرجع خواص ═════════ */
+const PROPS=[
+{cat:'چیدمان و نمایش',items:[['display','نوع جعبهٔ عنصر: block ،inline ،flex ،grid ،none'],['position','شیوهٔ قرارگیری: static ،relative ،absolute ،fixed ،sticky'],['top / right / bottom / left','فاصله از لبه‌ها برای عناصرِ position‌دار'],['inset','هر چهار جهت با یک خاصیت'],['inset-block / inset-inline','لبه‌ها بر اساس جهت نوشتار (rtl)'],['z-index','ترتیب لایه‌ها روی محور عمق'],['float / clear','شناورسازی قدیمی و مهار آن'],['visibility','پنهان‌سازی بدون حذف از چیدمان'],['overflow','رفتار سرریز: hidden ،scroll ،auto ،clip'],['overflow-x / overflow-y','سرریز افقی و عمودی جداگانه'],['overscroll-behavior','کنترل رفتار اسکرول در لبه‌ها'],['box-sizing','محاسبهٔ عرض: content-box یا border-box'],['contain','جداسازی رندر برای بهبود کارایی'],['content-visibility','رندر تنبلِ بخش‌های خارج از دید'],['columns / column-count / column-width','چیدمان چندستونهٔ روزنامه‌ای'],['column-gap / column-rule','فاصله و خط جداکنندهٔ ستون‌ها']]},
+{cat:'مدل جعبه‌ای',items:[['width / height','عرض و ارتفاع جعبه'],['min-width / max-width','کران‌های عرض'],['min-height / max-height','کران‌های ارتفاع'],['margin','فاصلهٔ بیرونی (تکی، دوتایی، چهارتایی)'],['margin-top / -right / -bottom / -left','حاشیهٔ هر ضلع'],['margin-block / margin-inline','حاشیهٔ محوری (دوست‌دار rtl)'],['padding','فاصلهٔ درونی محتوا تا قاب'],['padding-top / -right / -bottom / -left','پدینگ هر ضلع'],['padding-block / padding-inline','پدینگ محوری'],['border','قاب: ضخامت + سبک + رنگ'],['border-width / border-style / border-color','اجزای سه‌گانهٔ قاب'],['border-top / -right / -bottom / -left','قاب هر ضلع جداگانه'],['border-radius','گردی گوشه‌ها تا بیضی کامل'],['border-image','قاب تصویری ۹تکه'],['border-collapse','ادغام قاب‌های جدول'],['border-spacing','فاصلهٔ سلول‌های جدول'],['outline','خط بیرونی بدون اشغال فضا'],['outline-offset','فاصلهٔ outline از عنصر'],['box-shadow','سایه‌ها (چندتایی با ویرگول)'],['aspect-ratio','نسبت عرض به ارتفاع خودکار'],['resize','تغییر اندازه به‌دست کاربر']]},
+{cat:'فلکس‌باکس',items:[['flex','خلاصهٔ grow + shrink + basis'],['flex-direction','جهت محور اصلی: row یا column'],['flex-wrap','شکست آیتم‌ها به خط بعد'],['flex-flow','خلاصهٔ direction + wrap'],['flex-grow','میزان رشد برای پرکردن فضا'],['flex-shrink','میزان جمع‌شدن در کمبود فضا'],['flex-basis','اندازهٔ پایهٔ آیتم'],['justify-content','چینش در محور اصلی'],['align-items','چینش محور فرعی (همهٔ آیتم‌ها)'],['align-self','چینش مستقلِ یک آیتم'],['align-content','چینش خطوطِ چندردیفه'],['order','تغییر ترتیب نمایش بدون HTML'],['gap','فاصلهٔ بین آیتم‌ها'],['row-gap / column-gap','فاصلهٔ ردیف و ستون جداگانه'],['place-content / place-items','هر دو محور در یک خط']]},
+{cat:'گرید',items:[['grid-template-columns','تعریف ستون‌ها با repeat و minmax'],['grid-template-rows','تعریف ردیف‌ها'],['grid-template-areas','چیدمان با نقشهٔ اسم‌دار'],['grid-template','خلاصهٔ سه مورد بالا'],['grid-column / grid-row','محدودهٔ آیتم: start / end'],['grid-column-start / -end','ستون آغاز و پایان'],['grid-row-start / -end','ردیف آغاز و پایان'],['grid-area','نام‌گذاری یا محدودهٔ کامل'],['grid-auto-columns / grid-auto-rows','اندازهٔ خطوط خودکار'],['grid-auto-flow','جهت جریان: row ،column ،dense'],['grid','خلاصهٔ بزرگ همهٔ دستورها'],['justify-items','چینش افقی محتوا در سلول'],['justify-self','چینش افقی یک سلول خاص'],['place-items / place-self','خلاصهٔ چینش دومحوره']]},
+{cat:'متن و فونت',items:[['color','رنگ متن'],['font-family','خانوادهٔ قلم + لیست پشتیبان'],['font-size','اندازهٔ قلم (rem توصیه می‌شود)'],['font-weight','وزن: 100 تا 900'],['font-style','normal ،italic ،oblique'],['font-variant','حروف کوچک‌بزرگ و امکانات فونت'],['font','خلاصهٔ همهٔ خواص فونت'],['line-height','ارتفاع خط؛ بدون واحد = بهترین'],['letter-spacing','فاصلهٔ حروف (لاتین)'],['word-spacing','فاصلهٔ کلمات (فارسی!)'],['text-align','چپ، راست، وسط، دوطرفه'],['text-align-last','چینش آخرین خط'],['text-decoration','خط زیر/رو/وسط و حذف آن'],['text-decoration-color / -style / -thickness','جزئیات خط تزئینی'],['text-transform','بزرگ‌وکوچک حروف (لاتین)'],['text-indent','تورفتگی خط اول'],['text-shadow','سایهٔ متن'],['text-overflow','برش با … همراه overflow:hidden'],['white-space','رفتار فاصله‌ها و نشستن خطوط'],['word-break','شکستن کلمات طولانی'],['overflow-wrap / hyphens','شکست هوشمند کلمات'],['text-justify','روش تراز دوطرفه'],['direction','جهت متن: rtl یا ltr'],['unicode-bidi','کنترل پیشرفتهٔ دوجهتی'],['writing-mode','جهت نوشتار (عمودی و…)'],['vertical-align','تراز عمودی inline ها'],['caret-color','رنگ نشانگر تایپ'],['user-select','مجازبودن انتخاب متن']]},
+{cat:'پس‌زمینه',items:[['background-color','رنگ پس‌زمینه'],['background-image','تصویر یا گرادیان'],['background-position','نقطهٔ قرارگیری تصویر'],['background-size','اندازه: cover ،contain یا عدد'],['background-repeat','تکرار تصویر'],['background-attachment','ثبات هنگام اسکرول: fixed ،local'],['background-clip','محدودهٔ رنگ تا قاب/پدینگ/متن'],['background-origin','مبدأ مختصات تصویر'],['background','خلاصهٔ همه در یک خط'],['background-blend-mode','ترکیب لایه‌های پس‌زمینه'],['backdrop-filter','شیشهٔ مات پشت عنصر: blur()'],['image-rendering','کیفیت بزرگ‌نمایی تصویر'],['object-fit','برازش تصویر/ویدیو: cover ،contain'],['object-position','موقعیت تصویر در قاب']]},
+{cat:'افکت و ترکیب',items:[['opacity','شفافیت ۰ تا ۱'],['filter','فیلترها: blur ،brightness ،grayscale…'],['mix-blend-mode','ترکیب رنگ عنصر با پشتش'],['isolation','ایجاد لایهٔ ترکیب مستقل'],['clip-path','برش عنصر با شکل هندسی'],['mask / mask-image','ماسک شفافیت'],['accent-color','رنگ کنترل‌های بومی فرم'],['appearance','حذف استایل پیش‌فرض فرم‌ها'],['cursor','شکل نشانگر ماوس'],['pointer-events','خاموش‌کردن کلیک‌پذیری'],['scroll-behavior','اسکرول نرم: smooth'],['scroll-snap-type / scroll-snap-align','چسبش اسکرول به نقاط مشخص'],['scroll-margin / scroll-padding','حاشیهٔ مقصد اسکرول'],['touch-action','کنترل ژست‌های لمسی'],['will-change','آماده‌سازی مرورگر برای انیمیشن'],['backface-visibility','نمایش پشت عنصر هنگام چرخش'],['perspective / perspective-origin','عمق صحنهٔ سه‌بعدی']]},
+{cat:'تبدیل و حرکت',items:[['transform','translate / rotate / scale / skew'],['transform-origin','مرکز اعمال تبدیل'],['transform-style','preserve-3d برای فرزندان'],['transition','گذار نرم بین دو حالت'],['transition-property','کدام خاصیت‌ها گذار کنند'],['transition-duration','مدت گذار'],['transition-timing-function','منحنی سرعت'],['transition-delay','تأخیر شروع'],['animation','انیمیشن کامل در یک خط'],['animation-name','نام keyframes'],['animation-duration','مدت هر دور'],['animation-timing-function','منحنی سرعت انیمیشن'],['animation-delay','تأخیر شروع'],['animation-iteration-count','تعداد تکرار؛ infinite'],['animation-direction','جهت: alternate ،reverse'],['animation-fill-mode','حالت قبل/بعد: forwards ،both'],['animation-play-state','توقف و پخش: paused ،running']]},
+{cat:'لیست و جدول',items:[['list-style','خلاصهٔ نوع/موقعیت/تصویر گلوله'],['list-style-type','شکل گلوله؛ حتی persian برای اعداد فارسی!'],['list-style-position','گلوله داخل یا خارج متن'],['list-style-image','تصویر به‌جای گلوله'],['table-layout','الگوریتم جدول: fixed یا auto'],['caption-side','موقعیت عنوان جدول'],['empty-cells','نمایش سلول‌های خالی']]},
+{cat:'قواعد @ و توابع',items:[['@media','شرط اندازه/ویژگی — قلب ریسپانسیو'],['@keyframes','تعریف فریم‌های انیمیشن'],['@font-face','بارگذاری فونت سفارشی'],['@import','ورود استایل دیگر فایل'],['@supports','شرط پشتیبانی مرورگر'],['@layer','کنترل اولویت با لایه‌های cascade'],['@container','شرط بر اساس عرض والد — مدرن'],['@property','متغیر سفارشیِ تایپ‌دار و انیمیت‌پذیر'],['--name / var()','متغیر سفارشی و خواندن آن'],['calc()','ریاضی بین واحدهای مختلف'],['clamp(min, ideal, max)','مقدار سیال با کف و سقف'],['min() / max()','انتخاب کوچک‌ترین/بزرگ‌ترین'],['color-mix()','مخلوط‌کردن دو رنگ'],[':root','ریشهٔ سند؛ خانهٔ متغیرها'],[':is() / :where()','ساده‌سازی انتخابگرهای تودرتو'],[':has()','انتخاب والد بر اساس فرزند — مدرن']]}
+];
+(function(){
+  const grid=$('#refGrid');if(!grid)return;
+  let cat='همه',q='';
+  const chips=$('#refChips');
+  const all=['همه',...PROPS.map(p=>p.cat)];
+  chips.innerHTML=all.map((c,i)=>`<button class="${i===0?'on':''}" data-c="${c}">${c}</button>`).join('');
+  chips.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    $$('#refChips button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    cat=b.dataset.c;render();
+  });
+  $('#refQ').addEventListener('input',e=>{q=e.target.value.trim().toLowerCase();render();});
+  function render(){
+    const list=PROPS.flatMap(p=>p.items.map(([n,d])=>({n,d,c:p.cat})))
+      .filter(x=>(cat==='همه'||x.c===cat)&&(!q||x.n.toLowerCase().includes(q)));
+    grid.innerHTML=list.map(x=>`<div class="prop"><b>${x.n}</b><span>${x.d}</span></div>`).join('');
+    $('#refCount').textContent=fa(list.length)+' مورد';
+  }
+  render();
+})();
+
+/* ═════════ قالب‌ها ═════════ */
+const TPL=[
+`/* دکمه‌ها — HTML: <button class="btn">متن</button> */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 44px; padding: 0 22px; border-radius: 10px;
+  font: 700 15px/1 Vazirmatn, sans-serif;
+  border: 1px solid transparent; cursor: pointer;
+  transition: transform .2s, box-shadow .2s, background .2s;
+}
+.btn:active { transform: scale(.97); }
+
+.btn-primary {
+  background: #ffb454; color: #14100a;
+  box-shadow: 0 8px 24px rgba(255,180,84,.35);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(255,180,84,.5);
+}
+.btn-outline { border-color: #ffb454; color: #ffb454; background: transparent; }
+.btn-outline:hover { background: rgba(255,180,84,.1); }
+.btn-ghost { color: #c9d1de; background: #1a2130; border-color: #222b3d; }
+.btn-ghost:hover { background: #232c40; }`,
+
+`/* کارت محصول — HTML: <article class="pcard"> <img> + <div class="pcard-body"> */
+.pcard {
+  width: 280px; border-radius: 16px; overflow: hidden;
+  background: #131926; border: 1px solid #26304a;
+  transition: transform .3s, box-shadow .3s;
+}
+.pcard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px rgba(0,0,0,.45);
+}
+.pcard img { width: 100%; height: 180px; object-fit: cover; display: block; }
+.pcard-body { padding: 16px; }
+.pcard-tag { font-size: 12px; color: #ffb454; }
+.pcard h3 { margin: 6px 0 12px; font-size: 17px; color: #fff; }
+.pcard-foot { display: flex; justify-content: space-between; align-items: center; }
+.price { font-weight: 800; color: #95e6cb; }
+.pcard-btn {
+  border: 0; background: #ffb454; color: #14100a;
+  padding: 9px 16px; border-radius: 9px; font-weight: 700; cursor: pointer;
+}`,
+
+`/* نوار ناوبری — HTML: <nav class="nav"> لوگو + لینک‌ها */
+.nav {
+  display: flex; align-items: center; gap: 24px;
+  padding: 12px 20px; position: sticky; top: 0; z-index: 50;
+  background: rgba(15,19,28,.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #26304a;
+}
+.nav-logo { font-weight: 800; color: #ffb454; }
+.nav-links { display: flex; gap: 18px; margin-inline-start: auto; }
+.nav-links a {
+  color: #c9d1de; text-decoration: none; font-size: 14px;
+  padding: 6px 2px; position: relative;
+}
+.nav-links a::after {
+  content: ""; position: absolute; inset-inline: 0; bottom: 0;
+  height: 2px; background: #ffb454;
+  transform: scaleX(0); transition: transform .25s;
+}
+.nav-links a:hover { color: #fff; }
+.nav-links a:hover::after { transform: scaleX(1); }`,
+
+`/* فیلد فرم — HTML: <div class="field"><label>…</label><input></div> */
+.field { display: grid; gap: 6px; margin-bottom: 14px; }
+.field label { font-size: 13px; color: #8b96a9; }
+.field input {
+  padding: 11px 14px; border-radius: 10px;
+  border: 1px solid #2b3550; background: #101522; color: #e8ecf3;
+  font-family: inherit;
+  transition: border-color .2s, box-shadow .2s;
+}
+.field input::placeholder { color: #5c6779; }
+.field input:focus {
+  outline: none;               /* حذف کامل نکنید؛ جایگزین دادیم */
+  border-color: #ffb454;
+  box-shadow: 0 0 0 3px rgba(255,180,84,.18);
+}`,
+
+`/* لودینگ و اسکلتون — HTML: <div class="spinner"></div> ، <i class="skeleton"></i> */
+.spinner {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 3px solid #26304a; border-top-color: #ffb454;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.skeleton {
+  height: 14px; border-radius: 6px;
+  background: #1a2130; position: relative; overflow: hidden;
+}
+.skeleton::after {
+  content: ""; position: absolute; inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { to { transform: translateX(100%); } }`,
+
+`<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>پروژهٔ من</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0e14; --text: #c9d1de;
+      --accent: #ffb454; --card: #131926;
+      --radius: 14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: Vazirmatn, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.9;
+    }
+    img { max-width: 100%; display: block; }
+    .container { width: min(1100px, 92%); margin-inline: auto; }
+    h1, h2, h3 { font-family: Lalezar, Vazirmatn; line-height: 1.4; }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="container"><!-- سرصفحه --></header>
+  <main class="container"><!-- محتوا --></main>
+  <footer class="container"><!-- پانوشت --></footer>
+</body>
+</html>`
+];
+(function(){
+  TPL.forEach((code,i)=>{
+    const el=$('#tplc'+i);if(!el)return;
+    el.innerHTML=i===TPL.length-1?hlHTML(code):hlCSS(code);
+  });
+  document.addEventListener('click',async e=>{
+    const b=e.target.closest('.copy');if(!b)return;
+    const code=TPL[+b.dataset.i],old=b.textContent;
+    try{await navigator.clipboard.writeText(code);}
+    catch(_){const t=document.createElement('textarea');t.value=code;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();}
+    b.textContent='✓ کپی شد!';
+    setTimeout(()=>b.textContent=old,1600);
+  });
+})();
+
+/* ═════════ شروع ═════════ */
+const init=Math.min(total-1,Math.max(0,(parseInt(location.hash.slice(1))||1)-1));
+go(init);
+
+/* ═════════ نوار سلامت فایل ═════════
+   اگر هنگام کپی/ذخیره بخشی از <style> جا افتاده باشد،
+   به‌جای صفحهٔ بی‌استایلِ گیج‌کننده، هشدار صریح نشان می‌دهد. */
+requestAnimationFrame(()=>{
+  const tb=document.querySelector('.topbar');
+  if(tb&&getComputedStyle(tb).display!=='flex'){
+    const w=document.createElement('div');
+    w.dir='rtl';
+    w.style.cssText='position:fixed;inset-inline:0;bottom:0;z-index:99;background:#f07178;color:#14100a;padding:12px 16px;font:600 14px Vazirmatn,sans-serif;text-align:center';
+    w.textContent='⚠ فایل ناقص ذخیره شده (بخشی از CSS جا افتاده). کل محتوا را دوباره کپی کن و با انکودینگ UTF-8 در یک ویرایشگر کد مثل VS Code ذخیره کن.';
+    document.body.appendChild(w);
+  }
+});
+</script>
+</body>
+</html>
