@@ -58,7 +58,7 @@ It is **one file**. No framework, no bundler, no `node_modules`, no build step. 
 - **Property search** — type `flex` or `shadow` to jump straight to the relevant reference entry.
 - **Accent themes** — amber, blue, purple, red and teal, switchable at runtime.
 - **Full RTL support** — the layout is genuinely right-to-left, not a mirrored afterthought.
-- **Zero dependencies** — the only network request is Google Fonts, and the page degrades gracefully to system fonts without it.
+- **Zero dependencies, zero third-party requests** — fonts are self-hosted, so nothing is fetched from a CDN. Works behind restrictive networks and fully offline.
 - **Responsive** — works from a phone screen up to a projector.
 
 ## Running locally
@@ -84,15 +84,32 @@ python3 -m http.server 8080
 ```
 CSSlaboratory/
 ├── index.html      # the entire application — markup, styles and scripts
+├── assets/fonts/   # self-hosted WOFF2 (149 KB total, no CDN)
 ├── CNAME           # custom domain for GitHub Pages
 ├── LICENSE         # MIT
 ├── README.md
 └── .github/workflows/pages.yml   # publishes the site on every push to main
 ```
 
-Everything lives in `index.html`, organised top to bottom as: design tokens (`:root`
-custom properties) → base styles → component styles → slide markup → playground logic.
-Editing a chapter means editing its `<section>` and the small script block that drives it.
+Everything lives in `index.html`, organised top to bottom as: `@font-face` declarations →
+design tokens (`:root` custom properties) → base styles → component styles → slide markup
+→ playground logic. Editing a chapter means editing its `<section>` and the small script
+block that drives it.
+
+### Fonts
+
+Three families, self-hosted and split into Arabic and Latin subsets so a browser only
+downloads what a page actually renders:
+
+| Family | Role | Weights | Files |
+|--------|------|---------|-------|
+| Vazirmatn | body text (Persian + Latin) | variable, 100–900 | 79 KB |
+| Lalezar | display headings | 400 | 39 KB |
+| JetBrains Mono | code samples | variable, 400–800 | 31 KB |
+
+Vazirmatn and JetBrains Mono are variable fonts, so one file per subset covers every
+weight — which is also why the typography playground can slide through intermediate
+weights smoothly instead of snapping between static cuts.
 
 ## Deployment
 
