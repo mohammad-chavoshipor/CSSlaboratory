@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>آزمایشگاه CSS — آموزش تعاملی</title>
+<title>آزمایشگاه CSS — دورهٔ تعاملی + تمرین‌های گام‌به‌گام</title>
+<meta name="description" content="دورهٔ فارسی CSS با آزمایشگاه زنده و تمرین‌های پروژه‌محور گام‌به‌گام (ساخت وب‌سایت رزومه و…).">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230b0e14'/><text x='32' y='42' font-size='28' text-anchor='middle' fill='%23ffb454' font-family='monospace'>{}</text></svg>">
 <link rel="preload" href="assets/fonts/vazirmatn-arabic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/lalezar-arabic.woff2" as="font" type="font/woff2" crossorigin>
@@ -66,6 +67,10 @@ img{display:block;max-width:100%}
 .brand{font-family:var(--fd);font-size:22px;color:#fff;letter-spacing:.5px}
 .brand small{font-family:var(--fb);font-size:11px;color:var(--dim);display:block;margin-top:-6px;font-weight:400}
 .topbar .sp{flex:1}
+.modebar{display:flex;gap:4px;border:1px solid var(--line2);background:var(--panel2);border-radius:11px;padding:4px}
+.mtab{display:flex;align-items:center;gap:7px;padding:7px 15px;border-radius:8px;font-size:13.5px;color:var(--dim);transition:.2s}
+.mtab:hover{color:var(--gold)}
+.mtab.on{background:var(--amber);color:#14100a;font-weight:700}
 .counter{font-family:var(--fm);font-size:13px;color:var(--dim);border:1px solid var(--line);
   padding:6px 12px;border-radius:8px;background:var(--panel2)}
 .counter b{color:var(--amber);font-weight:600}
@@ -74,8 +79,11 @@ img{display:block;max-width:100%}
 .tbtn:hover{border-color:var(--amber);color:var(--gold)}
 .prog{position:absolute;bottom:-1px;inset-inline-start:0;height:2px;background:var(--amber);width:0;
   transition:width .5s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 12px rgba(255,180,84,.7)}
+@media(max-width:760px){.brand small{display:none}.counter{display:none}.mtab{padding:7px 11px;font-size:12.5px}}
 
 /* ═══════════ عرشهٔ اسلایدها ═══════════ */
+.view{position:relative;overflow:hidden;z-index:1}
+.view[hidden]{display:none}
 .deck{position:relative;overflow:hidden;z-index:1}
 .slide{position:absolute;inset:0;display:none;opacity:0;transform:translateX(var(--en,0));
   transition:opacity .5s ease,transform .55s cubic-bezier(.22,.8,.24,1)}
@@ -91,18 +99,34 @@ img{display:block;max-width:100%}
 .kick{font-family:var(--fm);font-size:12.5px;color:var(--amber);display:inline-flex;gap:10px;align-items:center;
   border:1px dashed rgba(255,180,84,.4);padding:5px 12px;border-radius:99px;background:rgba(255,180,84,.05)}
 .kick::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px var(--amber)}
-.stitle{font-family:var(--fd);font-weight:400;font-size:clamp(30px,4.8vw,58px);color:#fff;line-height:1.25;margin:14px 0 6px}
-.slead{color:var(--dim);font-size:clamp(14px,1.35vw,17px);line-height:2;max-width:62ch}
-.cols{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:clamp(22px,4vw,60px);align-items:start;margin-top:clamp(14px,3vh,30px)}
+.stitle{font-family:var(--fd);font-weight:400;font-size:clamp(28px,4.4vw,54px);color:#fff;line-height:1.25;margin:12px 0 6px}
+.slead{color:var(--dim);font-size:clamp(14px,1.35vw,16.5px);line-height:2;max-width:64ch}
+.cols{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:clamp(20px,3.4vw,52px);align-items:start;margin-top:clamp(14px,3vh,28px)}
 .cols.one{grid-template-columns:1fr}
 h3.sub{font-family:var(--fd);color:var(--gold);font-size:21px;margin:18px 0 10px;font-weight:400}
 .note{border-inline-start:3px solid var(--amber);background:rgba(255,180,84,.06);padding:12px 16px;border-radius:0 12px 12px 0;
-  font-size:13.5px;line-height:1.9;color:var(--fg);margin-top:18px}
+  font-size:13.5px;line-height:1.9;color:var(--fg);margin-top:16px}
 .note b{color:var(--gold)}
 .note .ic{margin-inline-end:6px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 .chip{border:1px solid var(--line2);border-radius:99px;padding:6px 13px;font-size:12.5px;color:var(--dim);background:var(--panel)}
 .chip b{color:var(--teal);font-weight:600}
+
+/* ═══════════ «به زبان ساده» و فهرست کوتاه ═══════════ */
+.simple{display:flex;gap:13px;align-items:flex-start;border:1px solid rgba(149,230,203,.32);
+  background:linear-gradient(120deg,rgba(149,230,203,.10),rgba(89,194,255,.04));
+  border-radius:15px;padding:14px 17px;margin-top:16px}
+.simple .em{font-size:27px;line-height:1.2}
+.simple p{font-size:15px;line-height:2.05;color:#e7edf6}
+.simple b{color:var(--teal)}
+.simple i{font-style:normal;color:var(--gold)}
+.brief{list-style:none;display:grid;gap:8px;margin-top:16px}
+.brief li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--dim);line-height:1.95;
+  border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:9px 14px}
+.brief li::before{content:"◆";color:var(--amber);font-size:9px;margin-top:8px;flex:none}
+.brief li b{color:var(--fg);font-weight:600}
+.tryit{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#14100a;background:var(--teal);
+  border-radius:99px;padding:4px 13px;font-weight:700;margin-bottom:10px}
 
 /* ═══════════ ادیتور کد ═══════════ */
 .editor{border:1px solid var(--line2);border-radius:13px;background:var(--panel2);overflow:hidden;
@@ -122,7 +146,7 @@ code.inline{font-family:var(--fm);font-size:.9em;color:var(--teal);background:rg
 
 /* ═══════════ اجزای آزمایشگاه ═══════════ */
 .lab{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:16px 18px}
-.lab-row{display:grid;grid-template-columns:110px 1fr 52px;gap:12px;align-items:center;margin:10px 0;font-size:13px;color:var(--dim)}
+.lab-row{display:grid;grid-template-columns:110px 1fr 58px;gap:12px;align-items:center;margin:10px 0;font-size:13px;color:var(--dim)}
 .lab-row b{font-family:var(--fm);color:var(--teal);font-size:12px;text-align:left;direction:ltr}
 input[type=range]{width:100%;height:22px}
 .seg{display:inline-flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--panel2);flex-wrap:wrap}
@@ -134,6 +158,11 @@ input[type=range]{width:100%;height:22px}
   repeating-linear-gradient(45deg,rgba(255,255,255,.015) 0 12px,transparent 12px 24px),var(--panel2);
   min-height:190px;padding:14px;position:relative}
 .code-out{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);padding:12px 14px;direction:ltr;text-align:left;overflow:auto}
+.ctl-group{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.ctl-group>label{font-size:12px;color:var(--dim)}
+.readout{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.readout div{border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:7px 12px;font-size:12px;color:var(--dim)}
+.readout b{font-family:var(--fm);color:var(--amber);direction:ltr;unicode-bidi:isolate;margin-inline-start:5px}
 
 /* ═══════════ نوار پایین ═══════════ */
 .deckbar{display:flex;align-items:center;gap:14px;padding:10px clamp(14px,3vw,28px);
@@ -144,12 +173,15 @@ input[type=range]{width:100%;height:22px}
 .nbtn.primary{background:var(--amber);color:#14100a;border-color:var(--amber)}
 .nbtn.primary:hover{box-shadow:0 8px 24px rgba(255,180,84,.35);color:#14100a}
 .nbtn span{font-size:17px;line-height:1}
+.nbtn[disabled]{opacity:.4;cursor:not-allowed;transform:none}
 .dotsnav{flex:1;display:flex;justify-content:center;gap:7px;flex-wrap:wrap}
 .dotsnav button{width:20px;height:7px;border-radius:99px;background:var(--line2);transition:.25s;position:relative}
 .dotsnav button:hover{background:var(--faint)}
 .dotsnav button.seen{background:rgba(255,180,84,.4)}
 .dotsnav button.cur{background:var(--amber);width:34px;box-shadow:0 0 10px rgba(255,180,84,.6)}
 .kbd-hint{font-family:var(--fm);font-size:11px;color:var(--faint);direction:ltr}
+.barlabel{flex:1;text-align:center;font-size:13px;color:var(--dim)}
+.barlabel b{color:var(--gold)}
 @media(max-width:900px){.kbd-hint,.dotsnav{display:none}.deckbar{justify-content:space-between}}
 
 /* ═══════════ فهرست کشویی ═══════════ */
@@ -170,9 +202,9 @@ input[type=range]{width:100%;height:22px}
 .toc-i .t{font-size:13.5px;color:var(--fg)}
 .toc-i .g{margin-inline-start:auto;font-size:10px;color:var(--faint);border:1px solid var(--line);padding:2px 8px;border-radius:99px}
 
-/* ═══════════ اسلاید ۱: جلد ═══════════ */
+/* ═══════════ جلد ═══════════ */
 .cover{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(24px,4vw,60px);align-items:center;min-height:100%}
-.cover .big{font-family:var(--fd);font-weight:400;font-size:clamp(44px,7.5vw,92px);line-height:1.1;color:#fff}
+.cover .big{font-family:var(--fd);font-weight:400;font-size:clamp(42px,7vw,88px);line-height:1.1;color:#fff}
 .cover .big em{font-style:normal;color:var(--amber);position:relative}
 .cover .big em::after{content:"";position:absolute;inset-inline:0;bottom:6px;height:10px;background:rgba(255,180,84,.18);z-index:-1;transform:skewX(-12deg)}
 .hero-lab{position:relative;padding-bottom:96px}
@@ -189,8 +221,16 @@ input[type=range]{width:100%;height:22px}
 .btn:hover{border-color:var(--amber);color:var(--gold);transform:translateY(-1px)}
 .btn.primary{background:var(--amber);border-color:var(--amber);color:#14100a}
 .btn.primary:hover{box-shadow:0 10px 28px rgba(255,180,84,.35);color:#14100a}
+.btn.teal{background:var(--teal);border-color:var(--teal);color:#04211a}
+.btn.teal:hover{box-shadow:0 10px 28px rgba(149,230,203,.3);color:#04211a}
 
-/* ═══════════ اسلاید ۲: کالبد ═══════════ */
+/* ═══════════ HTML/CSS/JS و کالبد قانون ═══════════ */
+.trio{display:grid;gap:11px;margin-top:14px}
+.trio div{display:flex;gap:13px;align-items:center;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:12px 15px}
+.trio .e{font-size:26px;line-height:1}
+.trio b{color:#fff;font-size:14px;display:block}
+.trio span{font-size:12.5px;color:var(--dim);line-height:1.85}
+.trio div.css{border-color:rgba(255,180,84,.45);background:rgba(255,180,84,.07)}
 .anatomy{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;direction:ltr;font-family:var(--fm);
   border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:26px 20px 18px;margin-top:8px}
 .an{display:flex;flex-direction:column;align-items:center;gap:10px}
@@ -205,10 +245,10 @@ input[type=range]{width:100%;height:22px}
 .way{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:var(--panel);
   border-radius:11px;padding:11px 14px;font-size:13px}
 .way code{font-family:var(--fm);font-size:12px;color:var(--teal);direction:ltr;unicode-bidi:isolate}
-.way .tag{margin-inline-start:auto;font-size:10.5px;color:var(--red);border:1px solid rgba(240,113,120,.4);padding:2px 9px;border-radius:99px}
+.way .tag{margin-inline-start:auto;font-size:10.5px;color:var(--red);border:1px solid rgba(240,113,120,.4);padding:2px 9px;border-radius:99px;white-space:nowrap}
 .way .tag.ok{color:var(--green);border-color:rgba(170,217,76,.4)}
 
-/* ═══════════ اسلاید ۳: انتخابگرها ═══════════ */
+/* ═══════════ انتخابگرها ═══════════ */
 .sel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:11px;margin-top:14px}
 .sel-card{border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:12px 14px;transition:.2s;position:relative;overflow:hidden}
 .sel-card::before{content:"";position:absolute;top:0;inset-inline-start:0;width:3px;height:0;background:var(--amber);transition:.3s}
@@ -217,29 +257,56 @@ input[type=range]{width:100%;height:22px}
 .sel-card code{font-family:var(--fm);font-size:13px;color:var(--gold);direction:ltr;display:block;unicode-bidi:isolate}
 .sel-card .nm{font-size:13px;color:var(--fg);margin-top:6px;font-weight:600}
 .sel-card .ds{font-size:11.5px;color:var(--dim);line-height:1.8;margin-top:3px}
-.sel-card .sp{position:absolute;top:10px;inset-inline-end:10px;font-family:var(--fm);font-size:9.5px;color:var(--faint);
-  border:1px solid var(--line);padding:1px 7px;border-radius:99px;direction:ltr}
 .sel-demo{list-style:none;display:grid;gap:7px;margin-top:10px}
 .sel-demo li{border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:9px 14px;font-size:13px;
   color:var(--dim);transition:.25s}
 .sel-demo li::before{content:"◂ ";color:var(--faint);transition:.25s}
-.sel-demo li:nth-child(odd){background:rgba(255,180,84,.05);border-color:rgba(255,180,84,.2)}
 .sel-demo li:hover{border-color:var(--cyan);color:var(--fg);transform:translateX(-6px)}
 .sel-demo li:hover::before{color:var(--cyan)}
 
-/* ═══════════ اسلاید ۴: واحدها/رنگ ═══════════ */
-.u-table{display:grid;grid-template-columns:auto 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+/* ═══════════ اولویت (کدام برنده است) ═══════════ */
+.spec-rules{display:grid;gap:9px;margin-top:12px}
+.spec-rule{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:var(--panel2);
+  border-radius:11px;padding:10px 14px;cursor:pointer;transition:.2s}
+.spec-rule:hover{border-color:var(--line2)}
+.spec-rule input{width:17px;height:17px;flex:none}
+.spec-rule code{font-family:var(--fm);font-size:12.5px;color:var(--gold);direction:ltr;unicode-bidi:isolate;flex:1}
+.spec-rule .w{font-family:var(--fm);font-size:11px;color:var(--faint);border:1px solid var(--line);border-radius:99px;padding:2px 9px;direction:ltr}
+.spec-rule.win{border-color:var(--green);background:rgba(170,217,76,.08)}
+.spec-rule.win .w{color:var(--green);border-color:rgba(170,217,76,.45)}
+#specTarget{margin-top:14px;border:1px dashed var(--line2);border-radius:13px;padding:26px;text-align:center;background:var(--panel2)}
+#specTarget p{font-size:21px;font-weight:700;transition:color .3s}
+
+/* ═══════════ واحدها ═══════════ */
+.ubars{display:grid;gap:10px;margin-top:12px}
+.ubar{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center}
+.ubar span{font-family:var(--fm);font-size:11.5px;color:var(--dim);direction:ltr}
+.ubar i{display:block;height:30px;border-radius:8px;font-style:normal;font-family:var(--fm);font-size:11px;
+  color:#14100a;display:grid;place-items:center;transition:width .18s,font-size .18s;overflow:hidden;white-space:nowrap}
+.ubar i.px{background:var(--red);width:120px}
+.ubar i.rem{background:var(--amber);width:8rem}
+.ubar i.pc{background:var(--cyan);width:50%}
+.ubar i.vw{background:var(--purple);width:20vw}
+.u-table{display:grid;grid-template-columns:auto 1fr;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:12px}
 .u-table>div{padding:8px 14px;border-bottom:1px solid var(--line);font-size:12.5px;display:flex;align-items:center}
 .u-table>div:nth-last-child(-n+2){border-bottom:0}
 .u-table .u{font-family:var(--fm);color:var(--teal);direction:ltr;font-size:12px;background:var(--panel2)}
 .u-table .d{color:var(--dim);background:var(--panel)}
+
+/* ═══════════ رنگ‌ها ═══════════ */
 .swatch{height:110px;border-radius:13px;border:1px solid var(--line2);transition:background .2s;margin-bottom:10px;position:relative}
 .swatch::after{content:"پیش‌نمایش";position:absolute;bottom:8px;inset-inline-end:12px;font-size:10px;color:rgba(0,0,0,.45)}
 .val-out{font-family:var(--fm);direction:ltr;text-align:left;font-size:13px;color:var(--gold);
   background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px 13px;margin-top:6px;display:flex;justify-content:space-between;gap:8px}
 .val-out .hx{color:var(--cyan)}
 
-/* ═══════════ اسلاید ۵: مدل جعبه ═══════════ */
+/* ═══════════ display ═══════════ */
+.disp-stage{line-height:2.6}
+.dbox{border:1px solid var(--amber);background:rgba(255,180,84,.14);color:var(--gold);
+  font-family:var(--fm);font-size:12px;padding:10px 16px;border-radius:9px;text-align:center;transition:.25s}
+.disp-stage .txt{font-size:13px;color:var(--dim)}
+
+/* ═══════════ مدل جعبه‌ای ═══════════ */
 .bm-zone{border-radius:10px;position:relative;transition:padding .2s,width .2s}
 .bm-m{background:rgba(210,166,255,.09);border:1px dashed rgba(210,166,255,.5);padding:24px}
 .bm-b{background:rgba(240,113,120,.14);border:12px solid rgba(240,113,120,.55);transition:border-width .2s}
@@ -248,61 +315,87 @@ input[type=range]{width:100%;height:22px}
   color:var(--cyan);font-size:13px;font-weight:600}
 .bm-leg{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:11.5px;color:var(--dim)}
 .bm-leg i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-inline-end:5px;vertical-align:-1px}
-.bm-out{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-.bm-out div{border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:7px 12px;font-size:12px;color:var(--dim)}
-.bm-out b{font-family:var(--fm);color:var(--amber);direction:ltr;unicode-bidi:isolate}
 
-/* ═══════════ اسلاید ۶: تایپوگرافی ═══════════ */
+/* ═══════════ box-sizing: مقایسهٔ واقعی ═══════════ */
+.bsz{margin-top:14px}
+.bsz-track{position:relative;padding-top:26px;margin-bottom:22px}
+.bsz-guide{position:absolute;top:0;inset-inline-start:0;height:100%;border-inline:2px dashed rgba(89,194,255,.6);
+  background:rgba(89,194,255,.05);pointer-events:none;z-index:2}
+.bsz-guide span{position:absolute;top:2px;inset-inline-start:50%;transform:translateX(50%);font-family:var(--fm);
+  font-size:10.5px;color:var(--cyan);background:var(--bg);padding:0 7px;white-space:nowrap;direction:ltr}
+.bsz-box{background:rgba(170,217,76,.16);border:0 solid var(--red);color:var(--gold);font-family:var(--fm);
+  font-size:11.5px;display:grid;place-items:center;border-radius:6px;min-height:52px;position:relative}
+.bsz-box em{font-style:normal;background:rgba(89,194,255,.22);outline:1px solid rgba(89,194,255,.6);
+  padding:6px 10px;border-radius:5px;color:var(--cyan);width:100%;text-align:center;direction:ltr}
+.bsz-lbl{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--dim);margin-bottom:7px}
+.bsz-lbl code{font-family:var(--fm);font-size:12px;color:var(--gold);direction:ltr}
+.bsz-lbl .ok{color:var(--green);font-size:11px;border:1px solid rgba(170,217,76,.4);border-radius:99px;padding:1px 9px}
+.bsz-lbl .bad{color:var(--red);font-size:11px;border:1px solid rgba(240,113,120,.4);border-radius:99px;padding:1px 9px}
+.bsz-num{font-family:var(--fm);font-size:11.5px;color:var(--faint);direction:ltr;margin-top:6px;text-align:start}
+.bsz-num b{color:var(--amber)}
+
+/* ═══════════ تایپوگرافی ═══════════ */
 .typo-sample{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:22px;min-height:130px;transition:.2s}
-.tp-row{display:grid;grid-template-columns:100px 1fr 56px;gap:12px;align-items:center;font-size:13px;color:var(--dim);margin:9px 0}
-.tp-row b{font-family:var(--fm);color:var(--teal);font-size:12px;direction:ltr;text-align:left}
 
-/* ═══════════ اسلاید ۷/۸: فلکس و گرید ═══════════ */
+/* ═══════════ فلکس و گرید ═══════════ */
 .flex-stage{display:flex;min-height:230px;gap:12px}
 .fitem{background:var(--panel);border:1px solid var(--line2);border-radius:10px;display:grid;place-items:center;
   font-family:var(--fd);font-size:26px;color:var(--amber);min-width:56px;min-height:56px;padding:8px 14px;transition:.25s}
 .fitem:nth-child(2){color:var(--cyan)}.fitem:nth-child(3){color:var(--green)}
 .fitem:nth-child(4){color:var(--purple)}.fitem:nth-child(5){color:var(--red)}
-.grid-stage{display:grid;min-height:230px;gap:12px}
+.grid-stage{display:grid;min-height:210px;gap:12px}
 .gitem{background:rgba(89,194,255,.08);border:1px solid rgba(89,194,255,.35);border-radius:9px;display:grid;place-items:center;
   font-family:var(--fm);color:var(--cyan);font-size:13px;min-height:48px}
-.ctl-group{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
-.ctl-group>label{font-size:12px;color:var(--dim)}
+.ga-stage{display:grid;gap:9px;min-height:200px;
+  grid-template-areas:"h h" "a m" "f f";grid-template-columns:110px 1fr}
+.ga-stage div{border-radius:9px;display:grid;place-items:center;font-family:var(--fm);font-size:12px;padding:10px}
+.ga-h{grid-area:h;background:rgba(255,180,84,.16);border:1px solid rgba(255,180,84,.45);color:var(--gold)}
+.ga-a{grid-area:a;background:rgba(210,166,255,.14);border:1px solid rgba(210,166,255,.4);color:var(--purple)}
+.ga-m{grid-area:m;background:rgba(89,194,255,.12);border:1px solid rgba(89,194,255,.4);color:var(--cyan)}
+.ga-f{grid-area:f;background:rgba(170,217,76,.12);border:1px solid rgba(170,217,76,.4);color:var(--green)}
 
-/* ═══════════ اسلاید ۹: جای‌گذاری ═══════════ */
-.pos-stage{position:relative;height:270px;overflow:hidden}
-.pos-box{width:110px;height:78px;border-radius:11px;background:rgba(255,180,84,.16);border:1.5px solid var(--amber);
-  display:grid;place-items:center;font-family:var(--fm);font-size:12px;color:var(--gold);transition:.4s cubic-bezier(.2,.8,.2,1)}
-.pos-ghost{position:absolute;inset-inline-start:14px;top:14px;width:110px;height:78px;border:1.5px dashed var(--line2);border-radius:11px;opacity:.6}
-.pos-sib{width:110px;height:78px;border-radius:11px;background:var(--panel);border:1px solid var(--line2);
-  display:grid;place-items:center;font-family:var(--fm);font-size:12px;color:var(--faint)}
-.pos-stage .col{display:flex;flex-direction:column;gap:12px;padding:14px}
-.pos-stage[data-mode="relative"] .pos-box{position:relative;top:34px;inset-inline-start:70px}
-.pos-stage[data-mode="absolute"] .pos-box{position:absolute;bottom:22px;inset-inline-end:26px}
-.pos-stage[data-mode="fixed"] .pos-box{position:absolute;top:20px;inset-inline-start:20px;box-shadow:0 14px 34px rgba(0,0,0,.5)}
-.pos-scroll{height:270px;overflow:auto;border:1px dashed var(--line2);border-radius:13px;background:var(--panel2);display:none}
-.pos-scroll .st{position:sticky;top:0;background:rgba(255,180,84,.92);color:#14100a;font-weight:700;font-size:13px;
-  padding:9px 16px;z-index:2}
-.pos-scroll p{padding:14px 18px;font-size:13px;color:var(--dim);line-height:2.2}
+/* ═══════════ position: صحنهٔ واقعی ═══════════ */
+.pg{height:300px;overflow:auto;border:1px solid var(--line2);border-radius:13px;background:var(--panel2);padding:14px;position:relative}
+.pg-row{display:grid;gap:11px}
+.pg-card{border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:14px;font-size:12.5px;color:var(--dim)}
+.pg-card.host{border-color:var(--line2);min-height:104px}
+.pg-card.host.rel{position:relative;box-shadow:0 0 0 2px rgba(149,230,203,.35) inset}
+.pg-card b{color:var(--fg);display:block;margin-bottom:5px;font-size:13px}
+.pgbox{width:104px;height:62px;border-radius:10px;background:rgba(255,180,84,.18);border:1.5px solid var(--amber);
+  display:grid;place-items:center;font-family:var(--fm);font-size:11.5px;color:var(--gold);transition:.35s cubic-bezier(.2,.8,.2,1);z-index:3}
+.pgbox.ghost{position:absolute;inset-inline-start:14px;top:14px;background:none;border-style:dashed;border-color:var(--line2);color:var(--faint);opacity:.75;transition:none}
+.pg[data-m="relative"] .pgbox.live{position:relative;top:26px;inset-inline-start:52px}
+.pg[data-m="absolute"] .pgbox.live{position:absolute;bottom:12px;inset-inline-end:12px}
+.pg[data-m="sticky"] .pgbox.live{position:sticky;top:0;z-index:6}
+.pg-tall{height:420px}
+.pg-fill{font-size:12.5px;color:var(--faint);line-height:2.3;padding:6px 2px}
+#fixedDemo{position:fixed;bottom:86px;inset-inline-start:22px;z-index:30;background:var(--amber);color:#14100a;
+  border-radius:12px;padding:11px 16px;font-size:12.5px;font-weight:700;box-shadow:0 16px 40px rgba(0,0,0,.5)}
+#fixedDemo small{display:block;font-weight:400;font-size:10.5px;opacity:.75}
+.flowmsg{margin-top:10px;font-size:12.5px;line-height:1.9;border-radius:11px;padding:10px 14px;
+  border:1px solid var(--line);background:var(--panel);color:var(--dim)}
+.flowmsg b{color:var(--gold)}
+.switch{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;color:var(--dim);cursor:pointer;
+  border:1px solid var(--line2);background:var(--panel2);border-radius:99px;padding:7px 14px}
+.switch input{width:16px;height:16px}
+.switch b{color:var(--teal);font-family:var(--fm);font-size:11.5px;direction:ltr}
 
-/* ═══════════ اسلاید ۱۰: تبدیل ═══════════ */
-.tf-stage{display:grid;place-items:center;min-height:250px;overflow:hidden}
-#tfBox{width:120px;height:120px;border-radius:16px;background:linear-gradient(145deg,rgba(255,180,84,.25),rgba(89,194,255,.18));
+/* ═══════════ تبدیل و انیمیشن ═══════════ */
+.tf-stage{display:grid;place-items:center;min-height:240px;overflow:hidden}
+#tfBox{width:118px;height:118px;border-radius:16px;background:linear-gradient(145deg,rgba(255,180,84,.25),rgba(89,194,255,.18));
   border:1.5px solid var(--amber);display:grid;place-items:center;font-family:var(--fd);font-size:34px;color:var(--gold)}
 .easing-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
 .easing-chips button{font-family:var(--fm);font-size:11px;border:1px solid var(--line2);border-radius:99px;padding:5px 12px;color:var(--dim);transition:.15s;direction:ltr}
 .easing-chips button.on{background:var(--cyan);color:#04121f;border-color:var(--cyan);font-weight:600}
-
-/* ═══════════ اسلاید ۱۱: انیمیشن ═══════════ */
-.anim-stage{display:grid;place-items:center;min-height:230px}
-#animBox{width:86px;height:86px;border-radius:20px;background:var(--amber);display:grid;place-items:center;
+.anim-stage{display:grid;place-items:center;min-height:220px}
+#animBox{width:84px;height:84px;border-radius:20px;background:var(--amber);display:grid;place-items:center;
   color:#14100a;font-family:var(--fd);font-size:24px;box-shadow:0 14px 40px rgba(255,180,84,.35)}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-52px)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
 @keyframes floaty{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-20px) rotate(3deg)}}
 
-/* ═══════════ اسلاید ۱۲: پاسخگو ═══════════ */
+/* ═══════════ ریسپانسیو ═══════════ */
 .rwrap{border:1px solid var(--line2);border-radius:13px;background:var(--panel2);padding:14px;overflow:auto}
 .rframe{container-type:inline-size;margin-inline:auto;transition:width .15s;min-width:260px;
   border:1px dashed var(--line2);border-radius:10px;padding:12px;background:var(--panel)}
@@ -319,9 +412,9 @@ input[type=range]{width:100%;height:22px}
 .bp div{border:1px solid var(--line);border-radius:10px;padding:9px 14px;background:var(--panel);font-size:12px;color:var(--dim)}
 .bp b{font-family:var(--fm);color:var(--teal);display:block;direction:ltr;font-size:12px}
 
-/* ═══════════ اسلاید ۱۳: متغیرها ═══════════ */
+/* ═══════════ متغیرها ═══════════ */
 .theme-btns{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}
-.theme-btns button{width:46px;height:46px;border-radius:12px;border:2px solid transparent;transition:.2s;position:relative}
+.theme-btns button{width:46px;height:46px;border-radius:12px;border:2px solid transparent;transition:.2s}
 .theme-btns button:hover{transform:translateY(-3px)}
 .theme-btns button.on{border-color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.4)}
 #vScope{--a:#ffb454;--a2:rgba(255,180,84,.14)}
@@ -336,7 +429,7 @@ input[type=range]{width:100%;height:22px}
 .fn-list code{font-family:var(--fm);font-size:12.5px;color:var(--purple);direction:ltr;unicode-bidi:isolate}
 .fn-list span{font-size:12px;color:var(--dim)}
 
-/* ═══════════ اسلاید ۱۴: مرجع ═══════════ */
+/* ═══════════ مرجع خواص ═══════════ */
 .ref-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
 .ref-bar input{flex:1;min-width:200px;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;
   padding:10px 16px;color:var(--fg);font-family:var(--fm);font-size:13px;direction:ltr}
@@ -352,7 +445,7 @@ input[type=range]{width:100%;height:22px}
 .prop span{font-size:11.5px;color:var(--dim);line-height:1.8;display:block;margin-top:3px}
 .ref-count{font-size:12px;color:var(--faint);margin-inline-start:auto;font-family:var(--fm)}
 
-/* ═══════════ اسلاید ۱۵: قالب‌ها ═══════════ */
+/* ═══════════ قالب‌های آماده ═══════════ */
 .tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;margin-top:16px}
 .tpl{border:1px solid var(--line2);border-radius:15px;background:var(--panel);overflow:hidden;transition:.25s}
 .tpl:hover{border-color:var(--amber);box-shadow:0 18px 44px rgba(0,0,0,.35);transform:translateY(-3px)}
@@ -372,7 +465,6 @@ input[type=range]{width:100%;height:22px}
 .tpl summary::before{content:"▸ ";color:var(--amber)}
 .tpl details[open] summary::before{content:"▾ "}
 .tpl details pre{max-height:280px;overflow:auto;padding:14px 16px;background:var(--panel2);direction:ltr;text-align:left;border-top:1px solid var(--line)}
-/* استایل خود قالب‌ها */
 .b1{display:inline-flex;align-items:center;height:44px;padding:0 22px;border-radius:10px;font-weight:700;font-size:14px;
   background:var(--amber);color:#14100a;border:1px solid transparent;transition:.2s;box-shadow:0 8px 24px rgba(255,180,84,.3);cursor:pointer}
 .b1:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,180,84,.45)}
@@ -384,7 +476,7 @@ input[type=range]{width:100%;height:22px}
 .b3:hover{background:#232c40}
 .pcard{width:min(260px,100%);border-radius:16px;overflow:hidden;background:#131926;border:1px solid #26304a;transition:.3s}
 .pcard:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,.45)}
-.pcard img{width:100%;height:150px;object-fit:cover}
+.pcard .ph{height:120px;background:linear-gradient(140deg,#ffb454,#f07178 60%,#d2a6ff);display:grid;place-items:center;font-size:38px}
 .pcard .bd{padding:15px}
 .pcard .tg{font-size:11px;color:var(--amber)}
 .pcard h5{font-size:16px;color:#fff;margin:5px 0 11px;font-weight:700}
@@ -411,7 +503,7 @@ input[type=range]{width:100%;height:22px}
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:tsh 1.4s infinite}
 @keyframes tsh{to{transform:translateX(100%)}}
 
-/* ═══════════ اسلاید ۱۶: نکات ═══════════ */
+/* ═══════════ نکات و پایان ═══════════ */
 .tips{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:11px;margin-top:16px}
 .tip{display:flex;gap:13px;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:13px 15px;transition:.2s}
 .tip:hover{border-color:var(--amber);transform:translateY(-2px)}
@@ -424,12 +516,108 @@ input[type=range]{width:100%;height:22px}
 .finale h3{font-family:var(--fd);font-weight:400;font-size:clamp(26px,3.6vw,42px);color:#fff}
 .finale p{color:var(--dim);margin:8px auto 18px;max-width:52ch;line-height:2;font-size:14px}
 
-/* ═══════════ ریسپانسیو ═══════════ */
+/* ═══════════ بخش تمرین‌ها ═══════════ */
+.exwrap{height:100%;overflow:auto;padding:clamp(18px,3.2vh,36px) clamp(16px,4vw,56px) 60px;position:relative;z-index:1}
+.exhead{max-width:70ch}
+.exhead h2{font-family:var(--fd);font-weight:400;font-size:clamp(28px,4.2vw,50px);color:#fff;line-height:1.25;margin:12px 0 6px}
+.exhead p{color:var(--dim);font-size:15px;line-height:2}
+.exgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-top:24px}
+.excard{border:1px solid var(--line2);background:var(--panel);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;transition:.25s;text-align:start}
+.excard:hover{border-color:var(--amber);transform:translateY(-3px);box-shadow:0 20px 46px rgba(0,0,0,.35)}
+.excard .top{display:flex;align-items:center;gap:11px}
+.excard .no{font-family:var(--fd);font-size:30px;color:var(--amber);line-height:1}
+.excard .ttl{font-size:17px;color:#fff;font-weight:700}
+.excard .lvl{margin-inline-start:auto;font-size:11px;border-radius:99px;padding:3px 11px;border:1px solid var(--line2);color:var(--dim);white-space:nowrap}
+.excard .lvl.easy{color:var(--green);border-color:rgba(170,217,76,.4)}
+.excard .lvl.mid{color:var(--gold);border-color:rgba(255,213,128,.4)}
+.excard .ds{font-size:13px;color:var(--dim);line-height:1.95}
+.excard .tags{display:flex;flex-wrap:wrap;gap:6px}
+.excard .tags span{font-family:var(--fm);font-size:10.5px;color:var(--teal);background:rgba(149,230,203,.08);
+  border:1px solid rgba(149,230,203,.2);border-radius:99px;padding:3px 9px;direction:ltr}
+.excard .go{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  border-top:1px solid var(--line);padding-top:12px;font-size:12.5px;color:var(--faint)}
+.excard .go b{color:var(--amber);font-weight:700}
+
+/* پخش‌کنندهٔ تمرین */
+.exlayout{display:grid;grid-template-columns:minmax(0,390px) minmax(0,1fr);gap:clamp(16px,2vw,26px);margin-top:18px;align-items:start}
+.extitle{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.extitle h2{font-family:var(--fd);font-weight:400;font-size:clamp(24px,3.4vw,40px);color:#fff}
+.exback{border:1px solid var(--line2);border-radius:9px;padding:7px 13px;font-size:12.5px;color:var(--dim);transition:.2s}
+.exback:hover{border-color:var(--amber);color:var(--gold)}
+.exbar{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.exbar .pill{font-family:var(--fm);font-size:11.5px;color:var(--dim);border:1px solid var(--line);
+  background:var(--panel2);border-radius:99px;padding:5px 12px;direction:ltr}
+.exprog{flex:1;min-width:140px;height:7px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.exprog i{display:block;height:100%;background:var(--amber);width:0;transition:width .4s cubic-bezier(.2,.8,.2,1)}
+.stps{display:grid;gap:6px;margin-top:14px;max-height:min(46vh,420px);overflow:auto;padding-inline-end:4px}
+.stp{display:flex;gap:11px;align-items:center;text-align:start;border:1px solid transparent;border-radius:10px;padding:9px 11px;transition:.15s;width:100%}
+.stp:hover{background:var(--panel)}
+.stp .n{font-family:var(--fm);font-size:11px;color:var(--faint);border:1px solid var(--line);border-radius:7px;padding:3px 8px;min-width:32px;text-align:center;flex:none}
+.stp .t{font-size:13px;color:var(--dim);line-height:1.6}
+.stp.done .n{color:var(--green);border-color:rgba(170,217,76,.45)}
+.stp.done .t{color:var(--fg)}
+.stp.cur{background:rgba(255,180,84,.1);border-color:rgba(255,180,84,.35)}
+.stp.cur .n{color:var(--amber);border-color:rgba(255,180,84,.5)}
+.stp.cur .t{color:#fff;font-weight:600}
+.stepcard{border:1px solid var(--line2);background:var(--panel);border-radius:15px;padding:17px 19px;margin-top:14px}
+.stepcard h3{font-size:17px;color:#fff;margin-bottom:6px}
+.stepcard .goal{font-size:13.5px;color:var(--dim);line-height:2}
+.stepcard .why{display:flex;gap:11px;align-items:flex-start;margin-top:13px;border-radius:12px;padding:11px 14px;
+  border:1px solid rgba(149,230,203,.28);background:rgba(149,230,203,.07)}
+.stepcard .why .em{font-size:21px;line-height:1.2}
+.stepcard .why p{font-size:13.5px;color:#e7edf6;line-height:2}
+.stepcard .why b{color:var(--teal)}
+.snip{margin-top:13px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2)}
+.snip header{display:flex;align-items:center;gap:9px;padding:8px 13px;border-bottom:1px solid var(--line);background:#0e121b}
+.snip header span{font-family:var(--fm);font-size:11px;color:var(--faint);direction:ltr}
+.snip header .add{margin-inline-start:auto;font-family:var(--fm);font-size:11px;color:var(--teal);
+  border:1px solid var(--line2);border-radius:7px;padding:4px 10px;transition:.2s}
+.snip header .add:hover{border-color:var(--green);background:rgba(170,217,76,.08)}
+.snip pre{padding:13px 15px;overflow:auto;direction:ltr;text-align:left;max-height:34vh}
+.exnav{display:flex;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
+
+/* ستون پیش‌نمایش */
+.exview{border:1px solid var(--line2);background:var(--panel);border-radius:16px;overflow:hidden;position:sticky;top:0}
+.exview>header{display:flex;align-items:center;gap:8px;padding:9px 13px;border-bottom:1px solid var(--line);background:#0e121b;flex-wrap:wrap}
+.vtabs{display:flex;gap:4px}
+.vtab{font-size:12.5px;color:var(--dim);border-radius:8px;padding:6px 13px;transition:.15s}
+.vtab.on{background:var(--amber);color:#14100a;font-weight:700}
+.vtab:not(.on):hover{color:var(--gold);background:rgba(255,180,84,.08)}
+.dev{display:flex;gap:4px;margin-inline-start:auto}
+.dev button{font-size:15px;line-height:1;padding:6px 10px;border-radius:8px;color:var(--faint);border:1px solid transparent;transition:.15s}
+.dev button.on{color:var(--amber);border-color:var(--line2);background:var(--panel2)}
+.vpane{display:none}
+.vpane.on{display:block}
+.frame{background:repeating-conic-gradient(rgba(255,255,255,.02) 0 25%,transparent 0 50%) 0 0/22px 22px,var(--panel2);
+  padding:14px;display:grid;justify-items:center}
+.frame .shell{width:100%;max-width:100%;transition:max-width .3s;border-radius:12px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.45);background:#fff}
+.frame.mob .shell{max-width:390px}
+.frame iframe{display:block;width:100%;height:min(62vh,620px);border:0;background:#fff}
+.cssedit{display:grid}
+.cssedit textarea{width:100%;height:min(62vh,620px);resize:vertical;background:var(--panel2);color:#e6e1cf;
+  font-family:var(--fm);font-size:13px;line-height:1.85;padding:14px 16px;border:0;direction:ltr;text-align:left;white-space:pre;overflow:auto}
+.cssedit textarea:focus{outline:none;box-shadow:inset 0 0 0 2px rgba(255,180,84,.35)}
+.editfoot{display:flex;gap:9px;align-items:center;padding:9px 13px;border-top:1px solid var(--line);background:#0e121b;flex-wrap:wrap}
+.editfoot small{color:var(--faint);font-size:11.5px}
+.minibtn{font-family:var(--fm);font-size:11px;border:1px solid var(--line2);border-radius:8px;padding:6px 11px;color:var(--dim);transition:.2s}
+.minibtn:hover{border-color:var(--amber);color:var(--gold)}
+.htmlpane pre{padding:14px 16px;overflow:auto;direction:ltr;text-align:left;height:min(62vh,620px);background:var(--panel2)}
+.done-box{margin-top:16px;border:1px solid rgba(170,217,76,.4);background:rgba(170,217,76,.07);border-radius:15px;padding:18px}
+.done-box h3{font-family:var(--fd);font-weight:400;font-size:24px;color:var(--green)}
+.done-box p{font-size:13.5px;color:var(--dim);line-height:2;margin-top:6px}
+@media(max-width:1080px){
+  .exlayout{grid-template-columns:1fr}
+  .exview{position:static}
+  .frame iframe,.cssedit textarea,.htmlpane pre{height:min(58vh,520px)}
+}
+
+/* ═══════════ ریسپانسیو کلی ═══════════ */
 @media(max-width:960px){
   .cols,.cover{grid-template-columns:1fr}
   .hero-lab{padding-bottom:0}
   .hero-demo-wrap{position:static;margin-top:16px}
   .slide::after{font-size:34vw;opacity:.7}
+  #fixedDemo{bottom:96px}
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
@@ -440,37 +628,43 @@ input[type=range]{width:100%;height:22px}
 <body>
 <div class="noise" aria-hidden="true"></div>
 <style id="heroStyle"></style>
+<style id="specStyle"></style>
 
 <!-- ═══════ نوار بالا ═══════ -->
 <header class="topbar">
   <div class="logo" aria-hidden="true">{}</div>
-  <div class="brand">آزمایشگاه CSS<small>آموزش تعاملی، اسلاید به اسلاید</small></div>
+  <div class="brand">آزمایشگاه CSS<small>یاد بگیر، ببین، بساز</small></div>
   <div class="sp"></div>
-  <div class="counter" aria-live="polite">اسلاید <b id="cNum">۰۱</b> / <span id="cTot">۱۶</span></div>
+  <div class="modebar" role="tablist">
+    <button class="mtab on" id="tabCourse" role="tab">📚 دوره</button>
+    <button class="mtab" id="tabEx" role="tab">🛠 تمرین‌ها</button>
+  </div>
+  <div class="counter" id="counter" aria-live="polite">اسلاید <b id="cNum">۰۱</b> / <span id="cTot">۲۲</span></div>
   <button class="tbtn" id="btnToc" aria-label="فهرست اسلایدها">☰ فهرست</button>
   <div class="prog" id="prog"></div>
 </header>
 
-<!-- ═══════ عرشه ═══════ -->
-<main class="deck" id="deck">
+<!-- ═══════ نمای دوره ═══════ -->
+<main class="view deck" id="deck">
 
 <!-- ░░ ۰۱ جلد ░░ -->
 <section class="slide" data-num="۰۱" data-title="آزمایشگاه CSS" data-tag="آغاز">
   <div class="sb"><div class="cover">
     <div>
-      <span class="kick fx" style="--d:0">درس تعاملی • ویرایش ۲۰۲۶</span>
+      <span class="kick fx" style="--d:0">دورهٔ تعاملی • ویرایش ۲۰۲۶</span>
       <h1 class="big fx stitle" style="--d:1">آزمایشگاه <em>CSS</em></h1>
-      <p class="slead fx" style="--d:2">اینجا CSS را «می‌خوانید» و هم‌زمان «اتفاق افتادنش» را می‌بینید. هر اسلاید یک مفهوم، هر مفهوم یک آزمایش زنده — از انتخابگر و مدل جعبه تا گرید، انیمیشن و طراحی پاسخگو.</p>
+      <p class="slead fx" style="--d:2">اینجا CSS را با <b>چشم</b> یاد می‌گیرید، نه با حفظ‌کردن. هر درس یک جملهٔ ساده دارد، یک آزمایش زنده، و یک «چرا؟». بعد از درس‌ها هم بخش <b>تمرین</b> هست: پروژه‌های واقعی، گام به گام، تا با دست خودتان بسازید.</p>
       <div class="chips fx" style="--d:3">
-        <span class="chip"><b>۱۶</b> اسلاید</span>
-        <span class="chip"><b>۷</b> آزمایش تعاملی</span>
-        <span class="chip"><b>+۱۶۵</b> خاصیت و تابع</span>
-        <span class="chip"><b>۶</b> قالب آماده</span>
+        <span class="chip"><b>۲۲</b> درس کوتاه</span>
+        <span class="chip"><b>۱۴</b> آزمایش زنده</span>
+        <span class="chip"><b>۴</b> پروژهٔ تمرینی</span>
+        <span class="chip"><b>+۱۶۵</b> خاصیت در مرجع</span>
       </div>
       <div class="fx" style="--d:4;margin-top:22px;display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn primary" onclick="go(1)">شروع درس <span>←</span></button>
-        <button class="btn" onclick="go(13)">پرش به مرجع خواص</button>
+        <button class="btn primary" onclick="go(1)">شروع دوره <span>←</span></button>
+        <button class="btn teal" onclick="openEx()">🛠 دیدن تمرین‌ها</button>
       </div>
+      <div class="simple fx" style="--d:5"><span class="em">🎨</span><p><b>CSS یعنی چه؟</b> صفحهٔ وب بدون CSS مثل خانه‌ای است که فقط دیوار دارد: بی‌رنگ و بی‌شکل. CSS همان <i>رنگ، چیدمان و تزئین</i> خانه است.</p></div>
     </div>
     <div class="hero-lab fx" style="--d:2">
       <div class="editor"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">live-lab.css — در حال تایپ زنده</span></div>
@@ -481,282 +675,522 @@ input[type=range]{width:100%;height:22px}
   </div></div>
 </section>
 
-<!-- ░░ ۰۲ کالبد قانون ░░ -->
-<section class="slide" data-num="۰۲" data-title="کالبد یک قانون CSS" data-tag="درس">
+<!-- ░░ ۰۲ CSS چیست ░░ -->
+<section class="slide" data-num="۰۲" data-title="CSS چیست؟" data-tag="درس">
   <div class="sb">
-    <span class="kick fx">اسلاید ۰۲ • درس</span>
-    <h2 class="stitle fx" style="--d:1">کالبد یک قانون CSS</h2>
-    <p class="slead fx" style="--d:2">هر قانون CSS دو بخش دارد: <b>انتخابگر</b> (چه چیزی؟) و <b>بدنهٔ اعلان</b> (چگونه؟). هر اعلان یک «خاصیت: مقدار» است و با نقطه‌ویرگول تمام می‌شود.</p>
+    <span class="kick fx">درس ۰۱ • یک دقیقه</span>
+    <h2 class="stitle fx" style="--d:1">CSS دقیقاً چه کار می‌کند؟</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🧸</span><p>یک عروسک را تصور کنید: <b>HTML</b> بدنِ عروسک است، <b>CSS</b> لباس و رنگ مویش، و <b>JavaScript</b> کاری که انجام می‌دهد (راه‌رفتن، حرف‌زدن). ما در این دوره فقط <i>لباس‌ها</i> را یاد می‌گیریم.</p></div>
+    <div class="cols">
+      <div>
+        <div class="trio fx" style="--d:3">
+          <div><span class="e">🦴</span><div><b>HTML</b><span>اسکلت: عنوان، پاراگراف، عکس، دکمه — چه چیزهایی در صفحه هستند.</span></div></div>
+          <div class="css"><span class="e">👗</span><div><b>CSS</b><span>ظاهر: رنگ، اندازه، فاصله، جای هر چیز — صفحه چه شکلی باشد.</span></div></div>
+          <div><span class="e">⚙️</span><div><b>JavaScript</b><span>رفتار: با کلیک چه اتفاقی بیفتد — موضوع این دوره نیست.</span></div></div>
+        </div>
+        <h3 class="sub fx" style="--d:4">سه راه چسباندن CSS به HTML</h3>
+        <div class="ways fx" style="--d:5">
+          <div class="way"><span>درون‌خطی</span><code>&lt;div style="color:red"&gt;</code><span class="tag">پرهیز کنید</span></div>
+          <div class="way"><span>داخل صفحه</span><code>&lt;style&gt; در &lt;head&gt;</code><span class="tag">فقط برای تست</span></div>
+          <div class="way"><span>فایل جدا</span><code>&lt;link rel="stylesheet" href="style.css"&gt;</code><span class="tag ok">راه درست ✓</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="editor fx" style="--d:4"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">index.html + style.css</span></div>
+          <pre><code class="hl">/* یک صفحهٔ کامل، در دو فایل */
+
+/* ۱) فایل HTML: چه چیزی */
+&lt;h1 class="title"&gt;سلام دنیا&lt;/h1&gt;
+
+/* ۲) فایل CSS: چه شکلی */
+.title {
+  color: #ffb454;   /* رنگ متن  */
+  font-size: 32px;  /* اندازه   */
+  text-align: center;
+}</code></pre>
+        </div>
+        <ul class="brief fx" style="--d:5">
+          <li><b>مرورگر</b> اول HTML را می‌خواند، بعد CSS را رویش می‌کشد.</li>
+          <li>فایل جدا یعنی <b>یک استایل، صد صفحه</b> — تغییر در یک‌جا، اثر همه‌جا.</li>
+          <li>هر چیزی که «دیدنی» است کار CSS است؛ هر چیزی که «واکنشی» است کار JS.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۳ کالبد قانون ░░ -->
+<section class="slide" data-num="۰۳" data-title="ساختار یک قانون" data-tag="درس">
+  <div class="sb">
+    <span class="kick fx">درس ۰۲ • یک دقیقه</span>
+    <h2 class="stitle fx" style="--d:1">ساختار یک قانون CSS</h2>
+    <div class="simple fx" style="--d:2"><span class="em">📮</span><p>هر قانون CSS مثل یک <b>نامه</b> است: اول می‌نویسید نامه برای <i>چه کسی</i> است (انتخابگر)، بعد داخل پاکت می‌نویسید <i>چه کار کند</i> (خاصیت و مقدار).</p></div>
     <div class="cols">
       <div>
         <div class="anatomy fx" style="--d:3">
-          <div class="an sel"><span class="tk">.card</span><em>انتخابگر</em></div>
-          <div class="an br"><span class="tk">{</span><em>آغاز بدنه</em></div>
-          <div class="an prp"><span class="tk">color</span><em>خاصیت</em></div>
+          <div class="an sel"><span class="tk">.card</span><em>برای چه کسی</em></div>
+          <div class="an br"><span class="tk">{</span><em>باز شدن پاکت</em></div>
+          <div class="an prp"><span class="tk">color</span><em>چه چیزی</em></div>
           <div class="an br"><span class="tk">:</span><em></em></div>
-          <div class="an val"><span class="tk">#ffd580</span><em>مقدار</em></div>
-          <div class="an sc"><span class="tk">;</span><em>پایان اعلان</em></div>
-          <div class="an br"><span class="tk">}</span><em>پایان بدنه</em></div>
+          <div class="an val"><span class="tk">#ffd580</span><em>چه مقداری</em></div>
+          <div class="an sc"><span class="tk">;</span><em>پایان جمله</em></div>
+          <div class="an br"><span class="tk">}</span><em>بستن پاکت</em></div>
         </div>
-        <div class="note fx" style="--d:5"><span class="ic">💡</span><b>نکته‌ها:</b> کامنت <code class="inline">/* … */</code> را مرورگر نادیده می‌گیرد. فراموشی <code class="inline">;</code> رایج‌ترین باگ مبتدی‌هاست. CSS «آبشاری» است: قانون بعدی، قانون قبلیِ هم‌ارزش را بازنویسی می‌کند.</div>
+        <ul class="brief fx" style="--d:4">
+          <li>هر جمله با <code class="inline">;</code> تمام می‌شود — <b>فراموش‌کردنش</b> رایج‌ترین اشتباه تازه‌کارهاست.</li>
+          <li>هرچه بین <code class="inline">/*</code> و <code class="inline">*/</code> بنویسید، مرورگر <b>نمی‌خواند</b> (یادداشت برای خودتان).</li>
+          <li>CSS «آبشاری» است: اگر دو قانون هم‌وزن به یک چیز برسند، <b>پایینی</b> برنده است.</li>
+        </ul>
       </div>
       <div>
-        <h3 class="sub fx" style="--d:3">سه راه اتصال CSS به HTML</h3>
-        <div class="ways fx" style="--d:4">
-          <div class="way"><span>درون‌خطی</span><code>&lt;div style="color:red"&gt;</code><span class="tag">پرهیز کنید</span></div>
-          <div class="way"><span>داخلی</span><code>&lt;style&gt; در &lt;head&gt;</code><span class="tag">فقط آزمایش</span></div>
-          <div class="way"><span>فایل بیرونی</span><code>&lt;link rel="stylesheet" href="styles.css"&gt;</code><span class="tag ok">پیشنهاد ما ✓</span></div>
-        </div>
-        <div class="editor fx" style="--d:5;margin-top:16px"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">styles.css</span></div>
+        <div class="editor fx" style="--d:4"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">style.css</span></div>
           <pre><code class="hl">/* اولین قانون شما */
 .card {
   color: #ffd580;
   padding: 16px;
   border-radius: 12px;
+}
+
+/* چند انتخابگر با یک قانون */
+h1, h2, h3 {
+  font-family: Lalezar, Vazirmatn;
+}</code></pre>
+        </div>
+        <div class="note fx" style="--d:5"><span class="ic">💡</span><b>قانون طلایی نام‌گذاری:</b> اسم کلاس را از روی <b>کارش</b> بگذارید نه از روی رنگش. <code class="inline">.btn-primary</code> خوب است، <code class="inline">.btn-abi</code> بد — چون فردا رنگ عوض می‌شود.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۴ انتخابگرها ░░ -->
+<section class="slide" data-num="۰۴" data-title="انتخابگرها" data-tag="درس">
+  <div class="sb">
+    <span class="kick fx">درس ۰۳ • دو دقیقه</span>
+    <h2 class="stitle fx" style="--d:1">انتخابگرها: به مرورگر آدرس بدهید</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🎯</span><p>انتخابگر یعنی <b>«با کی کار داری؟»</b> مثل صدازدن بچه‌ها در حیاط: «همه!»، «همهٔ کلاس دومی‌ها»، «فقط علی».</p></div>
+    <div class="sel-grid fx" style="--d:3">
+      <div class="sel-card"><code>*</code><div class="nm">همه</div><div class="ds">تمام عناصر صفحه — «همه بیایید!»</div></div>
+      <div class="sel-card"><code>p</code><div class="nm">نوع عنصر</div><div class="ds">همهٔ پاراگراف‌ها — «همهٔ پسرها!»</div></div>
+      <div class="sel-card"><code>.card</code><div class="nm">کلاس</div><div class="ds">هر عنصری که class="card" دارد — پرکاربردترین</div></div>
+      <div class="sel-card"><code>#header</code><div class="nm">شناسه</div><div class="ds">فقط یک عنصر با id مشخص — «فقط علی!»</div></div>
+      <div class="sel-card"><code>.card p</code><div class="nm">فرزندِ داخلی</div><div class="ds">هر پاراگرافی که <b>جایی داخل</b> card باشد</div></div>
+      <div class="sel-card"><code>.card &gt; p</code><div class="nm">فرزند مستقیم</div><div class="ds">فقط پاراگرافِ یک‌قدم داخل card</div></div>
+      <div class="sel-card"><code>a:hover</code><div class="nm">شبه‌کلاس</div><div class="ds">وقتی ماوس روی عنصر می‌رود</div></div>
+      <div class="sel-card"><code>li:nth-child(2)</code><div class="nm">شمارشی</div><div class="ds">دومین آیتم از بین برادرها</div></div>
+      <div class="sel-card"><code>p::first-line</code><div class="nm">شبه‌عنصر</div><div class="ds">بخشی از عنصر که در HTML وجود ندارد</div></div>
+      <div class="sel-card"><code>input[type="email"]</code><div class="nm">صفتی</div><div class="ds">انتخاب بر اساس ویژگی‌های HTML</div></div>
+    </div>
+    <div class="cols">
+      <div>
+        <div class="tryit fx" style="--d:4">🧪 امتحان کنید</div>
+        <ul class="sel-demo fx" style="--d:4">
+          <li>ماوس را روی من بیاور (<code class="inline">li:hover</code>)</li>
+          <li>من هم همین‌طور</li>
+          <li>و من</li>
+        </ul>
+      </div>
+      <div class="note fx" style="--d:5"><span class="ic">💡</span><b>۹۰٪ کارتان با کلاس انجام می‌شود.</b> از <code class="inline">id</code> برای استایل کم استفاده کنید (خیلی زورگوست) و از انتخابگرهای خیلی طولانی مثل <code class="inline">div .a .b .c span</code> فرار کنید — بعداً خودتان هم نمی‌فهمید چه گفته‌اید.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۵ اولویت ░░ -->
+<section class="slide" data-num="۰۵" data-title="کدام قانون برنده است؟" data-tag="درس + آزمایش">
+  <div class="sb">
+    <span class="kick fx">درس ۰۴ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">وقتی چند قانون به یک عنصر می‌رسند</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🥇</span><p>مثل مسابقه است: هر انتخابگر یک <b>امتیاز</b> دارد. <i>شناسه (#) = ۱۰۰</i>، <i>کلاس (.) = ۱۰</i>، <i>نام عنصر = ۱</i>. هر کس امتیاز بیشتری دارد، رنگش برنده می‌شود.</p></div>
+    <div class="cols">
+      <div class="lab fx" style="--d:3">
+        <div class="tryit">🧪 تیک بزنید و برنده را ببینید</div>
+        <div class="spec-rules" id="specRules">
+          <label class="spec-rule"><input type="checkbox" data-k="el" checked><code>p { color: gray }</code><span class="w">۱</span></label>
+          <label class="spec-rule"><input type="checkbox" data-k="cls"><code>.txt { color: #59c2ff }</code><span class="w">۱۰</span></label>
+          <label class="spec-rule"><input type="checkbox" data-k="two"><code>.box .txt { color: #aad94c }</code><span class="w">۲۰</span></label>
+          <label class="spec-rule"><input type="checkbox" data-k="id"><code>#one { color: #d2a6ff }</code><span class="w">۱۰۰</span></label>
+          <label class="spec-rule"><input type="checkbox" data-k="imp"><code>p { color: #f07178 !important }</code><span class="w">∞</span></label>
+        </div>
+        <div id="specTarget"><div class="box"><p id="one" class="txt">این متن رنگش را از برندهٔ مسابقه می‌گیرد</p></div></div>
+        <div class="readout" id="specOut"></div>
+      </div>
+      <div>
+        <div class="editor fx" style="--d:4"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">specificity.html</span></div>
+          <pre><code class="hl">&lt;div class="box"&gt;
+  &lt;p id="one" class="txt"&gt;متن&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        <ul class="brief fx" style="--d:5">
+          <li>امتیاز مساوی؟ قانونی که <b>پایین‌تر</b> نوشته شده برنده است.</li>
+          <li><code class="inline">!important</code> همه را کنار می‌زند — مثل تقلب در مسابقه. فقط در اضطرار.</li>
+          <li>راه‌حل درست وقتی استایل اعمال نمی‌شود: <b>امتیاز را بالا نبرید</b>، انتخابگر ساده‌تری بسازید.</li>
+          <li>در DevTools (کلید F12) قانون‌های بازنده <b>خط‌خورده</b> نشان داده می‌شوند.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۶ واحدها ░░ -->
+<section class="slide" data-num="۰۶" data-title="واحدها" data-tag="درس + آزمایش">
+  <div class="sb">
+    <span class="kick fx">درس ۰۵ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">px، rem، % و vw</h2>
+    <div class="simple fx" style="--d:2"><span class="em">📏</span><p><b>px</b> خط‌کش چوبی است: هیچ‌وقت تغییر نمی‌کند. <b>rem</b> خط‌کش لاستیکی است: با اندازهٔ فونتِ اصلیِ صفحه کش می‌آید. لغزنده را بکشید — ببینید کدام نوار تکان می‌خورد و کدام نه.</p></div>
+    <div class="cols">
+      <div class="lab fx" style="--d:3">
+        <div class="lab-row"><span>فونت ریشه</span><input type="range" id="uRoot" min="12" max="26" value="16"><b id="uRootV">16px</b></div>
+        <div class="lab-row"><span>عرض ظرف</span><input type="range" id="uW" min="200" max="520" value="380"><b id="uWv">380px</b></div>
+        <div class="ubars" id="uStage">
+          <div class="ubar"><span>width:120px</span><i class="px" id="uPx">px</i></div>
+          <div class="ubar"><span>width:8rem</span><i class="rem" id="uRem">rem</i></div>
+          <div class="ubar"><span>width:50%</span><i class="pc" id="uPc">%</i></div>
+          <div class="ubar"><span>width:20vw</span><i class="vw" id="uVw">vw</i></div>
+        </div>
+        <div class="readout" id="uOut"></div>
+      </div>
+      <div>
+        <div class="u-table fx" style="--d:4">
+          <div class="u">px</div><div class="d">ثابت و دقیق — برای border و سایه</div>
+          <div class="u">rem</div><div class="d">نسبت به فونت ریشه — <b>بهترین انتخاب برای فونت و فاصله</b></div>
+          <div class="u">em</div><div class="d">نسبت به فونتِ خودِ عنصر — تودرتو که شود گیج‌کننده است</div>
+          <div class="u">%</div><div class="d">درصدی از والد — برای عرض‌ها</div>
+          <div class="u">vw / vh</div><div class="d">درصدی از پنجرهٔ مرورگر — برای بخش‌های تمام‌صفحه</div>
+          <div class="u">fr</div><div class="d">سهم از فضای خالی — فقط داخل گرید</div>
+          <div class="u">ch</div><div class="d">عرض حرف «۰» — برای محدودکردن طول خط متن</div>
+        </div>
+        <div class="note fx" style="--d:5"><span class="ic">💡</span>چرا rem مهم است؟ چون بعضی کاربران فونت مرورگرشان را بزرگ می‌کنند تا بهتر ببینند. اگر همه‌چیز را px بدهید، صفحهٔ شما برای آن‌ها <b>هیچ تغییری نمی‌کند</b> و ناخواناست.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۷ رنگ‌ها ░░ -->
+<section class="slide" data-num="۰۷" data-title="رنگ‌ها" data-tag="درس + آزمایش">
+  <div class="sb">
+    <span class="kick fx">درس ۰۶ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">رنگ‌ها را چطور بنویسیم؟</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🌈</span><p><code class="inline">#ffb454</code> مثل کد یک رنگ در فروشگاه است: کوتاه ولی بی‌معنی. <b>hsl</b> مثل توضیح‌دادن رنگ با زبان آدمیزاد است: <i>چه رنگی؟ چقدر پررنگ؟ چقدر روشن؟</i> — سه لغزنده را بکشید.</p></div>
+    <div class="cols">
+      <div class="lab fx" style="--d:3">
+        <div class="swatch" id="hslSw"></div>
+        <div class="lab-row"><span>رنگ‌مایه (H)</span><input type="range" id="hH" min="0" max="360" value="35"><b id="hHv">35°</b></div>
+        <div class="lab-row"><span>غلظت (S)</span><input type="range" id="hS" min="0" max="100" value="100"><b id="hSv">100%</b></div>
+        <div class="lab-row"><span>روشنایی (L)</span><input type="range" id="hL" min="0" max="100" value="66"><b id="hLv">66%</b></div>
+        <div class="val-out"><span id="hslTxt">hsl(35 100% 66%)</span><span class="hx" id="hslHex">#ffb454</span></div>
+        <div class="note" style="margin-top:12px"><span class="ic">🎨</span>یک تم کامل با hsl: رنگ‌مایه را ثابت نگه دارید و فقط <b>روشنایی</b> را کم و زیاد کنید — همه‌چیز هماهنگ درمی‌آید.</div>
+      </div>
+      <div>
+        <div class="editor fx" style="--d:4"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">colors.css</span></div>
+          <pre><code class="hl">.a { color: #ffb454; }                /* هگز */
+.b { color: rgb(255 180 84); }        /* قرمز سبز آبی */
+.c { color: rgb(255 180 84 / .5); }   /* با شفافیت */
+.d { color: hsl(35 100% 66%); }       /* آدمیزاد! */
+.e { background: linear-gradient(     /* گرادیان */
+       135deg, #ffb454, #f07178); }
+.f { color: oklch(80% .15 70); }      /* مدرن */</code></pre>
+        </div>
+        <ul class="brief fx" style="--d:5">
+          <li><b>کنتراست را جدی بگیرید:</b> متن خاکستری روی پس‌زمینهٔ خاکستری زیباست ولی خوانا نیست.</li>
+          <li>شفافیت رنگ (<code class="inline">/ .5</code>) بهتر از <code class="inline">opacity</code> است، چون فقط رنگ را کم‌رنگ می‌کند نه کل عنصر را.</li>
+          <li>رنگ‌ها را در <b>متغیر</b> نگه دارید (درس ۱۹) تا تغییر تم یک‌خطی شود.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۸ display ░░ -->
+<section class="slide" data-num="۰۸" data-title="display" data-tag="درس + آزمایش">
+  <div class="sb">
+    <span class="kick fx">درس ۰۷ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">display؛ عنصر چه‌جور جعبه‌ای باشد</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🧱</span><p><b>block</b> مثل آجر است: کل عرض را می‌گیرد و بعدی می‌رود خط پایین. <b>inline</b> مثل کلمه در جمله است: فقط به‌اندازهٔ خودش جا می‌گیرد و کنار بقیه می‌نشیند. <i>مهم:</i> به عنصر inline نمی‌شود عرض و ارتفاع داد!</p></div>
+    <div class="cols">
+      <div class="lab fx" style="--d:3">
+        <div class="ctl-group"><label>display</label><div class="seg" id="dspSeg">
+          <button class="on" data-v="block">block</button><button data-v="inline">inline</button>
+          <button data-v="inline-block">inline-block</button><button data-v="none">none</button></div></div>
+        <div class="stage disp-stage" id="dspStage">
+          <span class="txt">متن قبل …</span>
+          <div class="dbox">جعبهٔ ۱</div>
+          <div class="dbox">جعبهٔ ۲</div>
+          <div class="dbox">جعبهٔ ۳</div>
+          <span class="txt">… متن بعد</span>
+        </div>
+        <div class="code-out"><code class="out" id="dspCode"></code></div>
+        <div class="flowmsg" id="dspMsg"></div>
+      </div>
+      <div>
+        <ul class="brief fx" style="--d:4">
+          <li><b>block:</b> <code class="inline">div</code>، <code class="inline">p</code>، <code class="inline">h1</code> — عرض کامل، خط جدید.</li>
+          <li><b>inline:</b> <code class="inline">span</code>، <code class="inline">a</code>، <code class="inline">strong</code> — کنار هم، بدون عرض و ارتفاع.</li>
+          <li><b>inline-block:</b> کنار هم می‌نشیند <b>ولی</b> عرض و ارتفاع می‌پذیرد.</li>
+          <li><b>flex / grid:</b> خودش block است ولی <b>بچه‌هایش</b> را می‌چیند (درس‌های ۱۲ و ۱۳).</li>
+          <li><b>none:</b> کاملاً حذف می‌شود، انگار اصلاً نبوده. (فرقش با <code class="inline">visibility:hidden</code>: آن یکی جایش را نگه می‌دارد.)</li>
+        </ul>
+        <div class="note fx" style="--d:5"><span class="ic">💡</span>هر عنصری در HTML یک <code class="inline">display</code> پیش‌فرض دارد. وقتی می‌بینید «چرا padding این <code class="inline">span</code> بالا و پایین اثر ندارد؟» جواب همین است: چون inline است.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۰۹ مدل جعبه‌ای ░░ -->
+<section class="slide" data-num="۰۹" data-title="مدل جعبه‌ای" data-tag="آزمایش">
+  <div class="sb">
+    <span class="kick fx">درس ۰۸ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">مدل جعبه‌ای؛ هر عنصر یک جعبهٔ کادویی است</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🎁</span><p><b>content</b> خودِ هدیه است، <b>padding</b> پنبه‌های دور هدیه، <b>border</b> دیوارهٔ جعبه، و <b>margin</b> فاصلهٔ این جعبه تا جعبه‌های دیگر روی میز. لغزنده‌ها را بکشید.</p></div>
+    <div class="cols">
+      <div class="lab fx" style="--d:3">
+        <div class="lab-row"><span>padding (پنبه)</span><input type="range" id="bP" min="0" max="56" value="24"><b id="bPv">24px</b></div>
+        <div class="lab-row"><span>border (دیواره)</span><input type="range" id="bB" min="0" max="24" value="10"><b id="bBv">10px</b></div>
+        <div class="lab-row"><span>margin (فاصله)</span><input type="range" id="bM" min="0" max="56" value="20"><b id="bMv">20px</b></div>
+        <ul class="brief" style="margin-top:14px">
+          <li><b>padding رنگ می‌گیرد،</b> margin همیشه شفاف است.</li>
+          <li>برای فاصله‌<b>ی داخل</b> کارت padding، برای فاصلهٔ <b>بین</b> کارت‌ها margin (یا بهتر: gap).</li>
+          <li>margin دو عنصرِ زیر هم «قاطی» می‌شود (۲۰+۳۰ می‌شود ۳۰، نه ۵۰) — به این می‌گویند margin collapse.</li>
+        </ul>
+      </div>
+      <div class="fx" style="--d:4">
+        <div class="bm-zone bm-m" id="bmM"><div class="bm-zone bm-b" id="bmBw" style="width:100%"><div class="bm-zone bm-p" id="bmP"><div class="bm-zone bm-c" id="bmC">content — خودِ هدیه</div></div></div></div>
+        <div class="bm-leg">
+          <span><i style="background:rgba(210,166,255,.4)"></i>margin — بیرون جعبه</span>
+          <span><i style="background:rgba(240,113,120,.55)"></i>border — دیوارهٔ جعبه</span>
+          <span><i style="background:rgba(170,217,76,.45)"></i>padding — داخل جعبه</span>
+          <span><i style="background:rgba(89,194,255,.5)"></i>content — محتوا</span>
+        </div>
+        <div class="readout" id="bOut"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۱۰ box-sizing ░░ -->
+<section class="slide" data-num="۱۰" data-title="border-box در برابر content-box" data-tag="آزمایش">
+  <div class="sb">
+    <span class="kick fx">درس ۰۹ • مهم‌ترین دو خط CSS</span>
+    <h2 class="stitle fx" style="--d:1">content-box یا border-box؟</h2>
+    <div class="simple fx" style="--d:2"><span class="em">📦</span><p>می‌گویید «جعبه‌ای به عرض <b>۲۰۰</b> می‌خواهم». <b>content-box</b> یعنی ۳۰۰ فقط <i>فضای داخل</i> است و پنبه و دیواره <b>روی آن اضافه</b> می‌شود (جعبه از میز بیرون می‌زند!). <b>border-box</b> یعنی ۳۰۰ <i>کل جعبه با دیواره</i> است. هر دو جعبهٔ پایین <b>دقیقاً همان عرض</b> را خواسته‌اند — لغزنده‌ها را بکشید و تفاوت را ببینید.</p></div>
+    <div class="cols">
+      <div class="lab fx" style="--d:3">
+        <div class="lab-row"><span>width</span><input type="range" id="szW" min="120" max="260" value="200"><b id="szWv">200px</b></div>
+        <div class="lab-row"><span>padding</span><input type="range" id="szP" min="0" max="32" value="18"><b id="szPv">18px</b></div>
+        <div class="lab-row"><span>border</span><input type="range" id="szB" min="0" max="16" value="8"><b id="szBv">8px</b></div>
+        <div class="note" style="margin-top:8px"><span class="ic">💡</span>خط آبی‌چین، عرضی است که <b>خواسته‌اید</b>. ببینید کدام جعبه از آن بیرون می‌زند.</div>
+        <div class="editor" style="margin-top:14px"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">reset.css — این دو خط را همیشه بنویسید</span></div>
+          <pre><code class="hl">*, *::before, *::after {
+  box-sizing: border-box;
 }</code></pre>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ░░ ۰۳ انتخابگرها ░░ -->
-<section class="slide" data-num="۰۳" data-title="انتخابگرها" data-tag="درس">
-  <div class="sb">
-    <span class="kick fx">اسلاید ۰۳ • درس</span>
-    <h2 class="stitle fx" style="--d:1">انتخابگرها؛ گرفتن عناصر از یقه!</h2>
-    <p class="slead fx" style="--d:2">عدد گوشهٔ هر کارت «وزن» آن است (شناسه، کلاس، عنصر). در تساوی، قانون <b>بعدی</b> برنده است و <code class="inline">!important</code> همه را له می‌کند — پس فقط در اضطرار استفاده کنید.</p>
-    <div class="sel-grid fx" style="--d:3">
-      <div class="sel-card"><span class="sp">0,0,0</span><code>*</code><div class="nm">جهانی</div><div class="ds">همهٔ عناصر صفحه</div></div>
-      <div class="sel-card"><span class="sp">0,0,1</span><code>p</code><div class="nm">نوع عنصر</div><div class="ds">همهٔ تگ‌های مشخص‌شده</div></div>
-      <div class="sel-card"><span class="sp">0,1,0</span><code>.card</code><div class="nm">کلاس</div><div class="ds">پرکاربردترین انتخابگر</div></div>
-      <div class="sel-card"><span class="sp">1,0,0</span><code>#hero</code><div class="nm">شناسه</div><div class="ds">سنگین‌ترین وزن؛ کم استفاده کنید</div></div>
-      <div class="sel-card"><span class="sp">0,1,0</span><code>[type="email"]</code><div class="nm">صفت</div><div class="ds">بر اساس attribute عنصر</div></div>
-      <div class="sel-card"><span class="sp">0,1,1</span><code>a:hover</code><div class="nm">شبه‌کلاس</div><div class="ds">حالت‌ها: hover ،focus ،nth-child()</div></div>
-      <div class="sel-card"><span class="sp">0,0,1</span><code>::before</code><div class="nm">شبه‌عنصر</div><div class="ds">ساخت محتوای مجازی ::after</div></div>
-      <div class="sel-card"><span class="sp">0,0,2</span><code>div p</code><div class="nm">نوه</div><div class="ds">هر p داخل div، هر عمقی</div></div>
-      <div class="sel-card"><span class="sp">0,0,2</span><code>div &gt; p</code><div class="nm">فرزند مستقیم</div><div class="ds">فقط یک سطح پایین‌تر</div></div>
-      <div class="sel-card"><span class="sp">0,0,2</span><code>h2 + p</code><div class="nm">همسایهٔ چسبیده</div><div class="ds">اولین p بلافاصله بعد از h2</div></div>
-      <div class="sel-card"><span class="sp">0,0,2</span><code>h2 ~ p</code><div class="nm">همسایهٔ عمومی</div><div class="ds">همهٔ pهای بعد از h2</div></div>
-      <div class="sel-card"><span class="sp">0,1,1</span><code>li:nth-child(odd)</code><div class="nm">الگو</div><div class="ds">فرد/زوج/3n+1 …</div></div>
-    </div>
-    <div class="cols">
-      <div class="note fx" style="--d:4"><span class="ic">🧪</span>فهرست روبه‌رو زنده است: با <code class="inline">:nth-child(odd)</code> و <code class="inline">::before</code> و <code class="inline">:hover</code> استایل شده — روی آیتم‌ها بروید.</div>
-      <ul class="sel-demo fx" style="--d:5">
-        <li>آیتم یک — فرد است، پس زمینه گرفت</li>
-        <li>آیتم دو — زوج است</li>
-        <li>آیتم سه — هاورش را ببینید</li>
-        <li>آیتم چهار — همه با یک قانون!</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ░░ ۰۴ واحدها و رنگ‌ها ░░ -->
-<section class="slide" data-num="۰۴" data-title="واحدها و رنگ‌ها" data-tag="درس + آزمایش">
-  <div class="sb">
-    <span class="kick fx">اسلاید ۰۴ • درس و آزمایش</span>
-    <h2 class="stitle fx" style="--d:1">واحدها و رنگ‌ها</h2>
-    <p class="slead fx" style="--d:2">قانون طلایی: فونت و فاصله با <b>rem</b>، قاب‌های نازک با <b>px</b>، عرض‌های سیال با <b>%</b> و ویوپورت. واحد <code class="inline">em</code> نسبت به فونت والد است و وقتی تودرتو می‌شود، غیرقابل پیش‌بینی.</p>
-    <div class="cols">
-      <div class="u-table fx" style="--d:3">
-        <div class="u">px</div><div class="d">ثابت و مطلق — برای خطوط ۱px</div>
-        <div class="u">rem</div><div class="d">نسبت به فونت ریشه (html) — بهترین برای متن</div>
-        <div class="u">em</div><div class="d">نسبت به فونت والد</div>
-        <div class="u">%</div><div class="d">درصدی از اندازهٔ والد</div>
-        <div class="u">vw / vh</div><div class="d">درصدی از عرض/ارتفاع پنجره</div>
-        <div class="u">vmin / vmax</div><div class="d">کوچک‌ترین/بزرگ‌ترین بُعد پنجره</div>
-        <div class="u">ch</div><div class="d">عرض کاراکتر «0» — عالی برای طول خط</div>
-        <div class="u">fr</div><div class="d">سهم از فضای آزاد در Grid</div>
-        <div class="u">deg</div><div class="d">زاویه برای rotate و گرادیان</div>
-        <div class="u">s / ms</div><div class="d">زمان برای transition و animation</div>
-      </div>
-      <div>
-        <div class="editor fx" style="--d:3"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">colors.css</span></div>
-          <pre><code class="hl">.hex  { color: #ffb454; }          /* هگز */
-.rgb  { color: rgb(255 180 84 / 60%); } /* با آلفا */
-.hsl  { color: hsl(35 100% 66%); }      /* خوانا */
-.mod  { color: oklch(82% .14 75); }     /* مدرن */
-.cur  { color: currentColor; }          /* رنگ ارثی */</code></pre>
+      <div class="fx" style="--d:4">
+        <div class="bsz">
+          <div class="bsz-lbl"><code>box-sizing: content-box</code><span>پیش‌فرض مرورگر</span><span class="bad" id="szBadge1">بزرگ‌تر از خواسته</span></div>
+          <div class="bsz-track" id="szTrack1">
+            <div class="bsz-guide" id="szGuide1"><span id="szGuideT1">width: 200px</span></div>
+            <div class="bsz-box" id="szBox1"><em>content</em></div>
+          </div>
+          <div class="bsz-num" id="szNum1"></div>
         </div>
-        <div class="lab fx" style="--d:4;margin-top:14px">
-          <strong style="font-size:13px;color:var(--gold)">🧪 آزمایشگاه رنگ HSL</strong>
-          <div class="swatch" id="hslSw" style="margin-top:10px"></div>
-          <div class="lab-row"><span>رنگ‌مایه H</span><input type="range" id="hH" min="0" max="360" value="35"><b id="hHv">35°</b></div>
-          <div class="lab-row"><span>اشباع S</span><input type="range" id="hS" min="0" max="100" value="100"><b id="hSv">100%</b></div>
-          <div class="lab-row"><span>روشنایی L</span><input type="range" id="hL" min="0" max="100" value="66"><b id="hLv">66%</b></div>
-          <div class="val-out"><span id="hslTxt">hsl(35 100% 66%)</span><span class="hx" id="hslHex">#ffb454</span></div>
+        <div class="bsz" style="margin-top:20px">
+          <div class="bsz-lbl"><code>box-sizing: border-box</code><span>انتخاب حرفه‌ای‌ها</span><span class="ok">دقیقاً همان‌قدر</span></div>
+          <div class="bsz-track" id="szTrack2">
+            <div class="bsz-guide" id="szGuide2"><span id="szGuideT2">width: 200px</span></div>
+            <div class="bsz-box" id="szBox2"><em>content</em></div>
+          </div>
+          <div class="bsz-num" id="szNum2"></div>
         </div>
-        <div class="note fx" style="--d:5"><span class="ic">💡</span>HSL برای انسان خواناست: اول رنگ، بعد شدت، بعد روشنایی. برای کنتراست متن و پس‌زمینه، استاندار WCAG (حداقل ۴٫۵:۱) را جدی بگیرید.</div>
+        <div class="flowmsg" style="margin-top:16px"><b>چرا این‌قدر مهم است؟</b> فرض کنید دو ستون کنار هم هرکدام <code class="inline">width:50%</code> با کمی padding. با content-box جمعشان از ۱۰۰٪ رد می‌شود و ستون دوم می‌افتد پایین. با border-box هیچ‌وقت این اتفاق نمی‌افتد.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ░░ ۰۵ مدل جعبه ░░ -->
-<section class="slide" data-num="۰۵" data-title="مدل جعبه‌ای" data-tag="آزمایش">
+<!-- ░░ ۱۱ تایپوگرافی ░░ -->
+<section class="slide" data-num="۱۱" data-title="تایپوگرافی" data-tag="درس + آزمایش">
   <div class="sb">
-    <span class="kick fx">اسلاید ۰۵ • آزمایش</span>
-    <h2 class="stitle fx" style="--d:1">مدل جعبه‌ای؛ آناتومی هر عنصر</h2>
-    <p class="slead fx" style="--d:2">هر عنصر یک جعبه است: <b>محتوا</b> در مرکز، دورش <b>padding</b>، بعد <b>border</b> و بیرون‌تر <b>margin</b>. لغزنده‌ها را بکشید و لایه‌ها را زنده ببینید.</p>
+    <span class="kick fx">درس ۱۰ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">متن؛ ۹۰٪ کار طراحی</h2>
+    <div class="simple fx" style="--d:2"><span class="em">📖</span><p>متنِ خوب مثل صدای آرام است: راحت می‌رسد. سه قانون فارسی: فاصلهٔ خطوط را <b>باز</b> بگذارید (۱٫۸ تا ۲)، طول خط را <b>کوتاه</b> کنید (حدود ۶۵ حرف)، و برای فارسی به‌جای letter-spacing از <b>word-spacing</b> استفاده کنید — حروف فارسی به هم چسبیده‌اند و از هم می‌پاشند!</p></div>
     <div class="cols">
       <div class="lab fx" style="--d:3">
-        <div class="lab-row"><span>padding</span><input type="range" id="bP" min="0" max="56" value="24"><b id="bPv">24px</b></div>
-        <div class="lab-row"><span>border</span><input type="range" id="bB" min="0" max="24" value="12"><b id="bBv">12px</b></div>
-        <div class="lab-row"><span>margin</span><input type="range" id="bM" min="0" max="56" value="24"><b id="bMv">24px</b></div>
-        <div class="ctl-group" style="margin-top:14px"><label>box-sizing:</label>
-          <div class="seg" id="bSz"><button class="on" data-v="border-box">border-box ✓</button><button data-v="content-box">content-box</button></div>
-        </div>
-        <div class="bm-out" id="bOut"></div>
-        <div class="note" style="margin-top:14px"><span class="ic">💡</span>این دو خط را به همهٔ پروژه‌ها اضافه کنید تا عرض‌ها همیشه قابل پیش‌بینی باشند:<br><code class="inline">*, *::before, *::after { box-sizing: border-box; }</code></div>
+        <div class="tryit">🧪 لغزنده‌ها را بکشید</div>
+        <div class="typo-sample" id="typoBox">طراحی خوب دیده نمی‌شود؛ طراحی خوب «احساس» می‌شود. وقتی تایپوگرافی درست باشد، چشم مخاطب بی‌زحمت روی صفحه سُر می‌خورد و پیام، پیش از آن‌که خوانده شود، فهمیده می‌شود.</div>
+        <div class="lab-row"><span>font-size</span><input type="range" id="tSize" min="13" max="30" value="17"><b id="tSizeV">17px</b></div>
+        <div class="lab-row"><span>line-height</span><input type="range" id="tLh" min="10" max="26" value="19"><b id="tLhV">1.9</b></div>
+        <div class="lab-row"><span>word-spacing</span><input type="range" id="tWs" min="0" max="14" value="2"><b id="tWsV">.02em</b></div>
+        <div class="lab-row"><span>font-weight</span><input type="range" id="tWt" min="300" max="800" step="100" value="400"><b id="tWtV">400</b></div>
+        <div class="lab-row"><span>عرض خط</span><input type="range" id="tCh" min="24" max="80" value="60"><b id="tChV">60ch</b></div>
+        <div class="code-out"><code class="out" id="typoCode"></code></div>
       </div>
-      <div class="fx" style="--d:4">
-        <div class="bm-zone bm-m" id="bmM"><div class="bm-zone bm-b" id="bmBw" style="width:280px;margin-inline:auto"><div class="bm-zone bm-p" id="bmP"><div class="bm-zone bm-c" id="bmC">محتوا — عرض ۲۸۰px</div></div></div></div>
-        <div class="bm-leg">
-          <span><i style="background:rgba(210,166,255,.4)"></i>margin — فاصلهٔ بیرونی</span>
-          <span><i style="background:rgba(240,113,120,.55)"></i>border — قاب</span>
-          <span><i style="background:rgba(170,217,76,.45)"></i>padding — فاصلهٔ درونی</span>
-          <span><i style="background:rgba(89,194,255,.5)"></i>content — محتوا</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ░░ ۰۶ تایپوگرافی ░░ -->
-<section class="slide" data-num="۰۶" data-title="تایپوگرافی" data-tag="درس + آزمایش">
-  <div class="sb">
-    <span class="kick fx">اسلاید ۰۶ • درس و آزمایش</span>
-    <h2 class="stitle fx" style="--d:1">تایپوگرافی؛ ۹۰٪ طراحی، متن است</h2>
-    <p class="slead fx" style="--d:2">سه قانون فارسی: <b>line-height</b> را بدون واحد و بین ۱٫۷ تا ۲ بگذارید، به‌جای letter-spacing از <b>word-spacing</b> استفاده کنید (حروف فارسی می‌شکنند!) و اندازه را با <b>rem</b> بدهید.</p>
-    <div class="cols">
       <div>
-        <div class="editor fx" style="--d:3"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">typography.css</span></div>
+        <div class="editor fx" style="--d:4"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">typography.css</span></div>
           <pre><code class="hl">body {
   font-family: Vazirmatn, sans-serif;
   font-size: 1.05rem;   /* نه px */
   line-height: 1.9;     /* بدون واحد */
-  word-spacing: .12em;  /* نه letter-spacing */
 }
+p { max-width: 65ch; }  /* خط کوتاه = خوانا */
+
 h1, h2, h3 {
-  font-family: Lalezar, Vazirmatn; /* جفتِ نمایشی */
-  line-height: 1.4;
-}
-.accent-text { text-shadow: 0 2px 12px rgba(255,180,84,.4); }</code></pre>
+  font-family: Lalezar, Vazirmatn; /* فونت تیتر */
+  line-height: 1.4;     /* تیتر، فشرده‌تر */
+}</code></pre>
         </div>
-        <div class="note fx" style="--d:4"><span class="ic">💡</span>جفت‌سازی فونت: یک فونت نمایشی برای تیترها (اینجا «لاله‌زار») + یک فونت خوانا برای متن («وزیرمتن»). بیشتر از دو خانواده استفاده نکنید.</div>
-      </div>
-      <div class="lab fx" style="--d:4">
-        <strong style="font-size:13px;color:var(--gold)">🧪 متن زنده را تنظیم کنید</strong>
-        <div class="typo-sample" id="typoBox" style="margin-top:10px">طراحی خوب دیده نمی‌شود؛ طراحی خوب «احساس» می‌شود. وقتی تایپوگرافی درست باشد، چشم مخاطب بی‌زحمت روی صفحه سُر می‌خورد و پیام، پیش از آن‌که خوانده شود، فهمیده می‌شود.</div>
-        <div class="tp-row"><span>font-size</span><input type="range" id="tSize" min="13" max="30" value="17"><b id="tSizeV">17px</b></div>
-        <div class="tp-row"><span>line-height</span><input type="range" id="tLh" min="12" max="26" value="19"><b id="tLhV">1.9</b></div>
-        <div class="tp-row"><span>word-spacing</span><input type="range" id="tWs" min="0" max="14" value="2"><b id="tWsV">.12em</b></div>
-        <div class="tp-row"><span>font-weight</span><input type="range" id="tWt" min="300" max="800" step="100" value="400"><b id="tWtV">400</b></div>
-        <div class="code-out"><code class="out" id="typoCode"></code></div>
+        <ul class="brief fx" style="--d:5">
+          <li><b>حداکثر دو فونت</b> در کل سایت: یکی برای تیتر، یکی برای متن.</li>
+          <li><code class="inline">line-height</code> را <b>بدون واحد</b> بنویسید (۱٫۹ نه ۱۹px) تا با هر اندازهٔ فونت درست کار کند.</li>
+          <li>تیتر بزرگ = <code class="inline">line-height</code> کوچک‌تر؛ متن کوچک = فاصلهٔ خط بیشتر.</li>
+        </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ░░ ۰۷ فلکس‌باکس ░░ -->
-<section class="slide" data-num="۰۷" data-title="آزمایشگاه فلکس‌باکس" data-tag="آزمایش">
+<!-- ░░ ۱۲ فلکس‌باکس ░░ -->
+<section class="slide" data-num="۱۲" data-title="فلکس‌باکس" data-tag="آزمایش">
   <div class="sb">
-    <span class="kick fx">اسلاید ۰۷ • آزمایش</span>
-    <h2 class="stitle fx" style="--d:1">آزمایشگاه Flexbox</h2>
-    <p class="slead fx" style="--d:2">فلکس چیدمان <b>یک‌بُعدی</b> است: یا یک سطر، یا یک ستون. <code class="inline">justify-content</code> محور اصلی را می‌چیند و <code class="inline">align-items</code> محور فرعی را. بازی کنید!</p>
+    <span class="kick fx">درس ۱۱ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">Flexbox؛ چیدن در یک صف</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🚸</span><p>بچه‌های کلاس را در <b>یک صف</b> ایستاده تصور کنید. <code class="inline">justify-content</code> یعنی «در طول صف چطور بایستند» (اول، وسط، آخر، با فاصلهٔ مساوی) و <code class="inline">align-items</code> یعنی «در عرض صف چطور» (بالا، وسط، پایین).</p></div>
     <div class="lab fx" style="--d:3;margin-top:14px">
-      <div class="ctl-group"><label>direction</label><div class="seg" data-g="dir"><button class="on" data-v="row">row</button><button data-v="column">column</button></div></div>
+      <div class="ctl-group"><label>flex-direction</label><div class="seg" data-g="dir"><button class="on" data-v="row">row (صف افقی)</button><button data-v="column">column (صف عمودی)</button></div></div>
       <div class="ctl-group"><label>justify-content</label><div class="seg" data-g="jc">
         <button class="on" data-v="flex-start">start</button><button data-v="center">center</button><button data-v="flex-end">end</button>
         <button data-v="space-between">between</button><button data-v="space-around">around</button><button data-v="space-evenly">evenly</button></div></div>
       <div class="ctl-group"><label>align-items</label><div class="seg" data-g="ai">
         <button data-v="stretch">stretch</button><button data-v="flex-start">start</button><button class="on" data-v="center">center</button><button data-v="flex-end">end</button></div></div>
-      <div class="ctl-group"><label>gap</label><input type="range" id="fGap" min="0" max="40" value="12" style="max-width:220px"><b id="fGapV" style="font-family:var(--fm);color:var(--teal);font-size:12px;direction:ltr">12px</b>
-        <label style="margin-inline-start:14px">wrap</label><div class="seg" data-g="wrap"><button data-v="nowrap" class="on">nowrap</button><button data-v="wrap">wrap</button></div></div>
+      <div class="ctl-group"><label>gap</label><input type="range" id="fGap" min="0" max="40" value="12" style="max-width:200px"><b id="fGapV" style="font-family:var(--fm);color:var(--teal);font-size:12px;direction:ltr">12px</b>
+        <label style="margin-inline-start:14px">flex-wrap</label><div class="seg" data-g="wrap"><button data-v="nowrap" class="on">nowrap</button><button data-v="wrap">wrap</button></div>
+        <label style="margin-inline-start:14px">آیتم ۳</label><div class="seg" data-g="grow"><button data-v="0" class="on">عادی</button><button data-v="1">flex-grow: 1</button></div></div>
       <div class="stage"><div class="flex-stage" id="flexStage">
         <div class="fitem">۱</div><div class="fitem">۲</div><div class="fitem">۳</div><div class="fitem">۴</div><div class="fitem">۵</div>
       </div></div>
       <div class="code-out"><code class="out" id="flexCode"></code></div>
     </div>
-    <div class="note fx" style="--d:4"><span class="ic">💡</span>برای وسط‌چین کامل فقط دو خط: <code class="inline">display:flex; justify-content:center; align-items:center</code>. و بین آیتم‌ها همیشه <code class="inline">gap</code> بگذارید، نه margin.</div>
+    <div class="cols">
+      <ul class="brief fx" style="--d:4">
+        <li><b>وسط‌چین کردن هر چیزی، دو خط:</b> <code class="inline">display:flex</code> + <code class="inline">place-items:center</code>.</li>
+        <li>فاصلهٔ بین آیتم‌ها را با <b>gap</b> بدهید، نه با margin.</li>
+        <li><code class="inline">flex-grow:1</code> یعنی «تو فضای خالی را ببلع» — برای نوار جستجو یا فشاردادن دکمه به انتها عالی است.</li>
+      </ul>
+      <div class="note fx" style="--d:5"><span class="ic">🧭</span><b>گم نشوید:</b> اگر <code class="inline">direction: row</code> است، justify افقی است و align عمودی. اگر column بدهید، این دو <b>جایشان عوض می‌شود</b>. راه حفظ‌نکردن: justify همیشه «در جهت صف» است.</div>
+    </div>
   </div>
 </section>
 
-<!-- ░░ ۰۸ گرید ░░ -->
-<section class="slide" data-num="۰۸" data-title="آزمایشگاه گرید" data-tag="آزمایش">
+<!-- ░░ ۱۳ گرید ░░ -->
+<section class="slide" data-num="۱۳" data-title="گرید" data-tag="آزمایش">
   <div class="sb">
-    <span class="kick fx">اسلاید ۰۸ • آزمایش</span>
-    <h2 class="stitle fx" style="--d:1">آزمایشگاه Grid</h2>
-    <p class="slead fx" style="--d:2">گرید چیدمان <b>دوبُعدی</b> است: سطر و ستون هم‌زمان. جادوی اصلی: <code class="inline">repeat(auto-fill, minmax(150px, 1fr))</code> — گرید پاسخگو بدون حتی یک media query!</p>
+    <span class="kick fx">درس ۱۲ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">Grid؛ چیدن روی شطرنج</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🗂</span><p>فلکس یک <b>صف</b> بود؛ گرید یک <b>جدول</b> است: سطر و ستون با هم. <code class="inline">1fr</code> یعنی «یک سهم از فضای خالی» — مثل تقسیم پیتزا بین بچه‌ها.</p></div>
     <div class="lab fx" style="--d:3;margin-top:14px">
-      <div class="ctl-group"><label>الگو</label><div class="seg" id="gMode">
-        <button class="on" data-v="equal">ستون‌های برابر</button><button data-v="holy">۱fr ۲fr ۱fr</button><button data-v="auto">auto-fill ✦</button></div></div>
-      <div class="ctl-group"><label>gap</label><input type="range" id="gGap" min="0" max="36" value="12" style="max-width:220px"><b id="gGapV" style="font-family:var(--fm);color:var(--teal);font-size:12px;direction:ltr">12px</b></div>
+      <div class="ctl-group"><label>grid-template-columns</label><div class="seg" id="gMode">
+        <button class="on" data-v="equal">۴ ستون برابر</button><button data-v="holy">1fr 2fr 1fr</button>
+        <button data-v="fix">220px 1fr</button><button data-v="auto">auto-fill ✦ (پاسخگو)</button></div></div>
+      <div class="ctl-group"><label>gap</label><input type="range" id="gGap" min="0" max="36" value="12" style="max-width:200px"><b id="gGapV" style="font-family:var(--fm);color:var(--teal);font-size:12px;direction:ltr">12px</b></div>
       <div class="stage"><div class="grid-stage" id="gridStage">
-        <div class="gitem">1</div><div class="gitem">2</div><div class="gitem">3</div><div class="gitem">4</div>
-        <div class="gitem">5</div><div class="gitem">6</div><div class="gitem">7</div><div class="gitem">8</div>
+        <div class="gitem">۱</div><div class="gitem">۲</div><div class="gitem">۳</div><div class="gitem">۴</div>
+        <div class="gitem">۵</div><div class="gitem">۶</div><div class="gitem">۷</div><div class="gitem">۸</div>
       </div></div>
       <div class="code-out"><code class="out" id="gridCode"></code></div>
+      <div class="flowmsg" id="gridMsg"></div>
     </div>
     <div class="cols">
-      <div class="editor fx" style="--d:4"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">grid-areas.css — چیدمان با نقشهٔ اسمی</span></div>
-        <pre><code class="hl">.layout {
+      <div>
+        <h3 class="sub fx" style="--d:4">چیدمان کل صفحه با نقشهٔ اسمی</h3>
+        <div class="stage fx" style="--d:4"><div class="ga-stage">
+          <div class="ga-h">header</div><div class="ga-a">aside</div><div class="ga-m">main</div><div class="ga-f">footer</div>
+        </div></div>
+      </div>
+      <div>
+        <div class="editor fx" style="--d:5"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">layout.css — نقشه را «نقاشی» کنید</span></div>
+          <pre><code class="hl">.layout {
   display: grid;
   grid-template-areas:
     "header header"
     "aside  main"
     "footer footer";
-  grid-template-columns: 240px 1fr;
-  gap: 16px;
+  grid-template-columns: 110px 1fr;
+  gap: 9px;
 }
 .header { grid-area: header; }
-.main   { grid-area: main; }</code></pre>
+.aside  { grid-area: aside; }
+.main   { grid-area: main; }
+.footer { grid-area: footer; }</code></pre>
+        </div>
+        <div class="note fx" style="--d:5"><span class="ic">🧭</span><b>کی فلکس، کی گرید؟</b> یک ردیف دکمه یا منو → فلکس. کل چیدمان صفحه یا گالری کارت‌ها → گرید. در پروژهٔ واقعی هر دو را با هم به کار می‌برید.</div>
       </div>
-      <div class="note fx" style="--d:5"><span class="ic">💡</span>کی فلکس، کی گرید؟ چیدمانِ «محتوامحور و یک‌خطی» (منو، دکمه‌ها) → فلکس. چیدمانِ «صفحه‌محور و شبکه‌ای» (لی‌اوت کلی، گالری) → گرید. ترکیب این دو = قدرت واقعی.</div>
     </div>
   </div>
 </section>
 
-<!-- ░░ ۰۹ جای‌گذاری ░░ -->
-<section class="slide" data-num="۰۹" data-title="جای‌گذاری (position)" data-tag="درس + آزمایش">
+<!-- ░░ ۱۴ وقت تمرین ░░ -->
+<section class="slide" data-num="۱۴" data-title="وقت تمرین: وب‌سایت رزومه" data-tag="ایست‌گاه">
   <div class="sb">
-    <span class="kick fx">اسلاید ۰۹ • درس و آزمایش</span>
-    <h2 class="stitle fx" style="--d:1">Position؛ فرار از جریان عادی</h2>
-    <p class="slead fx" style="--d:2">هر حالت را لمس کنید تا روی صحنه اجرا شود. قانون طلایی: به والدِ عنصرِ <code class="inline">absolute</code> همیشه <code class="inline">position: relative</code> بدهید.</p>
+    <span class="kick fx">ایست‌گاه ۱ • دست به کد</span>
+    <h2 class="stitle fx" style="--d:1">تا اینجا برای ساختن یک سایت واقعی کافی است</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🏗</span><p>جعبه، متن، صف (فلکس) و جدول (گرید) را بلدید. همین چهار تا برای ساختن یک <b>وب‌سایت رزومهٔ کامل</b> کافی است. بروید بخش تمرین‌ها، تمرین شمارهٔ ۱ را باز کنید و <i>گام‌به‌گام</i> با هم بسازیم — بعد برگردید و بقیهٔ درس‌ها را ادامه دهید.</p></div>
+    <div class="cols">
+      <div>
+        <ul class="brief fx" style="--d:3">
+          <li><b>در تمرین ۱ چه می‌سازیم؟</b> یک صفحهٔ رزومه با سربرگ، مهارت‌ها، تجربهٔ کاری و تحصیلات.</li>
+          <li><b>چطور؟</b> ۱۲ گام کوچک. هر گام: یک هدف ساده، چند خط CSS، و خروجی زنده کنار دستتان.</li>
+          <li><b>خروجی هر گام</b> دقیقاً همان چیزی است که در پیش‌نمایش می‌بینید — می‌توانید کد را هم دستکاری کنید.</li>
+        </ul>
+        <div class="fx" style="--d:4;margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn teal" onclick="openEx('resume')">🛠 شروع تمرین ۱: وب‌سایت رزومه</button>
+          <button class="btn" onclick="go(14)">فعلاً ادامهٔ درس‌ها <span>←</span></button>
+        </div>
+      </div>
+      <div class="note fx" style="--d:4"><span class="ic">🎓</span><b>حرف معلم:</b> CSS با خواندن یاد گرفته نمی‌شود، با <b>ساختن</b> یاد گرفته می‌شود. اگر فقط اسلایدها را ببینید و کد نزنید، فردا هیچ‌کدام یادتان نمی‌ماند. یک گام از تمرین در روز، از ده اسلاید خواندن بهتر است.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ۱۵ position ░░ -->
+<section class="slide" data-num="۱۵" data-title="position" data-tag="درس + آزمایش">
+  <div class="sb">
+    <span class="kick fx">درس ۱۳ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">position؛ بیرون‌پریدن از صف</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🏷</span><p>همهٔ عناصر مثل بچه‌ها <b>در صف</b> می‌ایستند (static). <b>relative</b> یعنی «کمی از جایت تکان بخور، ولی جایت را نگه دار». <b>absolute</b> یعنی «از صف بیا بیرون و مثل برچسب بچسب به گوشهٔ والدت» — جایش در صف خالی می‌شود و بقیه جلو می‌آیند!</p></div>
     <div class="cols">
       <div>
         <div class="seg fx" style="--d:3" id="posTabs">
           <button class="on" data-p="static">static</button><button data-p="relative">relative</button>
           <button data-p="absolute">absolute</button><button data-p="fixed">fixed</button><button data-p="sticky">sticky</button>
         </div>
-        <p class="note fx" id="posDesc" style="--d:4;margin-top:14px"></p>
+        <label class="switch fx" style="--d:3;margin-top:12px"><input type="checkbox" id="posRel"> والدِ آبی <b>position: relative</b> داشته باشد</label>
+        <div class="flowmsg fx" id="posDesc" style="--d:4"></div>
         <div class="code-out fx" style="--d:5"><code class="out" id="posCode"></code></div>
-        <div class="note fx" style="--d:6"><span class="ic">💡</span><code class="inline">z-index</code> فقط روی عناصر position‌دار (و فلکس/گرید) کار می‌کند. اعداد را بی‌دلیل بزرگ نکنید: ۱، ۲، ۱۰ کافی است.</div>
+        <div class="note fx" style="--d:6"><span class="ic">🔢</span><code class="inline">z-index</code> یعنی «کدام کاغذ روی کدام». فقط روی عناصری کار می‌کند که position دارند. اعداد را بی‌دلیل بزرگ نکنید؛ ۱ و ۲ و ۱۰ کافی است.</div>
       </div>
       <div class="fx" style="--d:4">
-        <div class="stage pos-stage" id="posStage" data-mode="static">
-          <div class="col">
-            <div class="pos-ghost"></div>
-            <div class="pos-box" id="posBox">.box</div>
-            <div class="pos-sib">عنصر بعدی</div>
+        <div class="pg" id="posPage" data-m="static">
+          <div class="pg-row">
+            <div class="pg-card"><b>کارت بالایی</b>من همیشه سر جایم هستم.</div>
+            <div class="pg-card host" id="posHost"><b>کارت آبی (والد)</b>جعبهٔ نارنجی داخل من است.
+              <div class="pgbox ghost" id="posGhost">جای اصلی</div>
+              <div class="pgbox live" id="posBox">.box</div>
+            </div>
+            <div class="pg-card" id="posNext"><b>کارت پایینی</b>اگر جعبه از صف بیرون برود، من می‌آیم بالا.</div>
+            <div class="pg-fill" id="posFill" hidden>پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… پایین… دیدید؟ جعبه به سقفِ همین قاب چسبید و تا آخر با شما آمد.</div>
           </div>
         </div>
-        <div class="pos-scroll" id="posScroll">
-          <div class="st">من sticky هستم 📌</div>
-          <p>اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… اسکرول کنید… دیدید؟ هدر به سقف چسبید و تا پایانِ این ظرف با شما می‌آید. position: sticky یعنی «عادی باش تا به آستانه برسی، بعد بچسب».</p>
-        </div>
+        <div class="flowmsg" id="posFlow"></div>
       </div>
     </div>
   </div>
+  <div id="fixedDemo" hidden>من به <b>پنجرهٔ مرورگر</b> چسبیده‌ام<small>اسکرول کنید — تکان نمی‌خورم</small></div>
 </section>
 
-<!-- ░░ ۱۰ تبدیل و گذار ░░ -->
-<section class="slide" data-num="۱۰" data-title="تبدیل و گذار" data-tag="آزمایش">
+<!-- ░░ ۱۶ تبدیل و گذار ░░ -->
+<section class="slide" data-num="۱۶" data-title="transform و transition" data-tag="آزمایش">
   <div class="sb">
-    <span class="kick fx">اسلاید ۱۰ • آزمایش</span>
+    <span class="kick fx">درس ۱۴ • آزمایش زنده</span>
     <h2 class="stitle fx" style="--d:1">Transform + Transition</h2>
-    <p class="slead fx" style="--d:2">ترنزفورم عنصر را بدون لمسِ چیدمان جابه‌جا می‌کند (پس سریع است)؛ گذار، تغییرِ خاصیت‌ها را نرم می‌کند. مقادیر را بچینید و دکمهٔ «اجرا» را بزنید.</p>
+    <div class="simple fx" style="--d:2"><span class="em">🚪</span><p><b>transform</b> یعنی عنصر را بچرخانی، بزرگ کنی یا جابه‌جا کنی — بدون این‌که بقیهٔ صفحه تکان بخورد. <b>transition</b> همان <i>آرام‌بندِ در</i> است: به‌جای این‌که تغییر یک‌دفعه بپرد، نرم انجام می‌شود.</p></div>
     <div class="cols">
       <div class="lab fx" style="--d:3">
         <div class="lab-row"><span>rotate</span><input type="range" id="tR" min="-180" max="180" value="-8"><b id="tRv">-8deg</b></div>
@@ -766,38 +1200,45 @@ h1, h2, h3 {
         <div class="lab-row"><span>duration</span><input type="range" id="tD" min="1" max="30" value="8"><b id="tDv">0.8s</b></div>
         <div class="easing-chips" id="tEase">
           <button data-e="ease" class="on">ease</button><button data-e="linear">linear</button>
-          <button data-e="ease-in-out">ease-in-out</button><button data-e="cubic-bezier(.6,-.4,.3,1.5)">بازگشتی ⤴</button>
+          <button data-e="ease-in-out">ease-in-out</button><button data-e="cubic-bezier(.6,-.4,.3,1.5)">فنری ⤴</button>
         </div>
-        <div style="margin-top:14px"><button class="btn primary" id="tfGo">▶ اجرا</button></div>
+        <div style="margin-top:14px"><button class="btn primary" id="tfGo">▶ اجرا کن</button></div>
       </div>
       <div class="fx" style="--d:4">
         <div class="stage tf-stage"><div id="tfBox">⚗</div></div>
         <div class="code-out"><code class="out" id="tfCode"></code></div>
-        <div class="note"><span class="ic">⚡</span>برای انیمیشن فقط <code class="inline">transform</code> و <code class="inline">opacity</code> را تکان بدهید — این دو روی GPU اجرا می‌شوند. انیمیت کردن width ،top ،margin… هر فریم چیدمان را دوباره محاسبه می‌کند و لگ می‌آورد.</div>
+        <ul class="brief">
+          <li><b>transition روی حالت عادی بنویسید،</b> نه داخل <code class="inline">:hover</code> — وگرنه فقط رفت نرم می‌شود و برگشت می‌پرد.</li>
+          <li>فقط <code class="inline">transform</code> و <code class="inline">opacity</code> را انیمیت کنید؛ این دو روی کارت گرافیک اجرا می‌شوند و روان‌اند. انیمیت‌کردن <code class="inline">width</code> یا <code class="inline">top</code> صفحه را کند می‌کند.</li>
+        </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ░░ ۱۱ انیمیشن ░░ -->
-<section class="slide" data-num="۱۱" data-title="انیمیشن keyframes" data-tag="آزمایش">
+<!-- ░░ ۱۷ انیمیشن ░░ -->
+<section class="slide" data-num="۱۷" data-title="انیمیشن و keyframes" data-tag="آزمایش">
   <div class="sb">
-    <span class="kick fx">اسلاید ۱۱ • آزمایش</span>
-    <h2 class="stitle fx" style="--d:1">Animation و @keyframes</h2>
-    <p class="slead fx" style="--d:2">گذار دو حالت دارد؛ انیمیشن بی‌نهایت فریم. صحنهٔ keyframes را تعریف کنید، با shorthand به عنصر بچسبانید و پخش کنید.</p>
+    <span class="kick fx">درس ۱۵ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">Animation و ‎@keyframes</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🎬</span><p>transition فقط <b>دو حالت</b> داشت: قبل و بعد. انیمیشن مثل <b>کارتون</b> است: می‌گویید در ۰٪ کجا باشد، در ۵۰٪ کجا، در ۱۰۰٪ کجا — و مرورگر بینشان را پر می‌کند.</p></div>
     <div class="cols">
       <div class="editor fx" style="--d:3"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">keyframes.css</span></div>
-        <pre><code class="hl">@keyframes bounce {
+        <pre><code class="hl">/* ۱) فریم‌ها را تعریف کن */
+@keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-52px); }
 }
+
+/* ۲) به عنصر بچسبان */
 .ball {
   animation: bounce 1s ease-in-out infinite;
-  /* name duration timing iteration */
+  /*         نام   مدت  شتاب      تکرار  */
 }
-.ball.done { animation-fill-mode: forwards; }
+
+/* ۳) به فکر همه باش */
 @media (prefers-reduced-motion: reduce) {
-  .ball { animation: none; } /* دسترس‌پذیری! */
+  .ball { animation: none; }
 }</code></pre>
       </div>
       <div class="lab fx" style="--d:4">
@@ -806,85 +1247,95 @@ h1, h2, h3 {
           <button class="on" data-v="bounce">bounce</button><button data-v="spin">spin</button>
           <button data-v="pulse">pulse</button><button data-v="floaty">float</button></div></div>
         <div class="lab-row"><span>duration</span><input type="range" id="aDur" min="3" max="30" value="10"><b id="aDurV">1s</b></div>
-        <div class="ctl-group"><label>timing</label><div class="seg" id="aTm">
+        <div class="ctl-group"><label>شتاب</label><div class="seg" id="aTm">
           <button data-v="linear">linear</button><button data-v="ease">ease</button><button class="on" data-v="ease-in-out">ease-in-out</button></div></div>
         <div class="ctl-group"><label>تکرار</label><div class="seg" id="aIt">
-          <button data-v="1">۱</button><button data-v="3">۳</button><button class="on" data-v="infinite">∞</button></div>
+          <button data-v="1">۱ بار</button><button data-v="3">۳ بار</button><button class="on" data-v="infinite">بی‌نهایت</button></div>
           <label style="margin-inline-start:10px">جهت</label><div class="seg" id="aDr">
           <button class="on" data-v="normal">normal</button><button data-v="alternate">alternate</button></div></div>
         <button class="btn" id="aPlay">⏸ توقف</button>
         <div class="code-out"><code class="out" id="aCode"></code></div>
       </div>
     </div>
+    <div class="note fx" style="--d:5"><span class="ic">♿</span>بعضی کاربران با حرکت زیاد سرگیجه می‌گیرند. همیشه بلوک <code class="inline">@media (prefers-reduced-motion: reduce)</code> را بگذارید — سه خط است و برای عده‌ای فرق بین «قابل استفاده» و «غیرقابل استفاده» را می‌سازد.</div>
   </div>
 </section>
 
-<!-- ░░ ۱۲ پاسخگو ░░ -->
-<section class="slide" data-num="۱۲" data-title="طراحی پاسخگو" data-tag="درس + آزمایش">
+<!-- ░░ ۱۸ ریسپانسیو ░░ -->
+<section class="slide" data-num="۱۸" data-title="طراحی پاسخگو" data-tag="درس + آزمایش">
   <div class="sb">
-    <span class="kick fx">اسلاید ۱۲ • درس و آزمایش</span>
-    <h2 class="stitle fx" style="--d:1">طراحی پاسخگو</h2>
-    <p class="slead fx" style="--d:2">موبایل‌فرست یعنی استایل پایه برای کوچک‌ترین صفحه باشد و با <code class="inline">min-width</code> بزرگ‌ترش کنید. عرض قاب را بکشید تا چیدمانِ نمونه «زنده» واکنش نشان دهد.</p>
+    <span class="kick fx">درس ۱۶ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">پاسخگو؛ سایت مثل آب شکل ظرف را بگیرد</h2>
+    <div class="simple fx" style="--d:2"><span class="em">💧</span><p>آب در لیوان شکل لیوان می‌شود، در بطری شکل بطری. صفحهٔ شما هم باید در موبایل و لپ‌تاپ همان‌قدر خوب باشد. <b>موبایل‌فرست</b> یعنی اول برای صفحهٔ کوچک بنویسید، بعد بگویید «اگر جا بود، دوستونه شو».</p></div>
     <div class="cols">
       <div>
         <div class="editor fx" style="--d:3"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">responsive.css</span></div>
-          <pre><code class="hl">/* موبایل‌فرست: پایه برای همه */
-.grid { grid-template-columns: 1fr; }
+          <pre><code class="hl">/* پایه = موبایل: یک ستون */
+.grid { display: grid; grid-template-columns: 1fr; }
 
-@media (min-width: 768px) {   /* تبلت */
+@media (min-width: 768px) {   /* تبلت به بالا */
   .grid { grid-template-columns: 1fr 1fr; }
 }
 @media (min-width: 1100px) {  /* دسکتاپ */
   .grid { grid-template-columns: repeat(3, 1fr); }
 }
-/* تایپوگرافی سیال بدون media query */
-h1 { font-size: clamp(1.6rem, 4vw, 2.8rem); }</code></pre>
+
+/* اندازهٔ سیال، بدون هیچ media query */
+h1    { font-size: clamp(1.6rem, 4vw, 2.8rem); }
+.wrap { width: min(1100px, 92%); margin-inline: auto; }</code></pre>
         </div>
         <div class="bp fx" style="--d:4">
           <div><b>&lt; 640px</b>موبایل</div><div><b>640–1024px</b>تبلت</div><div><b>&gt; 1024px</b>دسکتاپ</div>
         </div>
-        <div class="note fx" style="--d:5"><span class="ic">💡</span>این دمو با <code class="inline">@container</code> کار می‌کند (نسخهٔ مدرن media query که به جای پنجره، به عرضِ «والد» نگاه می‌کند) — خودِ این هم یک درس است!</div>
+        <ul class="brief fx" style="--d:5">
+          <li>این تگ را در <code class="inline">&lt;head&gt;</code> فراموش نکنید، وگرنه موبایل صفحه را زوم‌اوت می‌کند:<br><code class="inline">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code></li>
+          <li><code class="inline">clamp(کف، دلخواه، سقف)</code> جای سه media query را می‌گیرد.</li>
+        </ul>
       </div>
       <div class="fx" style="--d:4">
+        <div class="tryit">🧪 عرض قاب را بکشید</div>
         <div class="lab-row"><span>عرض قاب</span><input type="range" id="rW" min="260" max="760" value="300"><b id="rWv">300px</b></div>
         <div class="rwrap"><div class="rframe" id="rFrame">
-          <div class="mini-hero"><b>🏔 کارت پستال کوهستان</b><span>متن کوتاه تبلیغاتی که با بزرگ‌شدن قاب، کنار تصویر می‌نشیند.</span></div>
+          <div class="mini-hero"><b>🏔 کارت‌پستال کوهستان</b><span>متن کوتاه تبلیغاتی که با بزرگ‌شدن قاب، کنار تیتر می‌نشیند.</span></div>
           <div class="mini-cards"><i>کارت ۱</i><i>کارت ۲</i><i>کارت ۳</i></div>
         </div></div>
+        <div class="note"><span class="ic">💡</span>این دمو با <code class="inline">@container</code> کار می‌کند: نسخهٔ مدرن media query که به‌جای پنجرهٔ مرورگر، به عرض <b>والد</b> نگاه می‌کند. برای کامپوننت‌های قابل‌استفاده‌مجدد عالی است.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ░░ ۱۳ متغیرها و توابع ░░ -->
-<section class="slide" data-num="۱۳" data-title="متغیرها و توابع" data-tag="آزمایش">
+<!-- ░░ ۱۹ متغیرها ░░ -->
+<section class="slide" data-num="۱۹" data-title="متغیرها و توابع" data-tag="آزمایش">
   <div class="sb">
-    <span class="kick fx">اسلاید ۱۳ • درس و آزمایش</span>
-    <h2 class="stitle fx" style="--d:1">Custom Properties و توابع</h2>
-    <p class="slead fx" style="--d:2">متغیرها را در <code class="inline">:root</code> تعریف کنید، همه‌جا با <code class="inline">var()</code> بخوانید، و محلی بازنویسی کنید. یک کلیک روی رنگ‌ها = تغییر آنیِ کل دمو.</p>
+    <span class="kick fx">درس ۱۷ • آزمایش زنده</span>
+    <h2 class="stitle fx" style="--d:1">متغیرها؛ یک‌بار بنویس، همه‌جا استفاده کن</h2>
+    <div class="simple fx" style="--d:2"><span class="em">🎨</span><p>مثل قوطی رنگ با برچسب است: روی قوطی می‌نویسید «رنگ اصلی». هرجا لازم شد از همان قوطی برمی‌دارید. روزی که نظرتان عوض شد، <b>فقط داخل قوطی</b> را عوض می‌کنید و کل ساختمان رنگ جدید می‌گیرد. روی رنگ‌ها کلیک کنید.</p></div>
     <div class="cols">
       <div>
         <div class="editor fx" style="--d:3"><div class="ed-top"><span class="dots"><i></i><i></i><i></i></span><span class="ed-name">variables.css</span></div>
-          <pre><code class="hl">:root {
+          <pre><code class="hl">:root {                    /* قوطی‌ها اینجا */
   --accent: #ffb454;
   --radius: 14px;
 }
+
 .btn {
-  background: var(--accent);
+  background: var(--accent);      /* برداشتن از قوطی */
   border-radius: var(--radius);
-  /* مقدار جایگزین: */
-  color: var(--on-accent, #000);
-}</code></pre>
+  color: var(--on-accent, #000);  /* مقدار پشتیبان */
+}
+
+.card { padding: calc(var(--radius) / 2); }</code></pre>
         </div>
         <div class="fn-list fx" style="--d:4">
           <div><code>calc(100% - 40px)</code><span>ریاضی بین واحدهای مختلف</span></div>
-          <div><code>clamp(1rem, 2.5vw, 1.35rem)</code><span>مقدار سیال با کف و سقف</span></div>
-          <div><code>min(320px, 90%)</code><span>کوچک‌ترین مقدار را انتخاب می‌کند</span></div>
+          <div><code>clamp(1rem, 2.5vw, 1.35rem)</code><span>کف، دلخواه، سقف</span></div>
+          <div><code>min(320px, 90%)</code><span>هرکدام کوچک‌تر بود</span></div>
           <div><code>color-mix(in oklab, #ffb454 30%, white)</code><span>مخلوط دو رنگ</span></div>
         </div>
       </div>
       <div id="vScope" class="fx" style="--d:4">
-        <strong style="font-size:13px;color:var(--gold)">🧪 یک کلیک = عوض‌شدن --accent</strong>
+        <div class="tryit">🧪 یک کلیک = تغییر کل تم</div>
         <div class="theme-btns" id="vBtns">
           <button class="on" data-c="#ffb454" data-s="rgba(255,180,84,.14)" style="background:#ffb454" aria-label="کهربایی"></button>
           <button data-c="#95e6cb" data-s="rgba(149,230,203,.14)" style="background:#95e6cb" aria-label="فیروزه‌ای"></button>
@@ -895,8 +1346,8 @@ h1 { font-size: clamp(1.6rem, 4vw, 2.8rem); }</code></pre>
         <div class="v-demo">
           <span class="v-btn">دکمه با var(--accent)</span>
           <a class="v-link" href="#">لینک با همان متغیر</a>
-          <span class="v-badge">بج با پس‌زمینهٔ کم‌رنگ متغیر</span>
-          <div class="v-card"><b>کارت نمونه</b><div style="font-size:12px;color:var(--dim);margin-top:4px">سایه‌اش هم از --accent می‌آید.</div></div>
+          <span class="v-badge">بج با نسخهٔ کم‌رنگ متغیر</span>
+          <div class="v-card"><b>کارت نمونه</b><div style="font-size:12px;color:var(--dim);margin-top:4px">حتی سایه‌اش هم از --accent می‌آید.</div></div>
         </div>
         <div class="code-out"><code class="out" id="vCode"></code></div>
       </div>
@@ -904,12 +1355,12 @@ h1 { font-size: clamp(1.6rem, 4vw, 2.8rem); }</code></pre>
   </div>
 </section>
 
-<!-- ░░ ۱۴ مرجع کامل ░░ -->
-<section class="slide" data-num="۱۴" data-title="مرجع کامل خواص" data-tag="مرجع">
+<!-- ░░ ۲۰ مرجع ░░ -->
+<section class="slide" data-num="۲۰" data-title="مرجع خواص" data-tag="مرجع">
   <div class="sb">
-    <span class="kick fx">اسلاید ۱۴ • مرجع</span>
-    <h2 class="stitle fx" style="--d:1">مرجع کامل خاصیت‌های CSS</h2>
-    <p class="slead fx" style="--d:2">چکیدهٔ خواص، توابع و قواعد CSS مدرن — جستجو کنید یا با دسته‌ها فیلتر کنید. این همان «تمام attributeها»ست، یک‌جا.</p>
+    <span class="kick fx">مرجع • برای وقتی که یادتان رفت</span>
+    <h2 class="stitle fx" style="--d:1">مرجع خاصیت‌های CSS</h2>
+    <p class="slead fx" style="--d:2">لازم نیست هیچ‌کدام را حفظ کنید. اسمش را جستجو کنید یا با دسته‌ها فیلتر کنید — همان کاری که حرفه‌ای‌ها هر روز می‌کنند.</p>
     <div class="ref-bar fx" style="--d:3">
       <input type="search" id="refQ" placeholder="جستجو… (مثلاً flex یا shadow)" aria-label="جستجوی خاصیت">
       <span class="ref-count" id="refCount"></span>
@@ -919,12 +1370,12 @@ h1 { font-size: clamp(1.6rem, 4vw, 2.8rem); }</code></pre>
   </div>
 </section>
 
-<!-- ░░ ۱۵ قالب‌ها ░░ -->
-<section class="slide" data-num="۱۵" data-title="قالب‌های آماده" data-tag="قالب">
+<!-- ░░ ۲۱ قالب‌ها ░░ -->
+<section class="slide" data-num="۲۱" data-title="قالب‌های آماده" data-tag="قالب">
   <div class="sb">
-    <span class="kick fx">اسلاید ۱۵ • قالب آماده</span>
+    <span class="kick fx">جعبه‌ابزار • کپی کنید و ببرید</span>
     <h2 class="stitle fx" style="--d:1">قالب‌های آمادهٔ کپی‌ـ‌چسبانی</h2>
-    <p class="slead fx" style="--d:2">پیش‌نمایش زنده + کد کامل. «نمایش کد» را باز کنید و با یک کلیک کپی کنید. کلاس‌ها را در HTML خودتان بگذارید و CSS را در استایل‌تان.</p>
+    <p class="slead fx" style="--d:2">پیش‌نمایش زنده + کد کامل. «نمایش کد» را باز کنید، دکمهٔ کپی را بزنید و در پروژهٔ خودتان بچسبانید.</p>
     <div class="tpl-grid fx" id="tplGrid" style="--d:3">
 
       <article class="tpl">
@@ -936,7 +1387,7 @@ h1 { font-size: clamp(1.6rem, 4vw, 2.8rem); }</code></pre>
 
       <article class="tpl">
         <div class="tpl-head"><span class="no">۰۲</span><div><h4>کارت محصول</h4><small>.pcard + تصویر + قیمت</small></div></div>
-        <div class="tpl-prev"><div class="pcard"><img src="https://picsum.photos/seed/sneaker-product/400/240" alt="کفش"><div class="bd"><span class="tg">✦ جدید</span><h5>کفش رانِر ۲۷</h5><div class="ft"><span class="pr">۲۴۸۰٬۰۰۰ ت</span><button class="bt">خرید</button></div></div></div></div>
+        <div class="tpl-prev"><div class="pcard"><div class="ph">👟</div><div class="bd"><span class="tg">✦ جدید</span><h5>کفش رانِر ۲۷</h5><div class="ft"><span class="pr">۲٬۴۸۰٬۰۰۰ ت</span><button class="bt">خرید</button></div></div></div></div>
         <details><summary>نمایش کد</summary><pre><code id="tplc1"></code></pre></details>
         <div class="tpl-foot"><span style="font-size:11px;color:var(--faint)">افکت شناور در hover</span><button class="copy" data-i="1">⧉ کپی CSS</button></div>
       </article>
@@ -952,7 +1403,7 @@ h1 { font-size: clamp(1.6rem, 4vw, 2.8rem); }</code></pre>
         <div class="tpl-head"><span class="no">۰۴</span><div><h4>فیلد فرم</h4><small>.field + حلقهٔ focus</small></div></div>
         <div class="tpl-prev" style="width:100%"><div class="tfield"><label for="demoIn">ایمیل</label><input id="demoIn" type="email" placeholder="you@mail.com"></div></div>
         <details><summary>نمایش کد</summary><pre><code id="tplc3"></code></pre></details>
-        <div class="tpl-foot"><span style="font-size:11px;color:var(--faint)">focus را امتحان کنید (Tab)</span><button class="copy" data-i="3">⧉ کپی CSS</button></div>
+        <div class="tpl-foot"><span style="font-size:11px;color:var(--faint)">با Tab امتحان کنید</span><button class="copy" data-i="3">⧉ کپی CSS</button></div>
       </article>
 
       <article class="tpl">
@@ -963,8 +1414,8 @@ h1 { font-size: clamp(1.6rem, 4vw, 2.8rem); }</code></pre>
       </article>
 
       <article class="tpl">
-        <div class="tpl-head"><span class="no">۰۶</span><div><h4>اسکلت کامل صفحه</h4><small>reset + متغیرها + فونت فارسی</small></div></div>
-        <div class="tpl-prev" style="font-size:12px;color:var(--dim);text-align:center;line-height:2">فایل HTML آماده برای شروع پروژه:<br><code class="inline">lang="fa" dir="rtl"</code> + ریست مدرن<br>+ <code class="inline">prefers-reduced-motion</code></div>
+        <div class="tpl-head"><span class="no">۰۶</span><div><h4>اسکلت کامل صفحه</h4><small>ریست + متغیرها + فونت فارسی</small></div></div>
+        <div class="tpl-prev" style="font-size:12px;color:var(--dim);text-align:center;line-height:2">فایل HTML آمادهٔ شروع پروژه:<br><code class="inline">lang="fa" dir="rtl"</code> + ریست مدرن<br>+ <code class="inline">prefers-reduced-motion</code></div>
         <details><summary>نمایش کد</summary><pre><code id="tplc5"></code></pre></details>
         <div class="tpl-foot"><span style="font-size:11px;color:var(--faint)">نقطهٔ شروع هر پروژه</span><button class="copy" data-i="5">⧉ کپی HTML</button></div>
       </article>
@@ -973,31 +1424,31 @@ h1 { font-size: clamp(1.6rem, 4vw, 2.8rem); }</code></pre>
   </div>
 </section>
 
-<!-- ░░ ۱۶ نکات طلایی ░░ -->
-<section class="slide" data-num="۱۶" data-title="نکات طلایی و پایان" data-tag="جمع‌بندی">
+<!-- ░░ ۲۲ نکات طلایی ░░ -->
+<section class="slide" data-num="۲۲" data-title="نکات طلایی و پایان" data-tag="جمع‌بندی">
   <div class="sb">
-    <span class="kick fx">اسلاید ۱۶ • جمع‌بندی</span>
-    <h2 class="stitle fx" style="--d:1">نکات طلایی که کلاس‌ها را می‌شکافد</h2>
+    <span class="kick fx">پایان دوره • جمع‌بندی</span>
+    <h2 class="stitle fx" style="--d:1">دوازده نکته که کارتان را عوض می‌کند</h2>
     <div class="tips fx" style="--d:2">
-      <div class="tip"><span class="n">۰۱</span><p><b>box-sizing سراسری:</b> اولین خط هر پروژه — همه‌چیز را قابل پیش‌بینی می‌کند.</p></div>
-      <div class="tip"><span class="n">۰۲</span><p><b>فونت با rem:</b> با تغییر فونت ریشه، کل مقیاس صفحه عوض می‌شود؛ px این انعطاف را ندارد.</p></div>
-      <div class="tip"><span class="n">۰۳</span><p><b>!important ممنوع:</b> نشانهٔ جنگ با آبشار است؛ به‌جایش وزن انتخابگر را درست کنید.</p></div>
-      <div class="tip"><span class="n">۰۴</span><p><b>فقط transform و opacity:</b> تنها خاصیت‌هایی که انیمیشن‌شان ۶۰fps واقعی می‌ماند.</p></div>
-      <div class="tip"><span class="n">۰۵</span><p><b>:focus-visible را دریابید:</b> outline را هرگز حذف نکنید؛ کاربران کیبورد به آن نیاز دارند.</p></div>
-      <div class="tip"><span class="n">۰۶</span><p><b>prefers-reduced-motion:</b> بعضی کاربران با انیمیشن‌های زیاد سرگیجه می‌گیرند؛ راه گریز بگذارید.</p></div>
-      <div class="tip"><span class="n">۰۷</span><p><b>clamp() برای تایپوگرافی سیال:</b> یک خط به‌جای سه media query.</p></div>
-      <div class="tip"><span class="n">۰۸</span><p><b>نام‌گذاری BEM:</b> <code class="inline">card__title--large</code>؛ هم خواناست هم بی‌تعارض.</p></div>
-      <div class="tip"><span class="n">۰۹</span><p><b>gap به‌جای margin:</b> در فلکس و گرید، فاصلهٔ بین آیتم‌ها کار gap است نه margin.</p></div>
-      <div class="tip"><span class="n">۱۰</span><p><b>موبایل‌فرست:</b> اول صفحهٔ کوچک، بعد min-width؛ کد کمتر و تمیزتر.</p></div>
-      <div class="tip"><span class="n">۱۱</span><p><b>DevTools بهترین معلم:</b> تب Computed مدل جعبهٔ هر عنصر را به شما نشان می‌دهد.</p></div>
-      <div class="tip"><span class="n">۱۲</span><p><b>هر روز یک چیز کوچک بسازید:</b> CSS در «ساختن» یاد گرفته می‌شود، نه در «خواندن».</p></div>
+      <div class="tip"><span class="n">۰۱</span><p><b>اول از همه border-box:</b> <code class="inline">*{box-sizing:border-box}</code> — اندازه‌ها دیگر غافلگیرتان نمی‌کنند.</p></div>
+      <div class="tip"><span class="n">۰۲</span><p><b>فونت و فاصله با rem:</b> تا کاربرِ کم‌بینا هم بتواند صفحه را بزرگ کند.</p></div>
+      <div class="tip"><span class="n">۰۳</span><p><b>!important یعنی شکست:</b> نشانهٔ جنگ با آبشار است. انتخابگر را ساده کنید.</p></div>
+      <div class="tip"><span class="n">۰۴</span><p><b>فقط transform و opacity را انیمیت کنید:</b> بقیه صفحه را کند می‌کنند.</p></div>
+      <div class="tip"><span class="n">۰۵</span><p><b>outline را حذف نکنید:</b> کاربر کیبورد بدون آن گم می‌شود؛ اگر زشت است، جایگزین زیبا بدهید.</p></div>
+      <div class="tip"><span class="n">۰۶</span><p><b>prefers-reduced-motion را رعایت کنید:</b> سه خط، برای کسانی که از حرکت اذیت می‌شوند.</p></div>
+      <div class="tip"><span class="n">۰۷</span><p><b>gap به‌جای margin:</b> در فلکس و گرید فاصله‌ها کار gap است.</p></div>
+      <div class="tip"><span class="n">۰۸</span><p><b>موبایل‌فرست بنویسید:</b> اول کوچک، بعد <code class="inline">min-width</code>؛ کد کمتر و تمیزتر.</p></div>
+      <div class="tip"><span class="n">۰۹</span><p><b>نام کلاس از روی کار، نه رنگ:</b> <code class="inline">.btn-primary</code> بله، <code class="inline">.btn-orange</code> خیر.</p></div>
+      <div class="tip"><span class="n">۱۰</span><p><b>طول خط را کوتاه کنید:</b> <code class="inline">max-width: 65ch</code> خوانایی را دو برابر می‌کند.</p></div>
+      <div class="tip"><span class="n">۱۱</span><p><b>DevTools بهترین معلم است:</b> با F12 هر عنصر را باز کنید و مدل جعبه‌اش را ببینید.</p></div>
+      <div class="tip"><span class="n">۱۲</span><p><b>هر روز یک چیز کوچک بسازید:</b> CSS در ساختن یاد گرفته می‌شود، نه در خواندن.</p></div>
     </div>
     <div class="finale fx" style="--d:3">
-      <h3>🎓 پایان آزمایشگاه</h3>
-      <p>همهٔ آنچه در این صفحه دیدید — حرکت‌ها، سایه‌ها، گریدها و ادیتور زنده — فقط با همین خاصیت‌ها ساخته شده. حالا نوبت شماست. منابع برای ادامهٔ راه: <b style="color:var(--gold)">MDN Web Docs</b> ، <b style="color:var(--gold)">web.dev</b> و <b style="color:var(--gold)">CSS-Tricks</b>.</p>
+      <h3>🎓 درس‌ها تمام شد — حالا نوبت ساختن است</h3>
+      <p>هر چیزی که در این صفحه دیدید، با همین خاصیت‌ها ساخته شده. بروید سراغ تمرین‌ها و چهار پروژه را گام‌به‌گام بسازید. برای ادامهٔ راه: <b style="color:var(--gold)">MDN Web Docs</b>، <b style="color:var(--gold)">web.dev</b> و <b style="color:var(--gold)">CSS-Tricks</b>.</p>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="btn primary" onclick="go(0)">↺ تماشا از اول</button>
-        <button class="btn" onclick="go(13)">مرور مرجع خواص</button>
+        <button class="btn teal" onclick="openEx()">🛠 رفتن به تمرین‌ها</button>
+        <button class="btn" onclick="go(0)">↺ تماشا از اول</button>
       </div>
     </div>
   </div>
@@ -1005,25 +1456,116 @@ h1 { font-size: clamp(1.6rem, 4vw, 2.8rem); }</code></pre>
 
 </main>
 
+<!-- ═══════ نمای تمرین‌ها ═══════ -->
+<main class="view" id="exView" hidden>
+  <div class="exwrap" id="exWrap">
+
+    <!-- فهرست تمرین‌ها -->
+    <div id="exHub">
+      <span class="kick">بخش تمرین • جدا از درس‌ها</span>
+      <div class="exhead">
+        <h2>تمرین‌ها: با دست خودتان بسازید</h2>
+        <p>هر تمرین یک پروژهٔ واقعی است که <b>گام‌به‌گام</b> ساخته می‌شود. در هر گام یک هدف کوچک می‌گیرید، چند خط CSS اضافه می‌کنید و نتیجه را همان لحظه زنده می‌بینید. کد قابل ویرایش است — خرابش کنید، دوباره درستش کنید؛ اینجا آزمایشگاه است.</p>
+      </div>
+      <div class="exgrid" id="exGrid"></div>
+      <div class="note" style="margin-top:24px"><span class="ic">🎓</span><b>پیشنهاد معلم:</b> تمرین ۱ (وب‌سایت رزومه) را درست بعد از درس گرید انجام دهید؛ بقیه را هر وقت خواستید. هیچ گامی را رد نکنید، حتی اگر ساده به نظر می‌رسد.</div>
+    </div>
+
+    <!-- پخش‌کنندهٔ تمرین -->
+    <div id="exPlayer" hidden>
+      <div class="extitle">
+        <button class="exback" id="exBack">→ همهٔ تمرین‌ها</button>
+        <h2 id="exTitle"></h2>
+      </div>
+      <div class="exbar">
+        <span class="pill" id="exPill"></span>
+        <div class="exprog"><i id="exProg"></i></div>
+        <span class="pill" id="exPct">۰٪</span>
+      </div>
+
+      <div class="exlayout">
+        <div>
+          <div class="stps" id="exSteps"></div>
+          <div class="stepcard">
+            <h3 id="stpTitle"></h3>
+            <p class="goal" id="stpGoal"></p>
+            <div class="why"><span class="em" id="stpEm">💡</span><p id="stpWhy"></p></div>
+            <div class="snip">
+              <header><span id="stpFile">style.css</span><button class="add" id="stpAdd">＋ افزودن به کد</button></header>
+              <pre><code id="stpCode"></code></pre>
+            </div>
+            <div class="exnav">
+              <button class="nbtn" id="stpPrev"><span>→</span> گام قبل</button>
+              <button class="nbtn primary" id="stpNext">گام بعد <span>←</span></button>
+            </div>
+          </div>
+          <div class="done-box" id="exDone" hidden>
+            <h3>🎉 تمرین تمام شد</h3>
+            <p id="exDoneTxt"></p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+              <button class="btn" id="exCopyAll">⧉ کپی کل CSS</button>
+              <button class="btn teal" id="exNextEx">تمرین بعدی ←</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="exview">
+          <header>
+            <div class="vtabs">
+              <button class="vtab on" data-v="prev">پیش‌نمایش زنده</button>
+              <button class="vtab" data-v="css">CSS من</button>
+              <button class="vtab" data-v="html">HTML</button>
+            </div>
+            <div class="dev">
+              <button class="on" data-d="desk" title="دسکتاپ">🖥</button>
+              <button data-d="mob" title="موبایل">📱</button>
+            </div>
+          </header>
+          <div class="vpane on" id="panePrev">
+            <div class="frame" id="exFrame"><div class="shell"><iframe id="exIframe" title="پیش‌نمایش تمرین"></iframe></div></div>
+          </div>
+          <div class="vpane cssedit" id="paneCss">
+            <textarea id="exCss" spellcheck="false" aria-label="ویرایش CSS"></textarea>
+            <div class="editfoot">
+              <small>هرچه بنویسید همان لحظه اجرا می‌شود. با رفتن به گام بعد، کد به نسخهٔ درستِ همان گام‌ها برمی‌گردد.</small>
+              <button class="minibtn" id="exReset">↺ بازگرداندن کد درست</button>
+              <button class="minibtn" id="exCopy">⧉ کپی</button>
+            </div>
+          </div>
+          <div class="vpane htmlpane" id="paneHtml"><pre><code id="exHtmlCode"></code></pre></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
 <!-- ═══════ نوار پایین ═══════ -->
 <footer class="deckbar">
-  <button class="nbtn" id="btnPrev"><span>→</span> قبلی</button>
-  <div class="dotsnav" id="dotsNav"></div>
-  <span class="kbd-hint">← next &nbsp;•&nbsp; → prev</span>
-  <button class="nbtn primary" id="btnNext">بعدی <span>←</span></button>
+  <div id="courseBar" style="display:flex;align-items:center;gap:14px;width:100%">
+    <button class="nbtn" id="btnPrev"><span>→</span> قبلی</button>
+    <div class="dotsnav" id="dotsNav"></div>
+    <span class="kbd-hint">← بعدی &nbsp;•&nbsp; → قبلی</span>
+    <button class="nbtn primary" id="btnNext">بعدی <span>←</span></button>
+  </div>
+  <div id="exBar" hidden style="display:flex;align-items:center;gap:14px;width:100%">
+    <button class="nbtn" id="exBarBack"><span>→</span> بازگشت به دوره</button>
+    <span class="barlabel" id="exBarLabel">بخش تمرین‌ها</span>
+    <button class="nbtn primary" id="exBarNext">گام بعد <span>←</span></button>
+  </div>
 </footer>
 
 <!-- ═══════ فهرست ═══════ -->
 <div class="scrim" id="scrim"></div>
-<aside class="drawer" id="drawer" aria-label="فهرست اسلایدها">
-  <header><h4>فهرست اسلایدها</h4><button class="tbtn" id="btnCloseToc">✕ بستن</button></header>
+<aside class="drawer" id="drawer" aria-label="فهرست درس‌ها">
+  <header><h4>فهرست درس‌ها</h4><button class="tbtn" id="btnCloseToc">✕ بستن</button></header>
   <nav id="tocList"></nav>
 </aside>
 
 <script>
 /* ═════════ ابزارها ═════════ */
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const RM=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fa=n=>Number(n).toLocaleString('fa-IR',{useGrouping:false});
 const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
@@ -1084,16 +1626,18 @@ slides.forEach((s,i)=>{
 });
 const dots=$$('#dotsNav button'), tocs=$$('.toc-i');
 
+/* روی پروتکل file:// مرورگرها history API را مسدود می‌کنند — بی‌صدا رد می‌شویم */
+function setHash(h){try{if(location.protocol!=='file:')history.replaceState(null,'','#'+h);}catch(_){}}
 function updUI(){
   cNum.textContent=fa(String(cur+1).padStart(2,'0'));
   prog.style.width=((cur+1)/total*100)+'%';
   dots.forEach((d,i)=>{d.className=(i===cur?'cur':visited.has(i)?'seen':'');});
   tocs.forEach((t,i)=>t.classList.toggle('cur',i===cur));
-  /* روی پروتکل file:// مرورگرها history API را مسدود می‌کنند — بی‌صدا رد می‌شویم */
-  try{ if(location.protocol!=='file:') history.replaceState(null,'','#'+(cur+1)); }catch(_){}
+  if(mode==='course')setHash(cur+1);
 }
 function go(i,dir){
   i=Math.max(0,Math.min(total-1,i));
+  if(mode!=='course')openCourse();
   if(i===cur)return;
   dir=dir??(cur===-1?1:(i>cur?1:-1));
   const old=cur>=0?slides[cur]:null, nw=slides[i];
@@ -1109,21 +1653,52 @@ function onEnter(s){
   const t=s.querySelector('.stitle');
   if(t&&!t.dataset.done){t.dataset.done=1;if(!RM)scramble(t);}
   s.querySelector('.sb')?.scrollTo(0,0);
-  if(s.dataset.num==='۰۱')startHero();else stopHero();
+  const n=s.dataset.num;
+  n==='۰۱'?startHero():stopHero();
+  if(n==='۰۶'&&window.uApply)window.uApply(); else document.documentElement.style.fontSize='';
+  const fx=$('#fixedDemo');
+  if(fx&&n!=='۱۵')fx.hidden=true;
+  if(n==='۱۵'&&window.posApply)window.posApply();
 }
 function scramble(el){
   const txt=el.textContent, g='ابتثجحخدرسشصطعفقکگلمنوهی{}؟٪#';
-  let f=0;const total=Math.max(16,txt.length+8);
+  let f=0;const steps=Math.max(16,txt.length+8);
   const tm=setInterval(()=>{
-    f++;const r=Math.floor((f/total)*txt.length);let out='';
+    f++;const r=Math.floor((f/steps)*txt.length);let out='';
     for(let i=0;i<txt.length;i++){
       const c=txt[i];
       out+=(c===' '||c==='\u200c'||i<r)?c:g[(Math.random()*g.length)|0];
     }
     el.textContent=out;
-    if(f>=total){el.textContent=txt;clearInterval(tm);}
+    if(f>=steps){el.textContent=txt;clearInterval(tm);}
   },34);
 }
+
+/* ═════════ جابه‌جایی بین «دوره» و «تمرین‌ها» ═════════ */
+let mode='course';
+const deckEl=$('#deck'), exViewEl=$('#exView');
+function openCourse(){
+  mode='course';
+  deckEl.hidden=false;exViewEl.hidden=true;
+  $('#courseBar').hidden=false;$('#exBar').hidden=true;
+  $('#tabCourse').classList.add('on');$('#tabEx').classList.remove('on');
+  $('#counter').hidden=false;
+  setHash(cur+1);
+}
+function openEx(id){
+  mode='ex';
+  stopHero();document.documentElement.style.fontSize='';
+  const fx=$('#fixedDemo');if(fx)fx.hidden=true;
+  deckEl.hidden=true;exViewEl.hidden=false;
+  $('#courseBar').hidden=true;$('#exBar').hidden=false;
+  $('#tabEx').classList.add('on');$('#tabCourse').classList.remove('on');
+  $('#counter').hidden=true;
+  toggleToc(false);
+  id?startEx(id):showHub();
+}
+$('#tabCourse').onclick=()=>openCourse();
+$('#tabEx').onclick=()=>openEx();
+$('#exBarBack').onclick=()=>openCourse();
 
 /* ناوبری */
 $('#btnNext').onclick=()=>go(cur+1);
@@ -1131,14 +1706,20 @@ $('#btnPrev').onclick=()=>go(cur-1);
 document.addEventListener('keydown',e=>{
   const a=document.activeElement;
   if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;
+  if(mode==='ex'){
+    if(!curEx)return;
+    if(e.key==='ArrowLeft'||e.key==='PageDown'){e.preventDefault();goStep(step+1);}
+    else if(e.key==='ArrowRight'||e.key==='PageUp'){e.preventDefault();goStep(step-1);}
+    return;
+  }
   if(e.key==='ArrowLeft'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(cur+1);}
   else if(e.key==='ArrowRight'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
   else if(e.key==='Home')go(0);
   else if(e.key==='End')go(total-1);
 });
-let tX=0,tY=0;const deck=$('#deck');
-deck.addEventListener('touchstart',e=>{tX=e.touches[0].clientX;tY=e.touches[0].clientY;},{passive:true});
-deck.addEventListener('touchend',e=>{
+let tX=0,tY=0;
+deckEl.addEventListener('touchstart',e=>{tX=e.touches[0].clientX;tY=e.touches[0].clientY;},{passive:true});
+deckEl.addEventListener('touchend',e=>{
   const dx=e.changedTouches[0].clientX-tX,dy=e.changedTouches[0].clientY-tY;
   if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){dx<0?go(cur+1):go(cur-1);}
 },{passive:true});
@@ -1177,6 +1758,58 @@ function startHero(){
 }
 function stopHero(){if(heroTimer)clearInterval(heroTimer);if(heroTO)clearTimeout(heroTO);heroTimer=heroTO=null;}
 
+/* ═════════ اولویت انتخابگرها ═════════ */
+(function(){
+  const box=$('#specRules');if(!box)return;
+  const R=[
+    {k:'el', sel:'#specTarget p',         col:'#8b96a9', w:1,   nm:'نام عنصر'},
+    {k:'cls',sel:'#specTarget .txt',      col:'#59c2ff', w:10,  nm:'کلاس'},
+    {k:'two',sel:'#specTarget .box .txt', col:'#aad94c', w:20,  nm:'دو کلاس'},
+    {k:'id', sel:'#specTarget #one',      col:'#d2a6ff', w:100, nm:'شناسه'},
+    {k:'imp',sel:'#specTarget p',         col:'#f07178', w:1e9, nm:'important!'}
+  ];
+  const st=$('#specStyle'), rows=$$('#specRules .spec-rule');
+  const upd=()=>{
+    let css='',win=null;
+    R.forEach((r,i)=>{
+      const on=rows[i].querySelector('input').checked;
+      rows[i].classList.remove('win');
+      if(!on)return;
+      css+=`${r.sel}{color:${r.col}${r.k==='imp'?' !important':''}}\n`;
+      if(!win||r.w>=win.r.w)win={r,i};
+    });
+    st.textContent=css;
+    if(win)rows[win.i].classList.add('win');
+    $('#specOut').innerHTML=win
+      ? `<div>برنده: <b>${win.r.nm}</b></div><div>امتیاز <b>${win.r.w===1e9?'∞':fa(win.r.w)}</b></div><div>رنگ نهایی <b>${win.r.col}</b></div>`
+      : `<div>هیچ قانونی روشن نیست — رنگ از والد به ارث می‌رسد.</div>`;
+  };
+  box.addEventListener('change',upd);upd();
+})();
+
+/* ═════════ واحدها ═════════ */
+(function(){
+  const R=$('#uRoot');if(!R)return;
+  const W=$('#uW'),stage=$('#uStage');
+  const upd=()=>{
+    const r=+R.value,w=+W.value;
+    document.documentElement.style.fontSize=r+'px';
+    $('#uRootV').textContent=r+'px';$('#uWv').textContent=w+'px';
+    stage.style.width=w+'px';
+    const px=el=>Math.round(el.getBoundingClientRect().width);
+    requestAnimationFrame(()=>{
+      $('#uOut').innerHTML=
+        `<div>px<b>${fa(px($('#uPx')))}px</b></div>`+
+        `<div>rem<b>${fa(px($('#uRem')))}px</b></div>`+
+        `<div>%<b>${fa(px($('#uPc')))}px</b></div>`+
+        `<div>vw<b>${fa(px($('#uVw')))}px</b></div>`;
+    });
+  };
+  [R,W].forEach(el=>el.addEventListener('input',upd));
+  window.uApply=upd;
+  addEventListener('resize',()=>{if(document.documentElement.style.fontSize)upd();});
+})();
+
 /* ═════════ آزمایشگاه رنگ ═════════ */
 (function(){
   const H=$('#hH'),S=$('#hS'),L=$('#hL');if(!H)return;
@@ -1194,52 +1827,90 @@ function stopHero(){if(heroTimer)clearInterval(heroTimer);if(heroTO)clearTimeout
   [H,S,L].forEach(el=>el.addEventListener('input',upd));upd();
 })();
 
+/* ═════════ display ═════════ */
+(function(){
+  const seg=$('#dspSeg');if(!seg)return;
+  const MSG={
+    block:'هر جعبه یک <b>خط کامل</b> برای خودش گرفت و بعدی رفت خط پایین. عرض و ارتفاع کار می‌کند.',
+    inline:'جعبه‌ها <b>کنار هم</b> و وسط متن نشستند — و <b>width و height را نادیده گرفتند!</b> همین یک نکته، نیمی از سردرگمی‌های تازه‌کارهاست.',
+    'inline-block':'هم کنار هم می‌نشیند، هم عرض و ارتفاع را <b>قبول می‌کند</b> — بهترینِ هر دو دنیا.',
+    none:'کاملاً <b>ناپدید شد</b> و جای خالی هم نگذاشت. اگر می‌خواهید جایش بماند: <code class="inline">visibility: hidden</code>'
+  };
+  const boxes=$$('#dspStage .dbox');
+  const upd=v=>{
+    boxes.forEach(b=>b.style.cssText=`display:${v};width:150px;height:44px;line-height:22px`);
+    $('#dspMsg').innerHTML=MSG[v];
+    $('#dspCode').innerHTML=hlCSS(`.box {\n  display: ${v};\n  width: 150px;\n  height: 44px;\n}`);
+  };
+  seg.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    $$('#dspSeg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    upd(b.dataset.v);
+  });
+  upd('block');
+})();
+
 /* ═════════ مدل جعبه ═════════ */
 (function(){
   const P=$('#bP'),B=$('#bB'),M=$('#bM');if(!P)return;
-  let sizing='border-box';
-  const W=280;
   const upd=()=>{
     const p=+P.value,b=+B.value,m=+M.value;
     $('#bPv').textContent=p+'px';$('#bBv').textContent=b+'px';$('#bMv').textContent=m+'px';
     $('#bmP').style.padding=p+'px';
     $('#bmBw').style.borderWidth=b+'px';
     $('#bmM').style.padding=m+'px';
-    const content=sizing==='border-box'?W-2*p-2*b:W;
-    const box=sizing==='border-box'?W:W+2*p+2*b;
-    $('#bmC').textContent=`محتوا — عرض ${fa(Math.max(content,0))}px`;
+    const w=Math.round($('#bmC').getBoundingClientRect().width);
     $('#bOut').innerHTML=
-      `<div>عرض محتوا <b>${fa(Math.max(content,0))}px</b></div>`+
-      `<div>عرض جعبه <b>${fa(box)}px</b></div>`+
-      `<div>با margin <b>${fa(box+2*m)}px</b></div>`+
-      `<div>box-sizing <b>${sizing}</b></div>`;
+      `<div>عرض محتوا<b>${fa(w)}px</b></div>`+
+      `<div>padding<b>${fa(p)}px</b></div>`+
+      `<div>border<b>${fa(b)}px</b></div>`+
+      `<div>margin<b>${fa(m)}px</b></div>`;
   };
-  [P,B,M].forEach(el=>el.addEventListener('input',upd));
-  $('#bSz').addEventListener('click',e=>{
-    const b=e.target.closest('button');if(!b)return;
-    $$('#bSz button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
-    sizing=b.dataset.v;upd();
-  });
-  upd();
+  [P,B,M].forEach(el=>el.addEventListener('input',upd));upd();
+  addEventListener('resize',upd);
+})();
+
+/* ═════════ box-sizing: مقایسهٔ واقعی ═════════ */
+(function(){
+  const W=$('#szW');if(!W)return;
+  const P=$('#szP'),B=$('#szB');
+  const upd=()=>{
+    const w=+W.value,p=+P.value,b=+B.value;
+    $('#szWv').textContent=w+'px';$('#szPv').textContent=p+'px';$('#szBv').textContent=b+'px';
+    [1,2].forEach(i=>{
+      const sizing=i===1?'content-box':'border-box';
+      const box=$('#szBox'+i);
+      box.style.cssText=`box-sizing:${sizing};width:${w}px;padding:${p}px;border:${b}px solid #f07178`;
+      $('#szGuide'+i).style.width=w+'px';
+      $('#szGuideT'+i).textContent='width: '+w+'px';
+      const real=Math.round(box.getBoundingClientRect().width);
+      const content=i===1?w:Math.max(w-2*p-2*b,0);
+      $('#szNum'+i).innerHTML=`عرض واقعی روی صفحه: <b>${fa(real)}px</b> · فضای محتوا: <b>${fa(content)}px</b>`;
+    });
+    const extra=2*p+2*b;
+    $('#szBadge1').textContent=extra?`${fa(w)} + ${fa(extra)} = ${fa(w+extra)}px`:'بدون padding و border فرقی ندارند';
+  };
+  [W,P,B].forEach(el=>el.addEventListener('input',upd));upd();
 })();
 
 /* ═════════ تایپوگرافی ═════════ */
 (function(){
   const Sz=$('#tSize');if(!Sz)return;
-  const Lh=$('#tLh'),Ws=$('#tWs'),Wt=$('#tWt'),box=$('#typoBox');
+  const Lh=$('#tLh'),Ws=$('#tWs'),Wt=$('#tWt'),Ch=$('#tCh'),box=$('#typoBox');
   const upd=()=>{
-    const s=+Sz.value,lh=(+Lh.value/10),ws=(+Ws.value/100),wt=+Wt.value;
-    box.style.fontSize=s+'px';box.style.lineHeight=lh;box.style.wordSpacing=ws+'em';box.style.fontWeight=wt;
-    $('#tSizeV').textContent=s+'px';$('#tLhV').textContent=lh.toFixed(1);$('#tWsV').textContent=ws.toFixed(2)+'em';$('#tWtV').textContent=wt;
-    $('#typoCode').innerHTML=hlCSS(`p {\n  font-size: ${(s/16).toFixed(2)}rem;\n  line-height: ${lh.toFixed(1)};\n  word-spacing: ${ws.toFixed(2)}em;\n  font-weight: ${wt};\n}`);
+    const s=+Sz.value,lh=(+Lh.value/10),ws=(+Ws.value/100),wt=+Wt.value,ch=+Ch.value;
+    Object.assign(box.style,{fontSize:s+'px',lineHeight:lh,wordSpacing:ws+'em',fontWeight:wt,maxWidth:ch+'ch'});
+    $('#tSizeV').textContent=s+'px';$('#tLhV').textContent=lh.toFixed(1);
+    $('#tWsV').textContent=ws.toFixed(2)+'em';$('#tWtV').textContent=wt;$('#tChV').textContent=ch+'ch';
+    $('#typoCode').innerHTML=hlCSS(`p {\n  font-size: ${(s/16).toFixed(2)}rem;\n  line-height: ${lh.toFixed(1)};\n  word-spacing: ${ws.toFixed(2)}em;\n  font-weight: ${wt};\n  max-width: ${ch}ch;\n}`);
   };
-  [Sz,Lh,Ws,Wt].forEach(el=>el.addEventListener('input',upd));upd();
+  [Sz,Lh,Ws,Wt,Ch].forEach(el=>el.addEventListener('input',upd));upd();
 })();
 
 /* ═════════ فلکس‌باکس ═════════ */
 (function(){
   const stage=$('#flexStage');if(!stage)return;
-  const st={dir:'row',jc:'flex-start',ai:'center',wrap:'nowrap',gap:12};
+  const st={dir:'row',jc:'flex-start',ai:'center',wrap:'nowrap',gap:12,grow:'0'};
   $$('.seg[data-g]').forEach(g=>g.addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b)return;
     g.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
@@ -1248,8 +1919,9 @@ function stopHero(){if(heroTimer)clearInterval(heroTimer);if(heroTO)clearTimeout
   $('#fGap').addEventListener('input',e=>{st.gap=+e.target.value;upd();});
   function upd(){
     Object.assign(stage.style,{flexDirection:st.dir,justifyContent:st.jc,alignItems:st.ai,flexWrap:st.wrap,gap:st.gap+'px'});
+    stage.children[2].style.flexGrow=st.grow;
     $('#fGapV').textContent=st.gap+'px';
-    $('#flexCode').innerHTML=hlCSS(`.container {\n  display: flex;\n  flex-direction: ${st.dir};\n  justify-content: ${st.jc};\n  align-items: ${st.ai};\n  flex-wrap: ${st.wrap};\n  gap: ${st.gap}px;\n}`);
+    $('#flexCode').innerHTML=hlCSS(`.container {\n  display: flex;\n  flex-direction: ${st.dir};\n  justify-content: ${st.jc};\n  align-items: ${st.ai};\n  flex-wrap: ${st.wrap};\n  gap: ${st.gap}px;\n}`+(st.grow==='1'?`\n\n.item-3 { flex-grow: 1; }`:''));
   }
   upd();
 })();
@@ -1257,43 +1929,88 @@ function stopHero(){if(heroTimer)clearInterval(heroTimer);if(heroTO)clearTimeout
 /* ═════════ گرید ═════════ */
 (function(){
   const stage=$('#gridStage');if(!stage)return;
-  let mode='equal',gap=12;
-  const TPL={equal:'repeat(4, 1fr)',holy:'1fr 2fr 1fr',auto:'repeat(auto-fill, minmax(90px, 1fr))'};
+  let m='equal',gap=12;
+  const TPL={equal:'repeat(4, 1fr)',holy:'1fr 2fr 1fr',fix:'220px 1fr',auto:'repeat(auto-fill, minmax(110px, 1fr))'};
+  const MSG={
+    equal:'چهار ستون با سهم برابر. <b>1fr</b> یعنی «یک سهم از فضای خالی».',
+    holy:'ستون وسط <b>دو برابرِ</b> کناری‌هاست — چیدمان کلاسیک سایت‌های خبری.',
+    fix:'ستون اول <b>ثابت</b> است (منوی کناری) و ستون دوم همهٔ فضای باقی‌مانده را می‌گیرد.',
+    auto:'اینجا اصلاً نگفتیم چند ستون! گفتیم «هر ستون حداقل ۱۱۰px، و بقیه‌اش کش بیاید». <b>پاسخگو بدون حتی یک media query.</b> پنجره را کوچک و بزرگ کنید.'
+  };
   $('#gMode').addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b)return;
     $$('#gMode button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
-    mode=b.dataset.v;upd();
+    m=b.dataset.v;upd();
   });
   $('#gGap').addEventListener('input',e=>{gap=+e.target.value;upd();});
   function upd(){
-    stage.style.gridTemplateColumns=TPL[mode];stage.style.gap=gap+'px';
+    stage.style.gridTemplateColumns=TPL[m];stage.style.gap=gap+'px';
     $('#gGapV').textContent=gap+'px';
-    $('#gridCode').innerHTML=hlCSS(`.grid {\n  display: grid;\n  grid-template-columns: ${TPL[mode]};\n  gap: ${gap}px;\n}`);
+    $('#gridMsg').innerHTML=MSG[m];
+    $('#gridCode').innerHTML=hlCSS(`.grid {\n  display: grid;\n  grid-template-columns: ${TPL[m]};\n  gap: ${gap}px;\n}`);
   }
   upd();
 })();
 
-/* ═════════ جای‌گذاری ═════════ */
+/* ═════════ position ═════════ */
 (function(){
   const tabs=$('#posTabs');if(!tabs)return;
+  const page=$('#posPage'),host=$('#posHost'),box=$('#posBox'),ghost=$('#posGhost'),fill=$('#posFill'),fx=$('#fixedDemo');
+  let m='static';
   const INFO={
-    static:{d:'حالت پیش‌فرض؛ عنصر در جریان عادی صفحه است و top/right/bottom/left روی آن هیچ اثری ندارند.',c:'.box { position: static; }'},
-    relative:{d:'هنوز در جریان عادی است، اما با top/right از جای خودش «جابه‌جا» می‌شود؛ جای خالی‌اش حفظ می‌شود و مرجعِ absolute شدنِ فرزندان است.',c:'.box {\n  position: relative;\n  top: 34px;\n  inset-inline-start: 70px;\n}'},
-    absolute:{d:'کاملاً از جریان خارج می‌شود و نسبت به نزدیک‌ترین والدِ position‌دار (اینجا صحنه که relative است) قرار می‌گیرد.',c:'.parent { position: relative; }\n.box {\n  position: absolute;\n  bottom: 22px;\n  inset-inline-end: 26px;\n}'},
-    fixed:{d:'نسبت به «پنجرهٔ مرورگر» ثابت می‌ماند و با اسکرول تکان نمی‌خورد — مناسب دکمه‌های شناور و هدر چسبان. (اینجا داخل صحنه شبیه‌سازی شده)',c:'.box {\n  position: fixed;\n  top: 20px;\n  inset-inline-start: 20px;\n}'},
-    sticky:{d:'ترکیب هوشمند: عادی اسکرول می‌شود تا به آستانه (top: 0) برسد، بعد می‌چسبد. پنل را اسکرول کنید!',c:'.header {\n  position: sticky;\n  top: 0;\n  z-index: 10;\n}'}
+    static:{
+      d:'حالت پیش‌فرضِ <b>همهٔ</b> عناصر: در صف می‌ایستد. <code class="inline">top</code> و <code class="inline">left</code> روی آن هیچ اثری ندارند — هرچه بنویسید نادیده گرفته می‌شود.',
+      c:'.box {\n  position: static;\n  top: 26px;   /* بی‌اثر است! */\n}',
+      f:'همه‌چیز سر جای خودش است. این نقطهٔ شروعِ مقایسه است.'
+    },
+    relative:{
+      d:'از جای خودش <b>تکان می‌خورد</b>، ولی جایش در صف <b>محفوظ</b> می‌ماند (کادر خط‌چین). کاربرد اصلی‌اش هم همین نیست؛ بیشتر برای این است که <b>لنگرِ فرزندِ absolute</b> شود.',
+      c:'.box {\n  position: relative;\n  top: 26px;\n  inset-inline-start: 52px;\n}',
+      f:'دقت کنید: کارت پایینی <b>تکان نخورد</b>، چون جای اصلی جعبه هنوز اشغال است.'
+    },
+    absolute:{d:'',c:'',f:'جعبه از صف <b>بیرون پرید</b>؛ ببینید کارت پایینی <b>آمد بالا</b> و جای خالی را پر کرد.'},
+    fixed:{
+      d:'به <b>پنجرهٔ مرورگر</b> می‌چسبد، نه به والدش. با اسکرول تکان نمی‌خورد — مناسب دکمهٔ شناور و هدر چسبان.',
+      c:'.box {\n  position: fixed;\n  bottom: 86px;\n  inset-inline-start: 22px;\n  z-index: 30;\n}',
+      f:'گوشهٔ پایینِ <b>خودِ صفحه</b> را نگاه کنید (بیرون از این قاب) — جعبهٔ نارنجی آنجاست و با اسکرول تکان نمی‌خورد.'
+    },
+    sticky:{
+      d:'ترکیب هوشمند: عادی حرکت می‌کند تا به آستانه (<code class="inline">top: 0</code>) برسد، بعد <b>می‌چسبد</b>. برای هدر لیست و سرستون جدول عالی است.',
+      c:'.box {\n  position: sticky;\n  top: 0;\n  z-index: 6;\n}',
+      f:'داخل قاب اسکرول کنید — جعبه به سقفِ قاب می‌چسبد و با شما می‌آید.'
+    }
   };
+  function absInfo(){
+    const rel=$('#posRel').checked;
+    return {
+      d:rel
+        ? 'از صف بیرون می‌رود و به گوشهٔ <b>نزدیک‌ترین والدی که position دارد</b> می‌چسبد — الان یعنی همان کارت آبی.'
+        : 'از صف بیرون می‌رود و چون <b>هیچ والدی position ندارد</b>، می‌رود گوشهٔ کلِ قاب صفحه. این همان باگ معروفِ «چرا پرید آن گوشه؟!» است. تیک بالا را بزنید.',
+      c:(rel?'.parent { position: relative; }\n\n':'/* هیچ والدی position ندارد */\n\n')+'.box {\n  position: absolute;\n  bottom: 12px;\n  inset-inline-end: 12px;\n}',
+      f:INFO.absolute.f
+    };
+  }
+  function apply(){
+    const info=m==='absolute'?absInfo():INFO[m];
+    page.dataset.m=m;
+    host.classList.toggle('rel',m==='absolute'&&$('#posRel').checked);
+    box.hidden=(m==='fixed');
+    if(fx)fx.hidden=(m!=='fixed');
+    fill.hidden=(m!=='sticky');
+    ghost.hidden=(m!=='relative');
+    if(m==='relative')ghost.style.top=Math.max(box.offsetTop-26,0)+'px';
+    $('#posDesc').innerHTML='<span class="ic">📍</span>'+info.d;
+    $('#posCode').innerHTML=hlCSS(info.c);
+    $('#posFlow').innerHTML='<b>چه اتفاقی افتاد؟</b> '+info.f;
+  }
   tabs.addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b)return;
     $$('#posTabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
-    const m=b.dataset.p;
-    $('#posStage').dataset.mode=m;
-    $('#posStage').style.display=m==='sticky'?'none':'block';
-    $('#posScroll').style.display=m==='sticky'?'block':'none';
-    $('#posDesc').innerHTML='<span class="ic">📍</span>'+INFO[m].d;
-    $('#posCode').innerHTML=hlCSS(INFO[m].c);
+    m=b.dataset.p;apply();
   });
-  tabs.querySelector('button').click();
+  $('#posRel').addEventListener('change',apply);
+  window.posApply=apply;
+  apply();
 })();
 
 /* ═════════ تبدیل و گذار ═════════ */
@@ -1318,7 +2035,7 @@ function stopHero(){if(heroTimer)clearInterval(heroTimer);if(heroTO)clearTimeout
   $('#tfGo').onclick=e=>{
     applied=!applied;
     box.style.transform=applied?tf():'none';
-    e.target.textContent=applied?'↺ برگردان':'▶ اجرا';
+    e.target.textContent=applied?'↺ برگردان':'▶ اجرا کن';
   };
   upd();
 })();
@@ -1358,7 +2075,7 @@ function stopHero(){if(heroTimer)clearInterval(heroTimer);if(heroTO)clearTimeout
 /* ═════════ متغیرها ═════════ */
 (function(){
   const wrap=$('#vBtns');if(!wrap)return;
-  const upd=c=>{$('#vCode').innerHTML=hlCSS(`:root {\n  --accent: ${c};\n}\n.btn  { background: var(--accent); }\n.link { color: var(--accent); }`);};
+  const upd=c=>{$('#vCode').innerHTML=hlCSS(`:root {\n  --accent: ${c};\n}\n\n.btn  { background: var(--accent); }\n.link { color: var(--accent); }`);};
   wrap.addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b)return;
     $$('#vBtns button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
@@ -1368,6 +2085,1103 @@ function stopHero(){if(heroTimer)clearInterval(heroTimer);if(heroTO)clearTimeout
   });
   upd('#ffb454');
 })();
+
+/* ═════════ داده‌های تمرین‌ها ═════════ */
+/* قلم داخل iframe پیش‌نمایش (همان فایل‌های محلی پروژه) */
+const EXFONT=`@font-face{font-family:'Vazirmatn';font-style:normal;font-weight:100 900;font-display:swap;
+src:url(assets/fonts/vazirmatn-arabic.woff2) format('woff2');
+unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'Vazirmatn';font-style:normal;font-weight:100 900;font-display:swap;
+src:url(assets/fonts/vazirmatn-latin.woff2) format('woff2');
+unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}`;
+
+const EX=[
+{
+id:'resume', no:'۰۱', title:'وب‌سایت رزومه', lvl:'پروژهٔ اول', cls:'mid',
+desc:'یک صفحهٔ رزومهٔ کامل و پاسخگو: سربرگ با عکس و اطلاعات تماس، مهارت‌ها، خط‌زمانی تجربهٔ کاری و تحصیلات. همان چیزی که بعد از درس گرید باید بسازید.',
+tags:['box-sizing','flex','grid','::before','media query','متغیرها'],
+after:'بعد از درس گرید (درس ۱۲)',
+done:'یک رزومهٔ واقعی ساختید که روی موبایل هم درست کار می‌کند. حالا متن‌های HTML را با اطلاعات خودتان عوض کنید و فایل را برای دیگران بفرستید.',
+html:`<div class="page">
+
+  <header class="card hero">
+    <div class="avatar">م‌ح</div>
+    <div class="who">
+      <h1>مریم حسینی</h1>
+      <p class="role">طراح رابط کاربری و توسعه‌دهندهٔ فرانت‌اند</p>
+      <ul class="meta">
+        <li>تهران</li>
+        <li>maryam@example.com</li>
+        <li>۰۹۱۲ ۳۴۵ ۶۷۸۹</li>
+      </ul>
+    </div>
+    <a class="btn" href="#">دانلود PDF</a>
+  </header>
+
+  <main class="grid">
+
+    <section class="card about">
+      <h2>دربارهٔ من</h2>
+      <p>سه سال است رابط کاربری طراحی می‌کنم و خودم آن را با HTML و CSS به کد تبدیل می‌کنم. عاشق چیدمان تمیز، فونت خوانا و صفحه‌ای هستم که روی موبایل هم به‌اندازهٔ دسکتاپ خوب باشد.</p>
+    </section>
+
+    <section class="card skills">
+      <h2>مهارت‌ها</h2>
+      <ul class="chips">
+        <li>HTML</li><li>CSS</li><li>Flexbox</li><li>Grid</li>
+        <li>Figma</li><li>Git</li><li>JavaScript</li><li>دسترس‌پذیری</li>
+      </ul>
+    </section>
+
+    <section class="card exp">
+      <h2>تجربهٔ کاری</h2>
+      <ol class="timeline">
+        <li>
+          <h3>طراح ارشد رابط کاربری</h3>
+          <span class="when">شرکت آبی‌رنگ · ۱۴۰۲ تا امروز</span>
+          <p>بازطراحی پنل مدیریت و ساخت کتابخانهٔ کامپوننت.</p>
+        </li>
+        <li>
+          <h3>توسعه‌دهندهٔ فرانت‌اند</h3>
+          <span class="when">استودیو مهتاب · ۱۴۰۰ تا ۱۴۰۲</span>
+          <p>پیاده‌سازی دوازده صفحهٔ فروشگاهی، کاملاً پاسخگو.</p>
+        </li>
+        <li>
+          <h3>کارآموز طراحی</h3>
+          <span class="when">تیم پویا · ۱۳۹۹ تا ۱۴۰۰</span>
+          <p>طراحی صفحهٔ فرود و بنرهای کمپین.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="card edu">
+      <h2>تحصیلات و زبان</h2>
+      <p><b>کارشناسی مهندسی کامپیوتر</b><br>دانشگاه تهران · ۱۳۹۵ تا ۱۳۹۹</p>
+      <p><b>انگلیسی</b> — سطح پیشرفته</p>
+    </section>
+
+  </main>
+
+  <footer class="foot">ساخته‌شده با ❤ و کمی CSS</footer>
+</div>`,
+steps:[
+{
+t:'کاغذ سفید را آماده کن',
+goal:'قبل از هر تزئینی، سه کار پایه: صفر کردن فاصله‌های پیش‌فرض مرورگر، انتخاب border-box، و ساختن «قوطی‌های رنگ».',
+em:'🧹',
+why:'مرورگر خودش به همه‌چیز margin و padding می‌دهد. اگر اول پاکشان نکنید، تا آخر پروژه با فاصله‌های ناخواسته می‌جنگید. رنگ‌ها را هم در <b>متغیر</b> می‌گذاریم تا در گام آخر با یک خط، کل تم عوض شود.',
+css:`/* ۱) ریست کوچک — همه‌چیز قابل پیش‌بینی */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ۲) قوطی‌های رنگ و اندازه */
+:root {
+  --bg:     #f4f6fb;
+  --card:   #ffffff;
+  --ink:    #1f2734;
+  --muted:  #6b7688;
+  --accent: #2f6df6;
+  --line:   #e3e8f2;
+  --radius: 16px;
+}
+
+/* ۳) پایهٔ صفحه */
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Vazirmatn, system-ui, sans-serif;
+  line-height: 1.9;
+}`
+},
+{
+t:'ظرف وسط صفحه',
+goal:'محتوا نباید تا لبه‌های صفحه کش بیاید. یک ظرف با عرض محدود می‌سازیم و وسطش می‌چینیم.',
+em:'📐',
+why:'<code class="inline">min(880px, 92%)</code> یعنی «۸۸۰ پیکسل، مگر اینکه صفحه کوچک باشد؛ آن‌وقت ۹۲٪ عرض صفحه». همین یک خط، کار سه media query را می‌کند. <b>margin-inline: auto</b> هم یعنی فاصلهٔ چپ و راست را مساوی پخش کن — همان وسط‌چین کردن.',
+css:`.page {
+  width: min(880px, 92%);
+  margin-inline: auto;   /* وسط‌چینِ افقی */
+  padding-block: 32px;   /* فاصله از بالا و پایین */
+  display: grid;
+  gap: 18px;             /* فاصلهٔ بخش‌ها از هم */
+}`
+},
+{
+t:'همه‌چیز داخل کارت',
+goal:'هر بخش رزومه را داخل یک کارت سفید با گوشهٔ گرد و سایهٔ ملایم بگذاریم.',
+em:'🃏',
+why:'این همان <b>مدل جعبه‌ای</b> است که در درس ۰۹ دیدید: <code class="inline">padding</code> فاصلهٔ داخلی کارت تا متن، <code class="inline">border</code> خط دور، و <code class="inline">border-radius</code> گوشهٔ گرد. سایه را خیلی کم‌رنگ بگذارید؛ سایهٔ تیره صفحه را کثیف نشان می‌دهد.',
+css:`.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(31, 39, 52, .06);
+}`
+},
+{
+t:'سربرگ: عکس و نام کنار هم',
+goal:'آواتار دایره‌ای در یک طرف، نام و اطلاعات در طرف دیگر — با فلکس‌باکس.',
+em:'🧑‍🎨',
+why:'اینجا دقیقاً همان «صف» درس فلکس است: <code class="inline">align-items: center</code> یعنی همه در عرضِ صف وسط بایستند. <code class="inline">flex: none</code> به آواتار می‌گوید «کوچک نشو» و <code class="inline">flex: 1</code> به بخش متن می‌گوید «فضای خالی را تو بگیر».',
+css:`.hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;       /* در موبایل بشکن */
+}
+
+.avatar {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;    /* دایرهٔ کامل */
+  background: linear-gradient(140deg, var(--accent), #7aa5ff);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;   /* حرف‌ها دقیقاً وسط */
+  flex: none;            /* هیچ‌وقت له نشو */
+}
+
+.who { flex: 1; }        /* فضای خالی را ببلع */`
+},
+{
+t:'متن‌ها را مرتب کن',
+goal:'اندازه و رنگ تیترها و متن‌ها را مشخص کنیم تا چشم بداند اول کجا را بخواند.',
+em:'✍️',
+why:'به این می‌گویند <b>سلسله‌مراتب بصری</b>: نام شما باید بزرگ‌ترین چیز صفحه باشد، عنوان بخش‌ها متوسط و رنگی، و متن معمولی آرام. <code class="inline">max-width: 65ch</code> هم خط را کوتاه نگه می‌دارد؛ خط بلند چشم را خسته می‌کند.',
+css:`h1 {
+  font-size: 27px;
+  line-height: 1.4;      /* تیتر بزرگ = فاصلهٔ خط کمتر */
+}
+
+h2 {
+  font-size: 18px;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+h3 { font-size: 15px; }
+
+p  { max-width: 65ch; }
+
+.role {
+  color: var(--muted);
+  font-size: 15px;
+}`
+},
+{
+t:'اطلاعات تماس در یک خط',
+goal:'شهر، ایمیل و شماره را کنار هم و با فاصلهٔ مرتب بچینیم.',
+em:'📇',
+why:'این یک <code class="inline">&lt;ul&gt;</code> است، پس اول گلوله‌هایش را با <code class="inline">list-style: none</code> برمی‌داریم. بعد با فلکس کنار هم می‌شوند و <code class="inline">flex-wrap</code> اجازه می‌دهد در صفحهٔ کوچک به خط بعد بروند. توجه کنید که <code class="inline">gap: 8px 18px</code> یعنی «۸ بین ردیف‌ها، ۱۸ بین ستون‌ها».',
+css:`.meta {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;         /* ردیف / ستون */
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}`
+},
+{
+t:'دکمهٔ دانلود با حرکت نرم',
+goal:'دکمه را به انتهای سربرگ هل بدهیم و در hover کمی بالا بپرد.',
+em:'🔘',
+why:'<code class="inline">margin-inline-start: auto</code> ترفند قدیمی و طلایی فلکس است: «همهٔ فضای خالی را بگذار قبل از من» — یعنی دکمه می‌رود ته صف. <code class="inline">transition</code> را روی حالت عادی نوشتیم (نه داخل hover) تا رفت <b>و</b> برگشت هر دو نرم باشند.',
+css:`.btn {
+  margin-inline-start: auto;  /* هل بده تا انتهای صف */
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 11px 20px;
+  border-radius: 10px;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(47, 109, 246, .35);
+}`
+},
+{
+t:'مهارت‌ها به شکل چیپ',
+goal:'هر مهارت را داخل یک قرص کوچک رنگی نشان بدهیم.',
+em:'🏷',
+why:'<code class="inline">border-radius: 99px</code> ترفند ساخت قرص است: هر عددِ خیلی بزرگ‌تر از نصف ارتفاع، دو سرِ کاملاً گرد می‌دهد. رنگ پس‌زمینه را با شفافیت (<code class="inline">rgba</code>) از خودِ رنگ اصلی گرفتیم تا هماهنگ بماند.',
+css:`.chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chips li {
+  font-size: 13px;
+  color: var(--accent);
+  background: rgba(47, 109, 246, .08);
+  border: 1px solid rgba(47, 109, 246, .2);
+  padding: 5px 12px;
+  border-radius: 99px;   /* قرص */
+}`
+},
+{
+t:'چیدمان دوستونه با گرید',
+goal:'بخش‌های میانی رزومه را دو ستون کنیم و تجربهٔ کاری را تمام‌عرض بگذاریم.',
+em:'🗂',
+why:'همان درس گرید: <code class="inline">1fr 1fr</code> یعنی دو ستون با سهم برابر. <code class="inline">grid-column: 1 / -1</code> هم یعنی «از خط اول تا آخرین خط» — یعنی این کارت کل عرض را می‌گیرد. عدد ۱- همیشه «آخرین خط» است، حتی اگر تعداد ستون‌ها عوض شود.',
+css:`.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.exp {
+  grid-column: 1 / -1;   /* تمام‌عرض */
+}`
+},
+{
+t:'خط‌زمانی تجربه‌ها',
+goal:'یک خط عمودی با نقطه‌های رنگی کنار تجربه‌های کاری بکشیم — بدون حتی یک تگ اضافه در HTML.',
+em:'🧵',
+why:'اینجا از <b>شبه‌عنصر</b> استفاده می‌کنیم: <code class="inline">::before</code> یک عنصرِ خیالی می‌سازد که در HTML وجود ندارد. خطِ بلند را روی خودِ لیست کشیدیم و نقطه‌ها را روی هر آیتم. هر دو <code class="inline">position: absolute</code> هستند و به والدِ <code class="inline">relative</code> می‌چسبند — دقیقاً همان درس position.',
+css:`.timeline {
+  list-style: none;
+  position: relative;             /* لنگرِ فرزندها */
+  padding-inline-start: 22px;
+}
+
+.timeline::before {               /* خط عمودی */
+  content: "";
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  inset-inline-start: 4px;
+  width: 2px;
+  background: var(--line);
+}
+
+.timeline li {
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.timeline li::before {            /* نقطهٔ هر تجربه */
+  content: "";
+  position: absolute;
+  top: 9px;
+  inset-inline-start: -22px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--card);
+}
+
+.when {
+  font-size: 12.5px;
+  color: var(--muted);
+}`
+},
+{
+t:'حالا موبایل',
+goal:'در صفحه‌های باریک: یک‌ستونه شود، سربرگ عمودی و وسط‌چین شود، تیتر کوچک‌تر.',
+em:'📱',
+why:'با دکمهٔ 📱 بالای پیش‌نمایش، حالت موبایل را ببینید. تا اینجا همه‌چیز را برای صفحهٔ بزرگ نوشتیم و حالا فقط <b>تفاوت‌ها</b> را برای صفحهٔ کوچک می‌گوییم. توجه کنید چقدر کم است: چهار خط. اگر برعکس عمل کنید، کد چند برابر می‌شود.',
+css:`@media (max-width: 620px) {
+  .grid { grid-template-columns: 1fr; }   /* تک‌ستونه */
+
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .btn  { margin-inline-start: 0; }
+  .meta { justify-content: center; }
+  h1    { font-size: 22px; }
+}`
+},
+{
+t:'تم را با یک خط عوض کن',
+goal:'پانویس را مرتب کنیم و ببینیم متغیرها چه قدرتی دارند.',
+em:'🎨',
+why:'فقط <b>دو خط</b> از قوطی‌های رنگ را عوض کردیم و کل رزومه — دکمه، تیترها، چیپ‌ها، نقطه‌های خط‌زمانی، پس‌زمینه — سبز شد. اگر رنگ‌ها را همه‌جا دستی نوشته بودید، باید سی جا را عوض می‌کردید. این تمام ماجرای <code class="inline">var()</code> است. عددها را دستکاری کنید و تم خودتان را بسازید.',
+css:`/* تم جدید فقط با تغییر دو قوطی */
+:root {
+  --accent: #16a34a;
+  --bg:     #f2f7f3;
+}
+
+.foot {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  padding-block: 8px;
+}`
+}]
+},
+
+{
+id:'profile', no:'۰۲', title:'کارت پروفایل', lvl:'ساده', cls:'easy',
+desc:'یک کارت پروفایل با کاور رنگی، آواتار نیمه‌بیرون‌زده، آمار و دکمه‌ها. تمرین عالی برای فهمیدن position و flex در یک قطعهٔ کوچک.',
+tags:['position','flex','transition','gradient'],
+after:'بعد از درس position (درس ۱۳)',
+done:'یک کامپوننت واقعی ساختید که در هر پروژه‌ای به کار می‌آید. رنگ‌ها و اعداد را عوض کنید و نسخهٔ خودتان را بسازید.',
+html:`<div class="wrap">
+  <article class="card">
+    <div class="cover"></div>
+    <div class="avatar">ن</div>
+    <h2>نگار رضایی</h2>
+    <p class="role">عکاس معماری</p>
+    <p class="bio">دنبال نور خوب و خط‌های تمیز می‌گردم. اهل کوه، قهوهٔ تلخ و لنز ۳۵ میلی‌متری.</p>
+    <ul class="stats">
+      <li><b>۱۲۴</b><span>پروژه</span></li>
+      <li><b>۸٬۲۰۰</b><span>دنبال‌کننده</span></li>
+      <li><b>۹ سال</b><span>تجربه</span></li>
+    </ul>
+    <div class="actions">
+      <button class="primary">دنبال کردن</button>
+      <button class="ghost">پیام</button>
+    </div>
+  </article>
+</div>`,
+steps:[
+{
+t:'پایه و وسط‌چین کردن',
+goal:'ریست، متغیرها، و قرار دادن کارت دقیقاً وسط صفحه.',
+em:'🎯',
+why:'وسط‌چین کردن کامل، همان دو خطِ معروف است: <code class="inline">display: grid</code> روی والد و <code class="inline">place-items: center</code>. برای اینکه «وسطِ عمودی» معنی داشته باشد، والد باید ارتفاع داشته باشد؛ <code class="inline">min-height: 100vh</code> یعنی «حداقل به بلندی کل پنجره».',
+css:`*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --ink:    #17202e;
+  --muted:  #7b8595;
+  --accent: #7c3aed;
+  --line:   #ebe9f5;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;      /* وسطِ وسط */
+  background: #f6f5fb;
+  color: var(--ink);
+  font-family: Vazirmatn, system-ui, sans-serif;
+  line-height: 1.9;
+  padding: 24px;
+}`
+},
+{
+t:'خودِ کارت',
+goal:'یک جعبهٔ سفید با عرض ثابت، گوشهٔ گرد و سایه.',
+em:'🃏',
+why:'<code class="inline">overflow: hidden</code> اینجا مهم است: کاور رنگیِ گام بعد تا لبه‌ها می‌آید و اگر این خط نباشد، گوشه‌های گردِ کارت را خراب می‌کند. یعنی «هرچه از من زد بیرون را قیچی کن».',
+css:`.card {
+  width: min(340px, 100%);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;        /* گوشه‌های گرد سالم بمانند */
+  box-shadow: 0 18px 40px rgba(23, 32, 46, .10);
+  text-align: center;
+  padding-bottom: 20px;
+}`
+},
+{
+t:'کاور و آواتارِ نیمه‌بیرون',
+goal:'یک نوار رنگی بالای کارت و آواتاری که نیمی روی کاور و نیمی روی سفیدی بنشیند.',
+em:'🖼',
+why:'این همان جادوی <b>margin منفی</b> است: آواتار را ۴۴ پیکسل به بالا می‌کشیم تا روی کاور بیفتد. <code class="inline">margin-inline: auto</code> هم وسط‌چینش می‌کند. حلقهٔ سفید دورش با <code class="inline">border</code> ساخته شده تا از کاور جدا دیده شود.',
+css:`.cover {
+  height: 96px;
+  background: linear-gradient(120deg, var(--accent), #22d3ee);
+}
+
+.avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  margin: -44px auto 0;    /* نصفش برود روی کاور */
+  border: 4px solid #fff;
+  background: var(--accent);
+  color: #fff;
+  font-size: 30px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}`
+},
+{
+t:'نام، عنوان و معرفی',
+goal:'متن‌ها را مرتب و خوانا کنیم.',
+em:'✍️',
+why:'دقت کنید متن معرفی از دو طرف <code class="inline">padding-inline</code> گرفته تا به لبهٔ کارت نچسبد. «نچسبیدن به لبه» ساده‌ترین کاری است که یک صفحه را حرفه‌ای نشان می‌دهد.',
+css:`h2 {
+  font-size: 20px;
+  margin-top: 12px;
+}
+
+.role {
+  color: var(--accent);
+  font-size: 13.5px;
+}
+
+.bio {
+  color: var(--muted);
+  font-size: 13.5px;
+  padding-inline: 24px;
+  margin-top: 8px;
+}`
+},
+{
+t:'ردیف آمار',
+goal:'سه عدد را با فاصلهٔ مساوی و خط جداکننده کنار هم بچینیم.',
+em:'📊',
+why:'<code class="inline">justify-content: space-around</code> فضا را بین سه آیتم پخش می‌کند. عدد و برچسبش را هم با یک فلکسِ <b>عمودی</b> روی هم چیدیم — فلکس داخل فلکس، کاملاً عادی است.',
+css:`.stats {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  margin: 18px 0;
+  padding-block: 14px;
+  border-block: 1px solid var(--line);   /* خط بالا و پایین */
+}
+
+.stats li {
+  display: flex;
+  flex-direction: column;
+}
+
+.stats b    { font-size: 16px; }
+.stats span { font-size: 11.5px; color: var(--muted); }`
+},
+{
+t:'دکمه‌ها و واکنش به ماوس',
+goal:'دو دکمه کنار هم، با تغییر نرم در hover.',
+em:'✨',
+why:'دکمهٔ اول پُر و دکمهٔ دوم فقط خط‌دار است: به این می‌گویند دکمهٔ اصلی و فرعی. کاربر باید در یک نگاه بفهمد کدام کار «مهم‌تر» است. حرکت hover را خیلی کوچک بگذارید؛ حرکت زیاد، ارزان به نظر می‌رسد.',
+css:`.actions {
+  display: flex;
+  gap: 10px;
+  padding-inline: 24px;
+}
+
+.actions button {
+  flex: 1;                 /* هر دو هم‌عرض */
+  padding: 11px 0;
+  border-radius: 11px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s, background .2s;
+}
+
+.primary {
+  background: var(--accent);
+  color: #fff;
+  border: 0;
+}
+
+.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(124, 58, 237, .35);
+}
+
+.ghost {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.ghost:hover { background: #f4f3fb; }`
+}]
+},
+
+{
+id:'gallery', no:'۰۳', title:'گالری پاسخگو با گرید', lvl:'متوسط', cls:'mid',
+desc:'یک گالری کارت که بدون هیچ media query در هر اندازهٔ صفحه تعداد ستون‌هایش را خودش تنظیم می‌کند — به‌علاوهٔ یک کارت ویژهٔ بزرگ.',
+tags:['grid','auto-fill','minmax','aspect-ratio','hover'],
+after:'بعد از درس گرید (درس ۱۲)',
+done:'حالا الگویی دارید که در هر پروژه‌ای جواب می‌دهد: گالری، لیست محصولات، مقالات وبلاگ. فقط محتوا را عوض کنید.',
+html:`<header class="head">
+  <h1>گالری کارها</h1>
+  <p>عرض پنجره را کم و زیاد کنید؛ تعداد ستون‌ها خودش عوض می‌شود.</p>
+</header>
+
+<div class="gallery">
+  <article class="item feat"><div class="thumb">🏔</div><div class="body"><h3>کوهستان در سحر</h3><span>طبیعت</span></div></article>
+  <article class="item"><div class="thumb">🌊</div><div class="body"><h3>موج بلند</h3><span>دریا</span></div></article>
+  <article class="item"><div class="thumb">🏛</div><div class="body"><h3>ستون‌های سنگی</h3><span>معماری</span></div></article>
+  <article class="item"><div class="thumb">🌵</div><div class="body"><h3>کویر مرکزی</h3><span>طبیعت</span></div></article>
+  <article class="item"><div class="thumb">🌆</div><div class="body"><h3>غروب شهر</h3><span>شهری</span></div></article>
+  <article class="item"><div class="thumb">🌙</div><div class="body"><h3>شب بلند</h3><span>شبانه</span></div></article>
+  <article class="item"><div class="thumb">🍂</div><div class="body"><h3>پاییز خیابان</h3><span>فصل‌ها</span></div></article>
+  <article class="item"><div class="thumb">🕌</div><div class="body"><h3>کاشی فیروزه</h3><span>معماری</span></div></article>
+</div>`,
+steps:[
+{
+t:'پایهٔ تیره',
+goal:'ریست، متغیرها و یک پس‌زمینهٔ تیره برای اینکه عکس‌ها بدرخشند.',
+em:'🌑',
+why:'در گالری، پس‌زمینهٔ تیره انتخاب رایجی است چون چشم را به سمت تصاویر می‌برد. توجه کنید متن روی زمینهٔ تیره نباید سفیدِ خالص باشد؛ کمی خاکستری‌تر، چشم را کمتر می‌زند.',
+css:`*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:    #0f1420;
+  --card:  #182031;
+  --line:  #26314a;
+  --ink:   #dbe3f0;
+  --muted: #8d99b0;
+  --accent:#ffb454;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Vazirmatn, system-ui, sans-serif;
+  line-height: 1.9;
+  padding: 28px;
+}
+
+.head { margin-bottom: 20px; }
+.head h1 { font-size: 24px; }
+.head p  { color: var(--muted); font-size: 13.5px; }`
+},
+{
+t:'گریدی که خودش فکر می‌کند',
+goal:'ستون‌ها را طوری تعریف کنیم که تعدادشان به عرض صفحه بستگی داشته باشد.',
+em:'🪄',
+why:'این مهم‌ترین خط کل تمرین است. ترجمهٔ فارسی‌اش: «هر ستون <b>حداقل ۱۹۰ پیکسل</b> باشد؛ هر چند تا جا شد بگذار، و فضای اضافه را بینشان پخش کن». نتیجه: گالری در موبایل یک‌ستونه، در تبلت دو یا سه‌ستونه و در دسکتاپ چهارستونه می‌شود — <b>بدون حتی یک media query</b>.',
+css:`.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 16px;
+}`
+},
+{
+t:'کارت‌ها',
+goal:'به هر آیتم شکل کارت بدهیم.',
+em:'🃏',
+why:'باز هم <code class="inline">overflow: hidden</code>، چون تصویرِ داخلِ کارت باید در گوشه‌ها با کارت گرد شود. این الگو را در همهٔ کارت‌ها تکرار خواهید کرد.',
+css:`.item {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.body { padding: 12px 14px; }
+
+.body h3   { font-size: 14.5px; }
+.body span { font-size: 11.5px; color: var(--muted); }`
+},
+{
+t:'قابِ تصویر با نسبت ثابت',
+goal:'همهٔ تصویرها هم‌اندازه باشند تا گالری به‌هم‌ریخته نشود.',
+em:'🖼',
+why:'<code class="inline">aspect-ratio: 4 / 3</code> یعنی «هر عرضی که داشتی، ارتفاعت سه‌چهارمِ آن باشد». قبل از این خاصیت، برنامه‌نویس‌ها برای همین یک کار، ترفندهای عجیب با padding می‌زدند. امروز یک خط است.',
+css:`.thumb {
+  aspect-ratio: 4 / 3;     /* همیشه هم‌نسبت */
+  display: grid;
+  place-items: center;
+  font-size: 44px;
+  background: linear-gradient(140deg, #243049, #1b2438);
+}`
+},
+{
+t:'واکنش به ماوس',
+goal:'کارت هنگام hover کمی بالا بیاید و تصویرش بزرگ‌تر شود.',
+em:'✨',
+why:'دو نکته: اول اینکه بزرگ‌نمایی را روی <b>تصویر داخل</b> می‌زنیم نه روی کل کارت، تا حس «زوم داخل قاب» بدهد (همان <code class="inline">overflow: hidden</code> کارت، بیرون‌زدگی را می‌برد). دوم اینکه با نوشتن <code class="inline">.item:hover .thumb</code> می‌گوییم «وقتی ماوس روی کارت است، به فرزندش دست بزن».',
+css:`.item {
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+}
+
+.item:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .35);
+}
+
+.thumb { transition: transform .35s; }
+
+.item:hover .thumb { transform: scale(1.08); }`
+},
+{
+t:'کارت ویژه، دوبرابر',
+goal:'اولین کارت دو ستون بگیرد تا گالری یکنواخت نباشد.',
+em:'⭐',
+why:'<code class="inline">grid-column: span 2</code> یعنی «به‌جای یک ستون، دو ستون را اشغال کن». اما در موبایل که کل گرید یک‌ستونه است، این باعث خرابی می‌شود؛ برای همین با یک media query کوچک آن را خنثی می‌کنیم. این ترتیب — اول قانون کلی، بعد استثنا — همان الگوی موبایل‌فرست است.',
+css:`.feat { grid-column: span 2; }
+
+.feat .thumb {
+  aspect-ratio: 16 / 9;
+  font-size: 60px;
+}
+
+@media (max-width: 460px) {
+  .feat { grid-column: span 1; }   /* در موبایل عادی شو */
+}`
+}]
+},
+
+{
+id:'landing', no:'۰۴', title:'صفحهٔ فرود محصول', lvl:'جمع‌بندی', cls:'mid',
+desc:'یک صفحهٔ فرود کامل: نوار ناوبری چسبان، بخش قهرمان دوستونه، سه کارت ویژگی، بخش دعوت به اقدام و پانویس. همهٔ درس‌ها یک‌جا.',
+tags:['sticky','grid','clamp','flex','hover','responsive'],
+after:'بعد از پایان دوره',
+done:'یک صفحهٔ فرود واقعی ساختید — همان چیزی که شرکت‌ها برای معرفی محصول سفارش می‌دهند. متن‌ها و رنگ‌ها را عوض کنید و به نمونه‌کارتان اضافه کنید.',
+html:`<nav class="nav">
+  <span class="logo">نُوا</span>
+  <div class="links">
+    <a href="#">ویژگی‌ها</a>
+    <a href="#">قیمت</a>
+    <a href="#">تماس</a>
+  </div>
+  <button class="cta small">شروع رایگان</button>
+</nav>
+
+<header class="hero">
+  <div class="hero-txt">
+    <span class="pill">نسخهٔ ۲.۰ منتشر شد</span>
+    <h1>کارهایت را جمع کن، ذهنت را خالی</h1>
+    <p>نُوا یادداشت، کار و تقویم را در یک صفحه می‌آورد. بدون شلوغی، بدون تنظیمات بی‌پایان.</p>
+    <div class="hero-btn">
+      <button class="cta">رایگان شروع کنید</button>
+      <button class="ghost">تماشای ویدیو</button>
+    </div>
+    <small>بدون کارت بانکی · لغو در هر لحظه</small>
+  </div>
+  <div class="hero-art">
+    <div class="win">
+      <span class="row long"></span>
+      <span class="row"></span>
+      <span class="row short"></span>
+      <span class="row"></span>
+    </div>
+  </div>
+</header>
+
+<section class="features">
+  <article class="f"><div class="ico">⚡</div><h3>سریع</h3><p>در کمتر از یک ثانیه باز می‌شود، حتی با هزار یادداشت.</p></article>
+  <article class="f"><div class="ico">🔒</div><h3>خصوصی</h3><p>داده‌ها روی دستگاه خودتان رمزنگاری می‌شوند.</p></article>
+  <article class="f"><div class="ico">🌙</div><h3>حالت شب</h3><p>برای چشم‌هایی که تا دیروقت کار می‌کنند.</p></article>
+</section>
+
+<section class="band">
+  <h2>همین امروز شروع کنید</h2>
+  <p>سی روز اول کاملاً رایگان است.</p>
+  <button class="cta">ساخت حساب</button>
+</section>
+
+<footer class="foot">© ۱۴۰۴ نُوا — ساخته‌شده با CSS</footer>`,
+steps:[
+{
+t:'پایه و رنگ‌ها',
+goal:'ریست، متغیرها، فونت و رنگ زمینه.',
+em:'🎨',
+why:'برای صفحهٔ فرود، یک رنگ اصلی (accent) کافی است. رنگ اصلی را فقط جایی به کار ببرید که می‌خواهید چشم برود: دکمهٔ اصلی و یکی دو تأکید. اگر همه‌جا رنگی باشد، یعنی هیچ‌جا مهم نیست.',
+css:`*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:     #0b1020;
+  --panel:  #131a2e;
+  --line:   #232c47;
+  --ink:    #e6ebf5;
+  --muted:  #97a2b8;
+  --accent: #4f8cff;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Vazirmatn, system-ui, sans-serif;
+  line-height: 1.9;
+}`
+},
+{
+t:'نوار ناوبری چسبان',
+goal:'لوگو در یک طرف، لینک‌ها وسط و دکمه در طرف دیگر — و نوار موقع اسکرول بچسبد بالا.',
+em:'📌',
+why:'<code class="inline">position: sticky; top: 0</code> یعنی «عادی باش تا به بالای صفحه برسی، بعد بچسب». <code class="inline">backdrop-filter: blur()</code> هم پشتِ نوار را مات می‌کند تا متنِ زیرش خوانده نشود ولی حس شیشه بدهد. در پیش‌نمایش اسکرول کنید تا ببینید.',
+css:`.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 14px clamp(16px, 4vw, 42px);
+  background: rgba(11, 16, 32, .8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+
+.logo { font-weight: 800; color: var(--accent); font-size: 18px; }
+
+.links { display: flex; gap: 18px; }
+
+.links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color .2s;
+}
+
+.links a:hover { color: var(--ink); }
+
+.nav .small { margin-inline-start: auto; }`
+},
+{
+t:'دکمه‌ها',
+goal:'دکمهٔ اصلی و دکمهٔ فرعی را یک‌بار برای همیشه بسازیم.',
+em:'🔘',
+why:'یک بار تعریف می‌کنیم و در سه‌جای صفحه استفاده می‌کنیم — این یعنی «کامپوننت». اگر برای هر دکمه استایل جدا بنویسید، پروژه بعد از یک ماه غیرقابل نگهداری می‌شود.',
+css:`.cta, .ghost {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 12px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s, background .2s;
+}
+
+.cta {
+  background: var(--accent);
+  color: #06132c;
+  border: 0;
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(79, 140, 255, .35);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.ghost:hover { background: var(--panel); }
+
+.small { font-size: 13px; padding: 9px 16px; }`
+},
+{
+t:'بخش قهرمان، دوستونه',
+goal:'متن در یک ستون و تصویر محصول در ستون دیگر.',
+em:'🦸',
+why:'<code class="inline">clamp(کف، دلخواه، سقف)</code> اینجا ستارهٔ ماجراست: تیتر در موبایل ۲۶ پیکسل و در دسکتاپ تا ۵۲ پیکسل بزرگ می‌شود و بینشان <b>سیال</b> است. یعنی هیچ‌وقت نه خیلی کوچک، نه خیلی بزرگ — بدون media query.',
+css:`.hero {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: clamp(24px, 5vw, 60px);
+  align-items: center;
+  padding: clamp(34px, 7vw, 80px) clamp(16px, 4vw, 42px);
+}
+
+.pill {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--accent);
+  background: rgba(79, 140, 255, .1);
+  border: 1px solid rgba(79, 140, 255, .3);
+  padding: 4px 13px;
+  border-radius: 99px;
+}
+
+h1 {
+  font-size: clamp(26px, 5vw, 52px);
+  line-height: 1.25;
+  margin: 14px 0 12px;
+}
+
+.hero p {
+  color: var(--muted);
+  font-size: 16px;
+  max-width: 48ch;
+}
+
+.hero-btn {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 22px 0 10px;
+}
+
+.hero small { color: var(--muted); font-size: 12px; }`
+},
+{
+t:'تصویر خیالی محصول',
+goal:'یک پنجرهٔ ساختگی بسازیم — فقط با CSS، بدون هیچ فایل تصویری.',
+em:'🪟',
+why:'گاهی برای نمونهٔ اولیه عکس ندارید. با چند div و کمی گرادیان می‌شود چیزی ساخت که «حس محصول» بدهد. نوارهای خاکستری همان جای متن‌اند؛ به این الگو <b>skeleton</b> می‌گویند.',
+css:`.hero-art {
+  background: linear-gradient(150deg, rgba(79,140,255,.25), rgba(79,140,255,.03));
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.win {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+  display: grid;
+  gap: 11px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, .4);
+}
+
+.row {
+  height: 13px;
+  border-radius: 7px;
+  background: #222c46;
+}
+
+.row.long  { width: 100%; background: var(--accent); opacity: .55; }
+.row.short { width: 55%; }`
+},
+{
+t:'سه کارت ویژگی',
+goal:'سه ویژگی محصول را در یک ردیف نشان بدهیم.',
+em:'🧩',
+why:'باز هم <code class="inline">auto-fit</code> با <code class="inline">minmax</code>: در دسکتاپ سه‌تایی، در موبایل زیر هم — خودکار. فرق <code class="inline">auto-fit</code> با <code class="inline">auto-fill</code>: وقتی آیتم‌ها کم باشند، auto-fit ستون‌های خالی را جمع می‌کند و آیتم‌ها کش می‌آیند.',
+css:`.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  padding: 0 clamp(16px, 4vw, 42px) 40px;
+}
+
+.f {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px;
+  transition: transform .25s, border-color .25s;
+}
+
+.f:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+
+.ico {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: rgba(79, 140, 255, .12);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.f h3 { font-size: 16px; margin-bottom: 4px; }
+.f p  { color: var(--muted); font-size: 13.5px; }`
+},
+{
+t:'نوار دعوت به اقدام و پانویس',
+goal:'یک بخش پررنگ در انتها که کاربر را به ثبت‌نام دعوت کند.',
+em:'📣',
+why:'هر صفحهٔ فرود باید در انتها یک «حالا چه کار کنم؟» روشن داشته باشد. با یک پس‌زمینهٔ متفاوت و وسط‌چین، این بخش از بقیهٔ صفحه جدا می‌شود و چشم رویش می‌ایستد.',
+css:`.band {
+  text-align: center;
+  background: linear-gradient(160deg, rgba(79,140,255,.14), rgba(79,140,255,.03));
+  border-block: 1px solid var(--line);
+  padding: clamp(34px, 6vw, 64px) 20px;
+}
+
+.band h2 { font-size: clamp(22px, 3.6vw, 34px); }
+
+.band p {
+  color: var(--muted);
+  margin: 8px 0 20px;
+  font-size: 14.5px;
+}
+
+.foot {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12.5px;
+  padding: 22px;
+}`
+},
+{
+t:'و حالا موبایل',
+goal:'در صفحهٔ باریک: قهرمان تک‌ستونه شود و لینک‌های ناوبری پنهان شوند.',
+em:'📱',
+why:'دکمهٔ 📱 را بزنید و تفاوت را ببینید. در نوار ناوبریِ موبایل، سایت‌های واقعی لینک‌ها را داخل منوی همبرگری می‌گذارند؛ چون آن کار به JavaScript نیاز دارد، اینجا ساده پنهانشان می‌کنیم. توجه کنید کل بخش موبایل چقدر کوتاه است — نتیجهٔ درست نوشتنِ بخش‌های قبلی.',
+css:`@media (max-width: 760px) {
+  .hero {
+    grid-template-columns: 1fr;   /* تک‌ستونه */
+    text-align: center;
+  }
+
+  .hero p { margin-inline: auto; }
+
+  .hero-btn { justify-content: center; }
+
+  .links { display: none; }       /* جای منوی همبرگری */
+
+  .nav .small { margin-inline-start: auto; }
+}`
+}]
+}
+];
+
+/* ═════════ موتور تمرین‌ها ═════════ */
+let curEx=null, step=0;
+const exIframe=$('#exIframe'), exCssBox=$('#exCss');
+
+const store={
+  get(k){try{return localStorage.getItem('cssLab:'+k);}catch(_){return null;}},
+  set(k,v){try{localStorage.setItem('cssLab:'+k,v);}catch(_){}}
+};
+const accCss=(ex,i)=>ex.steps.slice(0,i+1).map(s=>s.css).join('\n\n')+'\n';
+
+function showHub(){
+  $('#exHub').hidden=false;$('#exPlayer').hidden=true;
+  $('#exBarLabel').innerHTML='یک تمرین را انتخاب کنید';
+  $('#exBarNext').hidden=true;
+  curEx=null;setHash('ex');
+  $('#exWrap').scrollTo(0,0);
+  const g=$('#exGrid');
+  g.innerHTML=EX.map(ex=>{
+    const p=+(store.get('p:'+ex.id)||0), pct=Math.round((p+1)/ex.steps.length*100);
+    const started=store.get('p:'+ex.id)!==null;
+    return `<button class="excard" data-id="${ex.id}">
+      <span class="top"><span class="no">${ex.no}</span><span class="ttl">${ex.title}</span><span class="lvl ${ex.cls}">${ex.lvl}</span></span>
+      <span class="ds">${ex.desc}</span>
+      <span class="tags">${ex.tags.map(t=>`<span>${t}</span>`).join('')}</span>
+      <span class="go"><span>${fa(ex.steps.length)} گام · ${ex.after}</span><b>${started?`ادامه (${fa(pct)}٪) ←`:'شروع ←'}</b></span>
+    </button>`;
+  }).join('');
+  g.onclick=e=>{const b=e.target.closest('.excard');if(b)startEx(b.dataset.id);};
+}
+
+function startEx(id){
+  curEx=EX.find(x=>x.id===id)||EX[0];
+  $('#exHub').hidden=true;$('#exPlayer').hidden=false;
+  $('#exBarNext').hidden=false;
+  $('#exTitle').textContent=`تمرین ${curEx.no}: ${curEx.title}`;
+  $('#exPill').textContent=fa(curEx.steps.length)+' گام';
+  $('#exHtmlCode').innerHTML=hlHTML(curEx.html);
+  $('#exSteps').innerHTML=curEx.steps.map((s,i)=>
+    `<button class="stp" data-i="${i}"><span class="n">${fa(String(i+1).padStart(2,'0'))}</span><span class="t">${s.t}</span></button>`).join('');
+  $('#exSteps').onclick=e=>{const b=e.target.closest('.stp');if(b)goStep(+b.dataset.i);};
+  exIframe.removeAttribute('data-ex');
+  goStep(+(store.get('p:'+curEx.id)||0));
+}
+
+function goStep(i){
+  if(!curEx)return;
+  step=Math.max(0,Math.min(curEx.steps.length-1,i));
+  const s=curEx.steps[step], last=step===curEx.steps.length-1;
+  store.set('p:'+curEx.id,step);
+  $$('#exSteps .stp').forEach((b,n)=>{
+    b.classList.toggle('cur',n===step);
+    b.classList.toggle('done',n<step);
+  });
+  $('#stpTitle').textContent=`گام ${fa(step+1)} — ${s.t}`;
+  $('#stpGoal').textContent=s.goal;
+  $('#stpEm').textContent=s.em;
+  $('#stpWhy').innerHTML=s.why;
+  $('#stpCode').innerHTML=hlCSS(s.css);
+  $('#stpPrev').disabled=step===0;
+  $('#stpNext').disabled=last;
+  $('#stpNext').innerHTML=last?'گام آخر ✓':'گام بعد <span>←</span>';
+  $('#exDone').hidden=!last;
+  if(last)$('#exDoneTxt').textContent=curEx.done;
+  const pct=Math.round((step+1)/curEx.steps.length*100);
+  $('#exProg').style.width=pct+'%';
+  $('#exPct').textContent=fa(pct)+'٪';
+  $('#exBarLabel').innerHTML=`<b>${curEx.title}</b> — گام ${fa(step+1)} از ${fa(curEx.steps.length)}`;
+  $('#exBarNext').disabled=last;
+  exCssBox.value=accCss(curEx,step);
+  setPreview(exCssBox.value);
+  setHash('ex-'+curEx.id+'-'+(step+1));
+  const cur=$('#exSteps .stp.cur');
+  cur?.scrollIntoView({block:'nearest'});
+}
+
+function setPreview(css){
+  if(!curEx)return;
+  try{
+    if(exIframe.dataset.ex===curEx.id){
+      const d=exIframe.contentDocument, u=d&&d.getElementById('userCss');
+      if(u){u.textContent=css;return;}
+    }
+  }catch(_){}
+  exIframe.dataset.ex=curEx.id;
+  exIframe.srcdoc=`<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8">`+
+    `<meta name="viewport" content="width=device-width, initial-scale=1">`+
+    `<style>${EXFONT}</style><style id="userCss">${css}</style></head><body>${curEx.html}</body></html>`;
+}
+
+let cssTimer=null;
+exCssBox.addEventListener('input',()=>{
+  clearTimeout(cssTimer);
+  cssTimer=setTimeout(()=>setPreview(exCssBox.value),220);
+});
+$('#stpPrev').onclick=()=>goStep(step-1);
+$('#stpNext').onclick=()=>goStep(step+1);
+$('#exBarNext').onclick=()=>goStep(step+1);
+$('#exBack').onclick=()=>showHub();
+$('#exReset').onclick=()=>{exCssBox.value=accCss(curEx,step);setPreview(exCssBox.value);};
+$('#stpAdd').onclick=()=>{
+  const add=curEx.steps[step].css;
+  if(!exCssBox.value.includes(add))exCssBox.value=exCssBox.value.trimEnd()+'\n\n'+add+'\n';
+  setPreview(exCssBox.value);
+  $$('.vtab').find(t=>t.dataset.v==='css')?.click();
+};
+$('#exNextEx').onclick=()=>{
+  const i=EX.indexOf(curEx);
+  i<EX.length-1?startEx(EX[i+1].id):showHub();
+  $('#exWrap').scrollTo(0,0);
+};
+async function copyText(txt,btn){
+  const old=btn.textContent;
+  try{await navigator.clipboard.writeText(txt);}
+  catch(_){const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();}
+  btn.textContent='✓ کپی شد!';setTimeout(()=>btn.textContent=old,1600);
+}
+$('#exCopy').onclick=e=>copyText(exCssBox.value,e.target);
+$('#exCopyAll').onclick=e=>copyText(exCssBox.value,e.target);
+
+/* تب‌های پیش‌نمایش و دکمهٔ موبایل/دسکتاپ */
+$$('.vtab').forEach(t=>t.onclick=()=>{
+  $$('.vtab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
+  const map={prev:'#panePrev',css:'#paneCss',html:'#paneHtml'};
+  Object.values(map).forEach(sel=>$(sel).classList.remove('on'));
+  $(map[t.dataset.v]).classList.add('on');
+});
+$$('.dev button').forEach(b=>b.onclick=()=>{
+  $$('.dev button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  $('#exFrame').classList.toggle('mob',b.dataset.d==='mob');
+});
 
 /* ═════════ مرجع خواص ═════════ */
 const PROPS=[
@@ -1403,7 +3217,7 @@ const PROPS=[
   render();
 })();
 
-/* ═════════ قالب‌ها ═════════ */
+/* ═════════ قالب‌های آماده ═════════ */
 const TPL=[
 `/* دکمه‌ها — HTML: <button class="btn">متن</button> */
 .btn {
@@ -1438,7 +3252,10 @@ const TPL=[
   transform: translateY(-6px);
   box-shadow: 0 24px 48px rgba(0,0,0,.45);
 }
-.pcard img { width: 100%; height: 180px; object-fit: cover; display: block; }
+.pcard .ph {                 /* جای تصویر */
+  height: 150px; display: grid; place-items: center; font-size: 40px;
+  background: linear-gradient(140deg, #ffb454, #f07178 60%, #d2a6ff);
+}
 .pcard-body { padding: 16px; }
 .pcard-tag { font-size: 12px; color: #ffb454; }
 .pcard h3 { margin: 6px 0 12px; font-size: 17px; color: #fff; }
@@ -1546,19 +3363,24 @@ const TPL=[
     const el=$('#tplc'+i);if(!el)return;
     el.innerHTML=i===TPL.length-1?hlHTML(code):hlCSS(code);
   });
-  document.addEventListener('click',async e=>{
+  document.addEventListener('click',e=>{
     const b=e.target.closest('.copy');if(!b)return;
-    const code=TPL[+b.dataset.i],old=b.textContent;
-    try{await navigator.clipboard.writeText(code);}
-    catch(_){const t=document.createElement('textarea');t.value=code;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();}
-    b.textContent='✓ کپی شد!';
-    setTimeout(()=>b.textContent=old,1600);
+    copyText(TPL[+b.dataset.i],b);
   });
 })();
 
 /* ═════════ شروع ═════════ */
-const init=Math.min(total-1,Math.max(0,(parseInt(location.hash.slice(1))||1)-1));
-go(init);
+(function(){
+  const h=(location.hash||'').replace(/^#/,'');
+  if(/^ex/.test(h)){
+    const m=h.match(/^ex-([\w-]+)-(\d+)$/);
+    go(0);
+    openEx(m?m[1]:undefined);
+    if(m)goStep(+m[2]-1);
+  }else{
+    go(Math.min(total-1,Math.max(0,(parseInt(h)||1)-1)));
+  }
+})();
 
 /* ═════════ نوار سلامت فایل ═════════
    اگر هنگام کپی/ذخیره بخشی از <style> جا افتاده باشد،
