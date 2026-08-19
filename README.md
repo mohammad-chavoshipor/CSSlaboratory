@@ -2,7 +2,7 @@
 
 # CSS Laboratory
 
-**An interactive, slide-based CSS course in a single HTML file.**
+**A slide-based CSS course plus step-by-step project exercises — in a single HTML file.**
 
 Live demo → **[css.mchavoshipor.ir](https://css.mchavoshipor.ir)**
 
@@ -17,49 +17,96 @@ Live demo → **[css.mchavoshipor.ir](https://css.mchavoshipor.ir)**
 ## What this is
 
 CSS Laboratory teaches CSS the way it is actually learned: by moving a slider and watching
-a box move. Every concept comes with a live playground — change `justify-content`, drag a
-`gap` slider, flip `position: absolute` — and the rendered result and the generated CSS
-update side by side, immediately.
+a box move, then by building a real page one step at a time.
+
+The app has **two separate modes**, switchable from the top bar:
+
+| Mode | What it is |
+|------|------------|
+| **دوره · Course** | 22 short lessons. Each opens with a one-sentence plain-language analogy, then a live playground. |
+| **تمرین‌ها · Exercises** | 4 guided projects, 32 steps total. Pick a project, follow the steps, watch the page build itself in a live preview. |
+
+Exercise content is deliberately kept **out of** the lessons: lessons explain a concept,
+exercises apply several concepts to a finished page. Lesson 14 is a signpost that hands the
+reader off to Exercise 1 at the right moment, and the reader can come back afterwards.
 
 It is **one file**. No framework, no bundler, no `node_modules`, no build step. Open
-`index.html` in a browser and the whole course runs.
+`index.html` in a browser and everything runs.
 
-> **Language:** the course content is written in **Persian (فارسی)** with a full RTL
-> layout. All CSS property names, values and code samples are in English, so the
-> playgrounds are usable regardless of the language you read.
+> **Language:** the content is written in **Persian (فارسی)** with a full RTL layout. All CSS
+> property names, values and code samples are in English, so the playgrounds are usable
+> regardless of the language you read.
 
-## Contents
+## The course
 
-15 chapters, ordered so each one builds on the previous:
+22 lessons, ordered so each builds on the previous. Every lesson starts with a
+«به زبان ساده» box — the concept explained in one sentence, with a concrete analogy — before
+any syntax appears.
 
-| # | Chapter | Covers |
-|---|---------|--------|
-| 1 | Anatomy of a CSS rule | selector, declaration block, property, value, specificity |
-| 2 | Selectors | type, class, id, attribute, pseudo-class, pseudo-element, combinators |
-| 3 | Units & colors | px / em / rem / %, vw / vh, `hex`, `rgb`, `hsl`, `oklch` |
-| 4 | The box model | content, padding, border, margin, `box-sizing` |
-| 5 | Typography | font stacks, size scale, line-height, letter-spacing, `text-wrap` |
-| 6 | Flexbox lab | `flex-direction`, `justify-content`, `align-items`, `wrap`, `gap`, `flex-grow` |
-| 7 | Grid lab | `grid-template-columns`, `fr`, `repeat()`, `minmax()`, areas, `gap` |
-| 8 | Position | `static`, `relative`, `absolute`, `fixed`, `sticky`, `z-index` |
-| 9 | Transform + transition | `translate`, `rotate`, `scale`, timing functions, duration |
-| 10 | Animation & `@keyframes` | keyframe authoring, iteration, direction, fill mode |
-| 11 | Responsive design | breakpoints, `clamp()`, container-aware layout, mobile-first |
-| 12 | Custom properties & functions | `--vars`, `var()`, `calc()`, `min()` / `max()` / `clamp()` |
-| 13 | Full property reference | searchable index of CSS properties |
-| 14 | Copy-paste templates | ready-made layout and component snippets |
-| 15 | Golden rules | the practical tips that make CSS click |
+| # | Lesson | Live playground |
+|---|--------|-----------------|
+| 1 | Cover | self-typing editor |
+| 2 | What CSS actually does | — |
+| 3 | Anatomy of a rule | — |
+| 4 | Selectors | hover demo |
+| 5 | Which rule wins (specificity) | toggle rules, see the winner and its score |
+| 6 | Units: px / rem / % / vw | change the root font size, watch which bars move |
+| 7 | Colors | HSL sliders → hex |
+| 8 | `display` | block / inline / inline-block / none on real boxes |
+| 9 | The box model | padding / border / margin sliders |
+| 10 | `content-box` vs `border-box` | **two real boxes side by side against a guide line** |
+| 11 | Typography | size, line-height, word-spacing, weight, line length |
+| 12 | Flexbox | direction, justify, align, wrap, gap, `flex-grow` |
+| 13 | Grid | equal / `1fr 2fr 1fr` / fixed+fluid / `auto-fill`, plus named areas |
+| 14 | **Time to practise** | signpost → Exercise 1 |
+| 15 | `position` | **flow-aware demo: siblings move, anchor parent toggle, real `fixed`, sticky** |
+| 16 | transform + transition | rotate / scale / translate / skew / easing |
+| 17 | animation & `@keyframes` | four animations, timing, iteration, direction |
+| 18 | Responsive design | draggable container width (`@container`) |
+| 19 | Custom properties & functions | one click re-themes the whole demo |
+| 20 | Property reference | searchable index of 165 properties |
+| 21 | Copy-paste templates | 6 ready components with live previews |
+| 22 | Golden rules | — |
+
+Two demos were rebuilt because the old ones did not actually show what they claimed:
+
+- **`box-sizing`** now renders *two real boxes* with identical `width`, `padding` and
+  `border` — one `content-box`, one `border-box` — against a dashed guide marking the
+  requested width. You see the content-box one overflow the guide, with the measured
+  on-screen widths printed underneath.
+- **`position`** now runs inside a mock page with sibling cards, so `absolute` visibly
+  removes the element from flow (the card below jumps up), a toggle adds/removes
+  `position: relative` on the parent to show what the element anchors to, `fixed` uses a
+  genuinely viewport-fixed element, and `sticky` sticks inside a scroll container.
+
+## The exercises
+
+Each exercise is a real page built in small steps. Every step gives a goal, a plain-language
+"why", the exact CSS to add, and a live preview (desktop/mobile) that always matches what
+the step describes. The CSS pane is editable — change it and the preview updates as you type;
+"بازگرداندن کد درست" restores the correct code. Progress is remembered in `localStorage`.
+
+| # | Exercise | Steps | Taught after | Covers |
+|---|----------|-------|--------------|--------|
+| 1 | **Resume website** | 12 | the Grid lesson | reset, variables, centred container, cards, flex header, typography, chips, 2-column grid, `::before` timeline, media query, re-theming |
+| 2 | Profile card | 6 | the position lesson | centring, overflow, negative-margin avatar, stat row, buttons + transition |
+| 3 | Responsive gallery | 6 | the Grid lesson | `auto-fill` + `minmax`, `aspect-ratio`, hover zoom, spanning item |
+| 4 | Product landing page | 8 | end of course | sticky nav, hero grid, `clamp()`, CSS-only mockup, feature grid, CTA band, responsive |
+
+The preview runs in a sandboxed `srcdoc` iframe, so exercise CSS can never leak into the app
+(and vice versa) — the output you see is exactly the code in the editor.
 
 ## Features
 
 - **Live playgrounds** — sliders, toggles and dropdowns that mutate real elements in real time.
 - **Generated code view** — the CSS you just produced, syntax-highlighted, ready to copy.
 - **Slide navigation** — arrow keys, `Space`, `PageUp` / `PageDown`, `Home` / `End`, plus a table-of-contents drawer.
+- **Deep links** — `#7` opens lesson 7, `#ex-resume-4` opens exercise 1 at step 4.
 - **Property search** — type `flex` or `shadow` to jump straight to the relevant reference entry.
-- **Accent themes** — amber, blue, purple, red and teal, switchable at runtime.
 - **Full RTL support** — the layout is genuinely right-to-left, not a mirrored afterthought.
 - **Zero dependencies, zero third-party requests** — fonts are self-hosted, so nothing is fetched from a CDN. Works behind restrictive networks and fully offline.
 - **Responsive** — works from a phone screen up to a projector.
+- **Reduced motion** — every animation respects `prefers-reduced-motion`.
 
 ## Running locally
 
@@ -71,8 +118,8 @@ cd CSSlaboratory
 open index.html          # macOS   (Linux: xdg-open, Windows: start)
 ```
 
-If you prefer serving it over HTTP (recommended when you want to test with a phone on the
-same network):
+If you prefer serving it over HTTP (recommended — the exercise previews then load the
+self-hosted fonts, and deep links update the address bar):
 
 ```bash
 python3 -m http.server 8080
@@ -91,10 +138,15 @@ CSSlaboratory/
 └── .github/workflows/pages.yml   # publishes the site on every push to main
 ```
 
-Everything lives in `index.html`, organised top to bottom as: `@font-face` declarations →
-design tokens (`:root` custom properties) → base styles → component styles → slide markup
-→ playground logic. Editing a chapter means editing its `<section>` and the small script
-block that drives it.
+`index.html` is organised top to bottom as: `@font-face` declarations → design tokens
+(`:root` custom properties) → base and component styles → per-lesson styles → exercise-UI
+styles → lesson markup → exercise-UI markup → scripts.
+
+The scripts are grouped in the same order: helpers and the CSS syntax highlighter, the slide
+engine, one small IIFE per playground, the exercise data (`EX`), the exercise engine, and the
+property reference plus templates. Editing a lesson means editing its `<section>` and the one
+IIFE that drives it; adding an exercise means appending one object to `EX` — the UI is generated
+from it.
 
 ### Fonts
 
@@ -119,13 +171,14 @@ republishes it — there is nothing to compile.
 
 ## Contributing
 
-Corrections, new chapters and better playgrounds are welcome. Because the project is a
-single file, please keep changes scoped:
+Corrections, new lessons and new exercises are welcome. Because the project is a single
+file, please keep changes scoped:
 
-1. Match the surrounding style — the codebase uses compact CSS, design tokens from
-   `:root`, and plain DOM APIs (no libraries).
+1. Match the surrounding style — compact CSS, design tokens from `:root`, plain DOM APIs
+   (no libraries).
 2. Keep the file dependency-free. No CDN scripts, no build tooling.
-3. Test in at least one Chromium browser and one Firefox before opening a pull request.
+3. Lessons explain one concept and stay short; multi-concept work belongs in an exercise.
+4. Test in at least one Chromium browser and one Firefox before opening a pull request.
 
 ## License
 
